@@ -1,90 +1,93 @@
 #include "board.hpp"
 
 Board::Board()
-: mElements{}
-, mPawns{}
+: mGrid{}
+, mPawns
 {
-    bool light = true;
-
-    for (size_t y = 0; y < 8; y++)
-    {
-        for (size_t x = 0; x < 8; x++)
-        {
-            sf::RectangleShape element{ {64, 64} };
-            element.setPosition(x * 64.f, y * 64.f);
-
-            if (light)
-                element.setFillColor(sf::Color{ 136, 167, 216 });
-            else
-                element.setFillColor(sf::Color{ 37, 67, 114 });
-
-            light = !light;
-
-            mElements.push_back(element);
-        }
-
-        light = !light;
-    }
-
     // Light Pawns
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {1, 0} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {3, 0} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {5, 0} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {7, 0} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {0, 1} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {2, 1} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {4, 1} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {6, 1} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {1, 2} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {3, 2} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {5, 2} });
-    mPawns.push_back(Pawn{ this, LightPlayerID, LightColor, {7, 2} });
+    { this, LIGHT_PLAYER_ID, {1, 0} },
+    { this, LIGHT_PLAYER_ID, {3, 0} },
+    { this, LIGHT_PLAYER_ID, {5, 0} },
+    { this, LIGHT_PLAYER_ID, {7, 0} },
+    { this, LIGHT_PLAYER_ID, {0, 1} },
+    { this, LIGHT_PLAYER_ID, {2, 1} },
+    { this, LIGHT_PLAYER_ID, {4, 1} },
+    { this, LIGHT_PLAYER_ID, {6, 1} },
+    { this, LIGHT_PLAYER_ID, {1, 2} },
+    { this, LIGHT_PLAYER_ID, {3, 2} },
+    { this, LIGHT_PLAYER_ID, {5, 2} },
+    { this, LIGHT_PLAYER_ID, {7, 2} },
 
     // Dark Pawns
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {0, 5} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {2, 5} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {4, 5} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {6, 5} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {1, 6} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {3, 6} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {5, 6} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {7, 6} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {0, 7} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {2, 7} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {4, 7} });
-    mPawns.push_back(Pawn{ this, DarkPlayerID, DarkColor, {6, 7} });
+    { this, DARK_PLAYER_ID, {0, 5} },
+    { this, DARK_PLAYER_ID, {2, 5} },
+    { this, DARK_PLAYER_ID, {4, 5} },
+    { this, DARK_PLAYER_ID, {6, 5} },
+    { this, DARK_PLAYER_ID, {1, 6} },
+    { this, DARK_PLAYER_ID, {3, 6} },
+    { this, DARK_PLAYER_ID, {5, 6} },
+    { this, DARK_PLAYER_ID, {7, 6} },
+    { this, DARK_PLAYER_ID, {0, 7} },
+    { this, DARK_PLAYER_ID, {2, 7} },
+    { this, DARK_PLAYER_ID, {4, 7} },
+    { this, DARK_PLAYER_ID, {6, 7} }
+}
+{
+    bool lightColor = true;
+
+    for (size_t y = 0; y < BOARD_HEIGHT; y++)
+    {
+        for (size_t x = 0; x < BOARD_WIDTH; x++)
+        {
+            sf::RectangleShape fragment{};
+            fragment.setSize({ UNIT_SIZE, UNIT_SIZE });
+            fragment.setPosition(x * UNIT_SIZE, y * UNIT_SIZE);
+
+            if (lightColor)
+                fragment.setFillColor(LIGHT_GRID_COLOR);
+            else
+                fragment.setFillColor(DARK_GRID_COLOR);
+
+            lightColor = !lightColor;
+
+            mGrid.push_back(fragment);
+        }
+
+        lightColor = !lightColor;
+    }
 }
 
 void Board::draw(sf::RenderWindow& window)
 {
-    for (size_t i = 0; i < mElements.size(); i++)
-        window.draw(mElements[i]);
+    for (size_t i = 0; i < mGrid.size(); i++)
+        window.draw(mGrid[i]);
 
     for (size_t i = 0; i < mPawns.size(); i++)
         mPawns[i].draw(window);
-
 }
 
-Pawn* Board::getPawn(sf::Vector2i pos)
+Pawn* Board::getPawn(sf::Vector2i position)
 {
-    if (pos.x < 0 || pos.x > 7) return nullptr;
+    if (position.x < 0 || position.x >= BOARD_WIDTH) 
+        return NULL;
 
-    if (pos.y < 0 || pos.y > 7) return nullptr;
+    if (position.y < 0 || position.y >= BOARD_HEIGHT) 
+        return NULL;
 
     for (size_t i = 0; i < mPawns.size(); i++)
     {
-        if (mPawns[i].position() == pos)
+        if (mPawns[i].position() == position)
             return &mPawns[i];
     }
 
-    return nullptr;
+    return NULL;
 }
 
-void Board::killPawn(sf::Vector2i pos)
+void Board::killPawn(sf::Vector2i position)
 {
     for (size_t i = 0; i < mPawns.size(); i++)
     {
-        if (mPawns[i].position() == pos)
+        if (mPawns[i].position() == position)
         {
             mPawns.erase(mPawns.begin() + i);
             break;

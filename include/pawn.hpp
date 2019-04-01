@@ -7,12 +7,13 @@ class Board;
 class Pawn
 {
 public:
-    Pawn(Board* board, int playerID, sf::Color color, sf::Vector2i position);
+    Pawn(Board* board, int playerID, sf::Vector2i position);
     void draw(sf::RenderWindow& window);
     void select(bool decision);
-    void move(sf::Vector2i pos);
-    bool canMove(sf::Vector2i pos);
-    sf::Vector2i canFight(sf::Vector2i pos);
+    void move(sf::Vector2i dest);
+    bool canMove(sf::Vector2i dest);
+    bool canFight(sf::Vector2i dest);
+    void fight(sf::Vector2i dest);
 
     int playerID() { return mPlayerID; }
     sf::Vector2i position() { return mPosition; }
@@ -21,7 +22,6 @@ public:
 private:
     Board* mBoard;
     int mPlayerID;
-    sf::Color mColor;
     sf::CircleShape mShape;
     sf::Vector2i mPosition;
     bool mIsKing;

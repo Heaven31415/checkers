@@ -19,30 +19,28 @@ int main()
                 window.close();
             else if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left)
             {
+                sf::Vector2i dest = getMousePosOnBoard(window);
+
                 if (selected)
                 {
                     selected->select(false);
-                    if (selected->canMove(getMousePosOnBoard(window)))
+
+                    if (selected->canMove(dest))
                     {
-                        selected->move(getMousePosOnBoard(window));
+                        selected->move(dest);
                         std::cout << "You moved to new position" << '\n';
                     }
-
-                    sf::Vector2i newPawnPos = getMousePosOnBoard(window);
-                    sf::Vector2i killedPawnPos = selected->canFight(newPawnPos);
-
-                    if (killedPawnPos != sf::Vector2i{ 0, 0 })
+                    else if (selected->canFight(dest))
                     {
-                        std::cout << "You can kill it" << '\n';
-                        selected->move(newPawnPos);
-                        board.killPawn(killedPawnPos);
+                        selected->fight(dest);
+                        std::cout << "You killed someone" << '\n';
                     }
 
-                    selected = nullptr;
+                    selected = NULL;
                 }
                 else
                 {
-                    selected = board.getPawn(getMousePosOnBoard(window));
+                    selected = board.getPawn(dest);
                     if (selected) selected->select(true);
                 }
             }

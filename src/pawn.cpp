@@ -1,20 +1,28 @@
 #include "pawn.hpp"
 #include "board.hpp"
 
-Pawn::Pawn(Board* board, int playerID, sf::Color color, sf::Vector2i position)
+Pawn::Pawn(Board* board, int playerID, sf::Vector2i position)
 : mBoard{ board }
 , mPlayerID{ playerID }
-, mColor{ color }
-, mShape{ 24.f }
+, mShape{ PAWN_RADIUS }
 , mPosition{ position }
 , mIsKing{ false }
 , mIsSelected{ false }
 {
-    mShape.setFillColor(mColor);
-    mShape.setOutlineColor(mColor + sf::Color(50, 50, 50));
+    if (mPlayerID == LIGHT_PLAYER_ID)
+    {
+        mShape.setFillColor(LIGHT_PAWN_COLOR);
+        mShape.setOutlineColor(LIGHT_PAWN_COLOR + sf::Color{ 50, 50, 50 });
+    }
+    else // mPlayerID == DARK_PLAYER_ID
+    {
+        mShape.setFillColor(DARK_PAWN_COLOR);
+        mShape.setOutlineColor(DARK_PAWN_COLOR + sf::Color{ 50, 50, 50 });
+    }
+
     mShape.setOutlineThickness(2.f);
-    mShape.setOrigin(24.f, 24.f);
-    mShape.setPosition(64.f * position.x + 32.f, 64.f * position.y + 32.f);
+    mShape.setOrigin(PAWN_RADIUS, PAWN_RADIUS);
+    mShape.setPosition(UNIT_SIZE * position.x + UNIT_SIZE / 2.f, UNIT_SIZE * position.y + UNIT_SIZE / 2.f);
 }
 
 void Pawn::draw(sf::RenderWindow& window)
@@ -25,89 +33,97 @@ void Pawn::draw(sf::RenderWindow& window)
 void Pawn::select(bool decision)
 {
     if (decision)
-        mShape.setFillColor(mColor + sf::Color(50, 50, 50));
+    {
+        if(mPlayerID == LIGHT_PLAYER_ID)
+            mShape.setFillColor(LIGHT_PAWN_COLOR + sf::Color(50, 50, 50));
+        else
+            mShape.setFillColor(DARK_PAWN_COLOR + sf::Color(50, 50, 50));
+    }
     else
-        mShape.setFillColor(mColor);
+    {
+        if (mPlayerID == LIGHT_PLAYER_ID)
+            mShape.setFillColor(LIGHT_PAWN_COLOR);
+        else
+            mShape.setFillColor(DARK_PAWN_COLOR);
+    }
 
     mIsSelected = decision;
 }
 
-void Pawn::move(sf::Vector2i pos)
+void Pawn::move(sf::Vector2i dest)
 {
-    mPosition = pos;
-    mShape.setPosition(64.f * pos.x + 32.f, 64.f * pos.y + 32.f);
+    mPosition = dest;
+    mShape.setPosition(UNIT_SIZE * dest.x + UNIT_SIZE / 2.f, UNIT_SIZE * dest.y + UNIT_SIZE / 2.f);
 }
 
-bool Pawn::canMove(sf::Vector2i pos)
+bool Pawn::canMove(sf::Vector2i dest)
 {
-    if (pos == mPosition) return false;
+    if (dest == mPosition) return false;
 
     // TODO: Handle me in the future
     if (mIsKing) return false;
 
-    if (mColor == LightColor)
+    if (mPlayerID == LIGHT_PLAYER_ID)
     {
-        if (pos.y == mPosition.y + 1 && (pos.x == mPosition.x - 1 || pos.x == mPosition.x + 1))
-        {
-            if (mBoard->getPawn(pos))
-                return false;
-            else
-                return true;
-        }
-
-        return false;
+        if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y + 1))
+            return mBoard->getPawn(dest) == NULL;
     }
-    else
+    else // mPlayerID == DARK_PLAYER_ID
     {
-        if (pos.y == mPosition.y - 1 && (pos.x == mPosition.x - 1 || pos.x == mPosition.x + 1))
-        {
-            if (mBoard->getPawn(pos))
-                return false;
-            else
-                return true;
-        }
-
-        return false;
+        if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y - 1))
+            return mBoard->getPawn(dest) == NULL;
     }
 
+    // You shouldn't be here
     return false;
 }
 
-sf::Vector2i Pawn::canFight(sf::Vector2i pos)
+bool Pawn::canFight(sf::Vector2i dest)
 {
-    if (pos == mPosition) return {};
+    if (dest == mPosition) return false;
+
+    if (mBoard->getPawn(dest) != NULL) return false;
 
     // TODO: Handle me in the future
-    if (mIsKing) return {};
+    if (mIsKing) return false;
 
-    if (pos.x == mPosition.x + 2 && pos.y == mPosition.y + 2 )
+    Pawn* enemy = NULL;
+
+    if (dest.x == mPosition.x + 2 && dest.y == mPosition.y + 2)
+        enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y + 1 });
+    else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y + 2)
+        enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y + 1 });
+    else if (dest.x == mPosition.x + 2 && dest.y == mPosition.y - 2)
+        enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y - 1 });
+    else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y - 2)
+        enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y - 1 });
+
+    return enemy && enemy->playerID() != mPlayerID;
+}
+
+void Pawn::fight(sf::Vector2i dest)
+{
+    if (dest == mPosition) return;
+
+    if (mBoard->getPawn(dest) != NULL) return;
+
+    // TODO: Handle me in the future
+    if (mIsKing) return;
+
+    Pawn* enemy = NULL;
+
+    if (dest.x == mPosition.x + 2 && dest.y == mPosition.y + 2)
+        enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y + 1 });
+    else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y + 2)
+        enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y + 1 });
+    else if (dest.x == mPosition.x + 2 && dest.y == mPosition.y - 2)
+        enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y - 1 });
+    else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y - 2)
+        enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y - 1 });
+
+    if (enemy && enemy->playerID() != mPlayerID)
     {
-        Pawn* pawn = mBoard->getPawn({ mPosition.x + 1, mPosition.y + 1 });
-        if (pawn && pawn->playerID() != mPlayerID)
-            return pawn->position();
-        else return {};
+        move(dest);
+        mBoard->killPawn(enemy->position());
     }
-    else if (pos.x == mPosition.x - 2 && pos.y == mPosition.y + 2)
-    {
-        Pawn* pawn = mBoard->getPawn({ mPosition.x - 1, mPosition.y + 1 });
-        if (pawn && pawn->playerID() != mPlayerID)
-            return pawn->position();
-        else return {};
-    }
-    else if (pos.x == mPosition.x + 2 && pos.y == mPosition.y - 2)
-    {
-        Pawn* pawn = mBoard->getPawn({ mPosition.x + 1, mPosition.y - 1 });
-        if (pawn && pawn->playerID() != mPlayerID)
-            return pawn->position();
-        else return {};
-    }
-    else if (pos.x == mPosition.x - 2 && pos.y == mPosition.y - 2)
-    {
-        Pawn* pawn = mBoard->getPawn({ mPosition.x - 1, mPosition.y - 1 });
-        if (pawn && pawn->playerID() != mPlayerID)
-            return pawn->position();
-        else return {};
-    }
-    
-    return {};
 }
