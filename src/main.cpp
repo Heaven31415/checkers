@@ -1,5 +1,6 @@
 #include "board.hpp"
 #include "pawn.hpp"
+#include "resources.hpp"
 
 #include <iostream>
 
@@ -9,6 +10,7 @@ int main()
 
     Board board{};
     Pawn* selected = nullptr;
+    Resources resources{};
 
     while (window.isOpen())
     {
