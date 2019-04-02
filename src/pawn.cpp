@@ -1,40 +1,40 @@
 #include "pawn.hpp"
 #include "board.hpp"
 
-Pawn::Pawn(Resources* resources, Board* board, int playerID, sf::Vector2i position)
+Pawn::Pawn(Resources* resources, Board* board, sf::Vector2i position, bool isLight)
 : mResources{resources}
 , mBoard{ board }
-, mPlayerID{ playerID }
 , mSprite{}
 , mPosition{ position }
+, mIsLight{ isLight }
 , mIsKing{ false }
 , mIsSelected{ false }
 {
-    if (mPlayerID == LIGHT_PLAYER_ID)
+    if (mIsLight)
         mSprite.setTexture(mResources->getTexture("LightPawn"));
-    else // mPlayerID == DARK_PLAYER_ID
+    else
         mSprite.setTexture(mResources->getTexture("DarkPawn"));
 
-    move(position);
+    move(mPosition);
 }
 
-void Pawn::draw(sf::RenderWindow& window)
+void Pawn::draw(sf::RenderWindow* window)
 {
-    window.draw(mSprite);
+    window->draw(mSprite);
 }
 
 void Pawn::select(bool decision)
 {
     if (decision)
     {
-        if (mPlayerID == LIGHT_PLAYER_ID)
+        if (mIsLight)
             mSprite.setTexture(mResources->getTexture("LightPawnSelected"));
         else
             mSprite.setTexture(mResources->getTexture("DarkPawnSelected"));
     }
     else
     {
-        if (mPlayerID == LIGHT_PLAYER_ID)
+        if (mIsLight)
             mSprite.setTexture(mResources->getTexture("LightPawn"));
         else
             mSprite.setTexture(mResources->getTexture("DarkPawn"));
@@ -56,18 +56,17 @@ bool Pawn::canMove(sf::Vector2i dest)
     // TODO: Handle me in the future
     if (mIsKing) return false;
 
-    if (mPlayerID == LIGHT_PLAYER_ID)
+    if (mIsLight)
     {
         if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y + 1))
             return mBoard->getPawn(dest) == NULL;
     }
-    else // mPlayerID == DARK_PLAYER_ID
+    else
     {
         if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y - 1))
             return mBoard->getPawn(dest) == NULL;
     }
 
-    // You shouldn't be here
     return false;
 }
 
@@ -91,7 +90,7 @@ bool Pawn::canFight(sf::Vector2i dest)
     else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y - 2)
         enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y - 1 });
 
-    return enemy && enemy->playerID() != mPlayerID;
+    return enemy && enemy->isLight() != mIsLight;
 }
 
 void Pawn::fight(sf::Vector2i dest)
@@ -114,9 +113,9 @@ void Pawn::fight(sf::Vector2i dest)
     else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y - 2)
         enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y - 1 });
 
-    if (enemy && enemy->playerID() != mPlayerID)
+    if (enemy && enemy->isLight() != mIsLight)
     {
         move(dest);
-        mBoard->killPawn(enemy->position());
+        mBoard->killPawn(enemy->getPosition());
     }
 }

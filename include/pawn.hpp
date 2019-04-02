@@ -1,30 +1,30 @@
 #pragma once
 
-#include "common.hpp"
+#include "resources.hpp"
 
 class Board;
 
 class Pawn
 {
 public:
-    Pawn(Resources* resources, Board* board, int playerID, sf::Vector2i position);
-    void draw(sf::RenderWindow& window);
+    Pawn(Resources* resources, Board* board, sf::Vector2i position, bool isLight);
+    void draw(sf::RenderWindow* window);
     void select(bool decision);
     void move(sf::Vector2i dest);
     bool canMove(sf::Vector2i dest);
     bool canFight(sf::Vector2i dest);
     void fight(sf::Vector2i dest);
 
-    int playerID() { return mPlayerID; }
-    sf::Vector2i position() { return mPosition; }
+    bool isLight() { return mIsLight; }
     bool isKing() { return mIsKing; }
+    sf::Vector2i getPosition() { return mPosition; }
 
 private:
     Resources* mResources;
     Board* mBoard;
-    int mPlayerID;
     sf::Sprite mSprite;
     sf::Vector2i mPosition;
+    bool mIsLight;
     bool mIsKing;
     bool mIsSelected;
 };

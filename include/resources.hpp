@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common.hpp"
+#include <SFML/Graphics.hpp>
 
 class Resources
 {

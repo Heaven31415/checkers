@@ -6,7 +6,7 @@ class Board
 {
 public:
     Board(Resources* resources);
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow* window);
     Pawn* getPawn(sf::Vector2i position);
     void killPawn(sf::Vector2i position);
 

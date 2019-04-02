@@ -48,7 +48,7 @@ int main()
         }
 
         window.clear();
-        board.draw(window);
+        board.draw(&window);
         window.display();
     }
 }
