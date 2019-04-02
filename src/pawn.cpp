@@ -25,21 +25,17 @@ void Pawn::draw(sf::RenderWindow* window)
 
 void Pawn::select(bool decision)
 {
-    if (decision)
-    {
-        if (mIsLight)
-            mSprite.setTexture(mResources->getTexture("LightPawnSelected"));
-        else
-            mSprite.setTexture(mResources->getTexture("DarkPawnSelected"));
-    }
-    else
-    {
-        if (mIsLight)
-            mSprite.setTexture(mResources->getTexture("LightPawn"));
-        else
-            mSprite.setTexture(mResources->getTexture("DarkPawn"));
-    }
+    std::string textureName = "";
 
+    if (mIsLight) textureName += "Light";
+    else textureName += "Dark";
+
+    if (mIsKing) textureName += "King";
+    else textureName += "Pawn";
+
+    if (decision) textureName += "Selected";
+
+    mSprite.setTexture(mResources->getTexture(textureName));
     mIsSelected = decision;
 }
 
@@ -47,14 +43,56 @@ void Pawn::move(sf::Vector2i dest)
 {
     mPosition = dest;
     mSprite.setPosition(64.f * (dest.x + 5), 64.f * (dest.y + 1));
+
+    if (!mIsKing && (mIsLight && dest.y == 7 || !mIsLight && dest.y == 0))
+    {
+        mIsKing = true;
+
+        if (mIsLight)
+            mSprite.setTexture(mResources->getTexture("LightKing"));
+        else
+            mSprite.setTexture(mResources->getTexture("DarkKing"));
+    }
 }
 
 bool Pawn::canMove(sf::Vector2i dest)
 {
+    if (dest.x < 0 || dest.x >= 8)
+        return false;
+
+    if (dest.y < 0 || dest.y >= 8)
+        return false;
+
     if (dest == mPosition) return false;
 
-    // TODO: Handle me in the future
-    if (mIsKing) return false;
+    if (mIsKing)
+    {
+        if (abs(dest.x - mPosition.x) != abs(dest.y - mPosition.y))
+            return false;
+
+        int dx = (dest.x > mPosition.x) ? 1 : -1;
+        int dy = (dest.y > mPosition.y) ? 1 : -1;
+
+        bool foundFriendly = false;
+
+        int actualX = mPosition.x + dx;
+        int actualY = mPosition.y + dy;
+
+        while (actualX < dest.x && actualY < dest.y)
+        {
+            Pawn* pawn = mBoard->getPawn({ actualX, actualY });
+            if (pawn && pawn->isLight() == mIsLight)
+            {
+                foundFriendly = true;
+                break;
+            }
+
+            actualX += dx; 
+            actualY += dy;
+        }
+
+        return !foundFriendly && !mBoard->getPawn(dest);
+    }
 
     if (mIsLight)
     {
