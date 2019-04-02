@@ -1,16 +1,15 @@
+#include <iostream>
+
 #include "board.hpp"
 #include "pawn.hpp"
-#include "resources.hpp"
-
-#include <iostream>
 
 int main()
 {
-    sf::RenderWindow window{ sf::VideoMode{512, 512, 32}, "Checkers" };
+    sf::RenderWindow window{ sf::VideoMode{896, 640}, "Checkers" };
 
-    Board board{};
-    Pawn* selected = nullptr;
     Resources resources{};
+    Board board{&resources};
+    Pawn* selected = nullptr;
 
     while (window.isOpen())
     {
@@ -19,9 +18,9 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            else if (event.type == sf::Event::MouseButtonPressed && event.key.code == sf::Mouse::Left)
+            else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
             {
-                sf::Vector2i dest = getMousePosOnBoard(window);
+                sf::Vector2i dest = { event.mouseButton.x / 64 - 5, event.mouseButton.y / 64 - 1 };
 
                 if (selected)
                 {

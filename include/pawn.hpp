@@ -7,7 +7,7 @@ class Board;
 class Pawn
 {
 public:
-    Pawn(Board* board, int playerID, sf::Vector2i position);
+    Pawn(Resources* resources, Board* board, int playerID, sf::Vector2i position);
     void draw(sf::RenderWindow& window);
     void select(bool decision);
     void move(sf::Vector2i dest);
@@ -20,9 +20,10 @@ public:
     bool isKing() { return mIsKing; }
 
 private:
+    Resources* mResources;
     Board* mBoard;
     int mPlayerID;
-    sf::CircleShape mShape;
+    sf::Sprite mSprite;
     sf::Vector2i mPosition;
     bool mIsKing;
     bool mIsSelected;

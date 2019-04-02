@@ -1,50 +1,43 @@
 #include "pawn.hpp"
 #include "board.hpp"
 
-Pawn::Pawn(Board* board, int playerID, sf::Vector2i position)
-: mBoard{ board }
+Pawn::Pawn(Resources* resources, Board* board, int playerID, sf::Vector2i position)
+: mResources{resources}
+, mBoard{ board }
 , mPlayerID{ playerID }
-, mShape{ PAWN_RADIUS }
+, mSprite{}
 , mPosition{ position }
 , mIsKing{ false }
 , mIsSelected{ false }
 {
     if (mPlayerID == LIGHT_PLAYER_ID)
-    {
-        mShape.setFillColor(LIGHT_PAWN_COLOR);
-        mShape.setOutlineColor(LIGHT_PAWN_COLOR + sf::Color{ 50, 50, 50 });
-    }
+        mSprite.setTexture(mResources->getTexture("LightPawn"));
     else // mPlayerID == DARK_PLAYER_ID
-    {
-        mShape.setFillColor(DARK_PAWN_COLOR);
-        mShape.setOutlineColor(DARK_PAWN_COLOR + sf::Color{ 50, 50, 50 });
-    }
+        mSprite.setTexture(mResources->getTexture("DarkPawn"));
 
-    mShape.setOutlineThickness(2.f);
-    mShape.setOrigin(PAWN_RADIUS, PAWN_RADIUS);
-    mShape.setPosition(UNIT_SIZE * position.x + UNIT_SIZE / 2.f, UNIT_SIZE * position.y + UNIT_SIZE / 2.f);
+    move(position);
 }
 
 void Pawn::draw(sf::RenderWindow& window)
 {
-    window.draw(mShape);
+    window.draw(mSprite);
 }
 
 void Pawn::select(bool decision)
 {
     if (decision)
     {
-        if(mPlayerID == LIGHT_PLAYER_ID)
-            mShape.setFillColor(LIGHT_PAWN_COLOR + sf::Color(50, 50, 50));
+        if (mPlayerID == LIGHT_PLAYER_ID)
+            mSprite.setTexture(mResources->getTexture("LightPawnSelected"));
         else
-            mShape.setFillColor(DARK_PAWN_COLOR + sf::Color(50, 50, 50));
+            mSprite.setTexture(mResources->getTexture("DarkPawnSelected"));
     }
     else
     {
         if (mPlayerID == LIGHT_PLAYER_ID)
-            mShape.setFillColor(LIGHT_PAWN_COLOR);
+            mSprite.setTexture(mResources->getTexture("LightPawn"));
         else
-            mShape.setFillColor(DARK_PAWN_COLOR);
+            mSprite.setTexture(mResources->getTexture("DarkPawn"));
     }
 
     mIsSelected = decision;
@@ -53,7 +46,7 @@ void Pawn::select(bool decision)
 void Pawn::move(sf::Vector2i dest)
 {
     mPosition = dest;
-    mShape.setPosition(UNIT_SIZE * dest.x + UNIT_SIZE / 2.f, UNIT_SIZE * dest.y + UNIT_SIZE / 2.f);
+    mSprite.setPosition(64.f * (dest.x + 5), 64.f * (dest.y + 1));
 }
 
 bool Pawn::canMove(sf::Vector2i dest)

@@ -5,12 +5,13 @@
 class Board
 {
 public:
-    Board();
+    Board(Resources* resources);
     void draw(sf::RenderWindow& window);
     Pawn* getPawn(sf::Vector2i position);
     void killPawn(sf::Vector2i position);
 
 private:
-    std::vector<sf::RectangleShape> mGrid;
+    Resources* mResources;
+    sf::Sprite mBackground;
     std::vector<Pawn> mPawns;
 };
