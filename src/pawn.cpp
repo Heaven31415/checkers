@@ -73,17 +73,16 @@ bool Pawn::canMove(sf::Vector2i dest)
         int dx = (dest.x > mPosition.x) ? 1 : -1;
         int dy = (dest.y > mPosition.y) ? 1 : -1;
 
-        bool foundFriendly = false;
+        bool foundSomebody = false;
 
         int actualX = mPosition.x + dx;
         int actualY = mPosition.y + dy;
 
-        while (actualX < dest.x && actualY < dest.y)
+        while (actualX != dest.x && actualY != dest.y)
         {
-            Pawn* pawn = mBoard->getPawn({ actualX, actualY });
-            if (pawn && pawn->isLight() == mIsLight)
+            if (mBoard->getPawn({ actualX, actualY }))
             {
-                foundFriendly = true;
+                foundSomebody = true;
                 break;
             }
 
@@ -91,7 +90,7 @@ bool Pawn::canMove(sf::Vector2i dest)
             actualY += dy;
         }
 
-        return !foundFriendly && !mBoard->getPawn(dest);
+        return !foundSomebody && !mBoard->getPawn(dest);
     }
 
     if (mIsLight)
@@ -110,12 +109,47 @@ bool Pawn::canMove(sf::Vector2i dest)
 
 bool Pawn::canFight(sf::Vector2i dest)
 {
+    if (dest.x < 0 || dest.x >= 8)
+        return false;
+
+    if (dest.y < 0 || dest.y >= 8)
+        return false;
+
     if (dest == mPosition) return false;
 
     if (mBoard->getPawn(dest) != NULL) return false;
 
-    // TODO: Handle me in the future
-    if (mIsKing) return false;
+    if (mIsKing)
+    {
+        if (abs(dest.x - mPosition.x) != abs(dest.y - mPosition.y))
+            return false;
+
+        int dx = (dest.x > mPosition.x) ? 1 : -1;
+        int dy = (dest.y > mPosition.y) ? 1 : -1;
+
+        int foundEnemies = 0;
+        int foundAllies = 0;
+
+        int actualX = mPosition.x + dx;
+        int actualY = mPosition.y + dy;
+
+        while (actualX != dest.x && actualY != dest.y)
+        {
+            Pawn* pawn = mBoard->getPawn({ actualX, actualY });
+            if (pawn)
+            {
+                if (pawn->isLight() == mIsLight)
+                    foundAllies++;
+                else
+                    foundEnemies++;
+            }
+
+            actualX += dx;
+            actualY += dy;
+        }
+
+        return foundAllies == 0 && foundEnemies == 1 && !mBoard->getPawn(dest);
+    }
 
     Pawn* enemy = NULL;
 
@@ -133,27 +167,55 @@ bool Pawn::canFight(sf::Vector2i dest)
 
 void Pawn::fight(sf::Vector2i dest)
 {
+    if (dest.x < 0 || dest.x >= 8)
+        return;
+
+    if (dest.y < 0 || dest.y >= 8)
+        return;
+
     if (dest == mPosition) return;
 
     if (mBoard->getPawn(dest) != NULL) return;
 
-    // TODO: Handle me in the future
-    if (mIsKing) return;
-
-    Pawn* enemy = NULL;
-
-    if (dest.x == mPosition.x + 2 && dest.y == mPosition.y + 2)
-        enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y + 1 });
-    else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y + 2)
-        enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y + 1 });
-    else if (dest.x == mPosition.x + 2 && dest.y == mPosition.y - 2)
-        enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y - 1 });
-    else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y - 2)
-        enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y - 1 });
-
-    if (enemy && enemy->isLight() != mIsLight)
+    if (mIsKing)
     {
-        move(dest);
-        mBoard->killPawn(enemy->getPosition());
+        int dx = (dest.x > mPosition.x) ? 1 : -1;
+        int dy = (dest.y > mPosition.y) ? 1 : -1;
+
+        int actualX = mPosition.x + dx;
+        int actualY = mPosition.y + dy;
+
+        while (actualX != dest.x && actualY != dest.y)
+        {
+            Pawn* pawn = mBoard->getPawn({ actualX, actualY });
+            if (pawn)
+            {
+                move(dest);
+                mBoard->killPawn(pawn->getPosition());
+                break;
+            }
+
+            actualX += dx;
+            actualY += dy;
+        }
+    }
+    else
+    {
+        Pawn* enemy = NULL;
+
+        if (dest.x == mPosition.x + 2 && dest.y == mPosition.y + 2)
+            enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y + 1 });
+        else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y + 2)
+            enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y + 1 });
+        else if (dest.x == mPosition.x + 2 && dest.y == mPosition.y - 2)
+            enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y - 1 });
+        else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y - 2)
+            enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y - 1 });
+
+        if (enemy && enemy->isLight() != mIsLight)
+        {
+            move(dest);
+            mBoard->killPawn(enemy->getPosition());
+        }
     }
 }
