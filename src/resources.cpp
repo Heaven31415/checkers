@@ -2,6 +2,7 @@
 
 Resources::Resources()
 : mTextures{}
+, mFont{}
 {
     loadTexture("Board", "resources/Board.png");
 
@@ -14,11 +15,19 @@ Resources::Resources()
     loadTexture("DarkKingSelected", "resources/DarkKingSelected.png");
     loadTexture("DarkPawn", "resources/DarkPawn.png");
     loadTexture("DarkPawnSelected", "resources/DarkPawnSelected.png");
+
+    if(!mFont.loadFromFile("resources/Candara.ttf"))
+        throw std::runtime_error("Unable to load 'resources/Candara.ttf'");
 }
 
 sf::Texture& Resources::getTexture(std::string name)
 {
     return mTextures[name];
+}
+
+sf::Font& Resources::getFont()
+{
+    return mFont;
 }
 
 void Resources::loadTexture(std::string key, std::string filename)

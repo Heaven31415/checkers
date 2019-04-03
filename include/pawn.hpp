@@ -13,6 +13,7 @@ public:
     void move(sf::Vector2i dest);
     bool canMove(sf::Vector2i dest);
     bool canFight(sf::Vector2i dest);
+    bool canFight();
     void fight(sf::Vector2i dest);
 
     bool isLight() { return mIsLight; }

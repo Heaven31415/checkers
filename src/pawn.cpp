@@ -165,6 +165,21 @@ bool Pawn::canFight(sf::Vector2i dest)
     return enemy && enemy->isLight() != mIsLight;
 }
 
+bool Pawn::canFight()
+{
+    if (mIsKing)
+    {
+        return false;
+    }
+    else
+    {
+        return canFight({ mPosition.x + 2, mPosition.y + 2 })
+            || canFight({ mPosition.x - 2, mPosition.y + 2 })
+            || canFight({ mPosition.x + 2, mPosition.y - 2 })
+            || canFight({ mPosition.x - 2, mPosition.y - 2 });
+    }
+}
+
 void Pawn::fight(sf::Vector2i dest)
 {
     if (dest.x < 0 || dest.x >= 8)
