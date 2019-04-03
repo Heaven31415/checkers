@@ -1,7 +1,7 @@
 #include "game.hpp"
 
 Game::Game()
-: mWindow{sf::VideoMode{896, 640}, "Checkers"}
+: mWindow{sf::VideoMode{896, 640}, "Checkers", sf::Style::Close}
 , mResources{}
 , mSoundPlayer{&mResources}
 , mBoard{&mResources}
@@ -91,8 +91,10 @@ void Game::handleEvents()
     {
         if (event.type == sf::Event::Closed)
             mWindow.close();
+        else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F4 && event.key.control)
+            mWindow.close();
         else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-            handlePlayerAction(sf::Vector2i{ event.mouseButton.x / 64 - 5, event.mouseButton.y / 64 - 1 });
+            handlePlayerAction(sf::Vector2i { event.mouseButton.x / 64 - 5, event.mouseButton.y / 64 - 1 });
     }
 }
 
