@@ -8,8 +8,13 @@ Game::Game()
 , mSelected{NULL}
 , mLightPlayerTurn{true}
 , mTurnText{"Light Player Turn", mResources.getFont(), 30}
+, mFinished{false}
 {
     mWindow.setFramerateLimit(60);
+    
+    sf::FloatRect rect = mTurnText.getLocalBounds();
+    mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
+    mTurnText.setPosition(160.f, 64.f);
 }
 
 void Game::handlePlayerAction(sf::Vector2i dest)
@@ -56,6 +61,8 @@ void Game::handlePlayerAction(sf::Vector2i dest)
             mSoundPlayer.playSound("Impossible", 10, 1.2f);
         }
     }
+
+    tryToFinish();
 }
 
 void Game::nextTurn()
@@ -66,6 +73,15 @@ void Game::nextTurn()
         mTurnText.setString("Dark Player Turn");
     else
         mTurnText.setString("Light Player Turn");
+
+    sf::FloatRect rect = mTurnText.getLocalBounds();
+    mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
+}
+
+void Game::tryToFinish()
+{
+    if (mBoard.pawnCount(true) == 0 || mBoard.pawnCount(false) == 0)
+        mFinished = true;
 }
 
 void Game::handleEvents()
@@ -93,6 +109,10 @@ void Game::run()
     while (mWindow.isOpen())
     {
         handleEvents();
+
+        if (mFinished)
+            mWindow.close();
+
         render();
     }
 }

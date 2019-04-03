@@ -11,11 +11,11 @@ public:
 
     void handlePlayerAction(sf::Vector2i dest);
     void nextTurn();
+    void tryToFinish();
 
     void handleEvents();
     void render();
     void run();
-
 private:
     sf::RenderWindow mWindow;
     Resources mResources;
@@ -25,4 +25,5 @@ private:
     Pawn* mSelected;
     bool mLightPlayerTurn;
     sf::Text mTurnText;
+    bool mFinished;
 };

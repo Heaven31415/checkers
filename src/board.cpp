@@ -10,7 +10,7 @@ Board::Board(Resources* resources)
     new Pawn{ mResources, this, {3, 0}, true },
     new Pawn{ mResources, this, {5, 0}, true },
     new Pawn{ mResources, this, {7, 0}, true },
-    new Pawn{ mResources, this, {0, 1}, true},
+    new Pawn{ mResources, this, {0, 1}, true },
     new Pawn{ mResources, this, {2, 1}, true },
     new Pawn{ mResources, this, {4, 1}, true },
     new Pawn{ mResources, this, {6, 1}, true },
@@ -89,4 +89,17 @@ bool Board::isFightPossible(bool lightColor)
     }
 
     return false;
+}
+
+int Board::pawnCount(bool lightColor)
+{
+    int count = 0;
+
+    for (size_t i = 0; i < mPawns.size(); i++)
+    {
+        if (mPawns[i]->isLight() == lightColor)
+            count++;
+    }
+
+    return count;
 }

@@ -3,12 +3,12 @@
 
 Pawn::Pawn(Resources* resources, Board* board, sf::Vector2i position, bool isLight)
 : mResources{resources}
-, mBoard{ board }
+, mBoard{board}
 , mSprite{}
-, mPosition{ position }
-, mIsLight{ isLight }
-, mIsKing{ false }
-, mIsSelected{ false }
+, mPosition{position}
+, mIsLight{isLight}
+, mIsKing{false}
+, mIsSelected{false}
 {
     if (mIsLight)
         mSprite.setTexture(mResources->getTexture("LightPawn"));
@@ -63,7 +63,8 @@ bool Pawn::canMove(sf::Vector2i dest)
     if (dest.y < 0 || dest.y >= 8)
         return false;
 
-    if (dest == mPosition) return false;
+    if (dest == mPosition) 
+        return false;
 
     if (mIsKing)
     {
@@ -115,9 +116,11 @@ bool Pawn::canFight(sf::Vector2i dest)
     if (dest.y < 0 || dest.y >= 8)
         return false;
 
-    if (dest == mPosition) return false;
+    if (dest == mPosition) 
+        return false;
 
-    if (mBoard->getPawn(dest) != NULL) return false;
+    if (mBoard->getPawn(dest) != NULL) 
+        return false;
 
     if (mIsKing)
     {
@@ -169,6 +172,7 @@ bool Pawn::canFight()
 {
     if (mIsKing)
     {
+        // TODO: Implement me
         return false;
     }
     else
@@ -188,9 +192,11 @@ void Pawn::fight(sf::Vector2i dest)
     if (dest.y < 0 || dest.y >= 8)
         return;
 
-    if (dest == mPosition) return;
+    if (dest == mPosition) 
+        return;
 
-    if (mBoard->getPawn(dest) != NULL) return;
+    if (mBoard->getPawn(dest) != NULL)
+        return;
 
     if (mIsKing)
     {
