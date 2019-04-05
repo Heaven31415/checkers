@@ -183,6 +183,9 @@ bool Pawn::canFight()
         {
             if (canFight(sf::Vector2i{ x, y }))
                 return true;
+
+            x++;
+            y++;
         }
 
         x = mPosition.x - 1;
@@ -192,6 +195,9 @@ bool Pawn::canFight()
         {
             if (canFight(sf::Vector2i{ x, y }))
                 return true;
+
+            x--;
+            y++;
         }
 
         x = mPosition.x + 1;
@@ -201,6 +207,9 @@ bool Pawn::canFight()
         {
             if (canFight(sf::Vector2i{ x, y }))
                 return true;
+
+            x++;
+            y--;
         }
 
         x = mPosition.x - 1;
@@ -210,6 +219,9 @@ bool Pawn::canFight()
         {
             if (canFight(sf::Vector2i{ x, y }))
                 return true;
+
+            x--;
+            y--;
         }
 
         return false;
