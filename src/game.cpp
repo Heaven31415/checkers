@@ -3,7 +3,7 @@
 Game::Game()
 : mWindow{sf::VideoMode{896, 640}, "Checkers", sf::Style::Close}
 , mBoard{}
-, mSelected{NULL}
+, mSelected{nullptr}
 , mActualPlayerColor{Color::Light}
 , mTurnText{"Light Player Turn", Resources::getFont("Candara"), 30}
 , mFinished{false}
@@ -15,47 +15,47 @@ Game::Game()
     mTurnText.setPosition(160.f, 64.f);
 }
 
-void Game::handlePlayerAction(sf::Vector2i dest)
+void Game::handlePlayerAction(const sf::Vector2i& destination)
 {
     bool fightPossible = mBoard.isFightPossible(mActualPlayerColor);
 
     if (!mSelected)
     {
-        mSelected = mBoard.getPawn(dest);
+        mSelected = mBoard.getPawn(destination);
         if (mSelected && mSelected->getColor() == mActualPlayerColor && (!fightPossible || (fightPossible && mSelected->canFight())))
             mSelected->select(true);
         else
         {
-            mSelected = NULL;
+            mSelected = nullptr;
             SoundPlayer::playSound("Impossible", 10, 1.2f);
         }
     }
     else
     {
-        if (mSelected->canMove(dest))
+        if (mSelected->canMove(destination))
         {
             mSelected->select(false);
-            mSelected->move(dest);
-            mSelected = NULL;
+            mSelected->move(destination);
+            mSelected = nullptr;
             nextTurn();
             SoundPlayer::playSound("Move", 20, 1.2f);
         }
-        else if (mSelected->canFight(dest))
+        else if (mSelected->canFight(destination))
         {
-            mSelected->fight(dest);
+            mSelected->fight(destination);
             SoundPlayer::playSound("Fight", 20, 1.2f);
 
             if (!mSelected->canFight())
             {
                 mSelected->select(false);
-                mSelected = NULL;
+                mSelected = nullptr;
                 nextTurn();
             }
         }
         else
         {
             mSelected->select(false);
-            mSelected = NULL;
+            mSelected = nullptr;
             SoundPlayer::playSound("Impossible", 10, 1.2f);
         }
     }
@@ -66,15 +66,16 @@ void Game::handlePlayerAction(sf::Vector2i dest)
 void Game::nextTurn()
 {
     if (mActualPlayerColor == Color::Light)
+    {
         mActualPlayerColor = Color::Dark;
-    else
-        mActualPlayerColor = Color::Light;
-
-    if (mTurnText.getString() == "Light Player Turn")
         mTurnText.setString("Dark Player Turn");
+    }
     else
+    {
+        mActualPlayerColor = Color::Light;
         mTurnText.setString("Light Player Turn");
-
+    }
+   
     sf::FloatRect rect = mTurnText.getLocalBounds();
     mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
 }

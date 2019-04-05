@@ -9,7 +9,7 @@ class Game
 public:
     Game();
 
-    void handlePlayerAction(sf::Vector2i dest);
+    void handlePlayerAction(const sf::Vector2i& destination);
     void nextTurn();
     void tryToFinish();
 
@@ -19,7 +19,6 @@ public:
 private:
     sf::RenderWindow mWindow;
     Board mBoard;
-
     Pawn* mSelected;
     Color mActualPlayerColor;
     sf::Text mTurnText;
