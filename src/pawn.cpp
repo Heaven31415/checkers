@@ -17,13 +17,11 @@ Pawn::Pawn(Board* board, sf::Vector2i position, bool isLight)
     move(mPosition);
 }
 
-// Rysuje pionek.
 void Pawn::draw(sf::RenderWindow* window)
 {
     window->draw(mSprite);
 }
 
-// Zmienia wygląd pionka.
 void Pawn::select(bool decision)
 {
     std::string textureName = "";
@@ -40,8 +38,6 @@ void Pawn::select(bool decision)
     mIsSelected = decision;
 }
 
-// Porusza pionkiem na wybraną pozycję. Zamienia go w damkę
-// jeśli dojdzie on do odpowiedniego miejsca.
 void Pawn::move(sf::Vector2i dest)
 {
     mPosition = dest;
@@ -58,7 +54,6 @@ void Pawn::move(sf::Vector2i dest)
     }
 }
 
-// Sprawdza czy pionek (damka) jest w stanie ruszyć się do wskazanego miejsca.
 bool Pawn::canMove(sf::Vector2i dest)
 {
     if (!validatePosition(dest))
@@ -111,8 +106,6 @@ bool Pawn::canMove(sf::Vector2i dest)
     return false;
 }
 
-// Sprawdza czy pionek lub damka jest w stanie wykonać bicie, 
-// które zakończy się na podanej pozycji.
 bool Pawn::canFight(sf::Vector2i dest)
 {
     if (!validatePosition(dest))
@@ -170,7 +163,6 @@ bool Pawn::canFight(sf::Vector2i dest)
     return pawn && pawn->isLight() != mIsLight;
 }
 
-// Sprawdza czy pionek lub damka jest w stanie wykonać jakiekolwiek bicie. 
 bool Pawn::canFight()
 {
     if (mIsKing)
@@ -235,7 +227,6 @@ bool Pawn::canFight()
     }
 }
 
-// Bije inny pionek lub damkę, ustawiając się na podanej pozycji.
 void Pawn::fight(sf::Vector2i dest)
 {
     if (!validatePosition(dest))
