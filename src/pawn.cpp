@@ -1,4 +1,4 @@
-﻿#include "pawn.hpp"
+#include "pawn.hpp"
 #include "board.hpp"
 
 Pawn::Pawn(Resources* resources, Board* board, sf::Vector2i position, bool isLight)
@@ -176,7 +176,7 @@ bool Pawn::canFight()
 {
     if (mIsKing)
     {
-        // TODO: Test me!
+        // TODO: Fix me, I'm not working.
         int x = mPosition.x + 1;
         int y = mPosition.y + 1;
 
