@@ -21,7 +21,7 @@ private:
     Board mBoard;
 
     Pawn* mSelected;
-    bool mLightPlayerTurn;
+    Color mActualPlayerColor;
     sf::Text mTurnText;
     bool mFinished;
 };

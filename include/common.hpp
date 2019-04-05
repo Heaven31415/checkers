@@ -3,5 +3,11 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
+enum class Color
+{
+    Light,
+    Dark
+};
+
 bool validatePosition(int x, int y);
-bool validatePosition(sf::Vector2i position);
+bool validatePosition(const sf::Vector2i& position);

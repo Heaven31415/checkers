@@ -8,10 +8,11 @@ class Board : public sf::Drawable
 public:
     Board();
 
+    Pawn* getPawn(int x, int y);
     Pawn* getPawn(const sf::Vector2i& position);
     void killPawn(const sf::Vector2i& position);
-    bool isFightPossible(bool lightColor) const;
-    int pawnCount(bool lightColor) const;
+    bool isFightPossible(Color color) const;
+    int pawnCount(Color color) const;
 
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

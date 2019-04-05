@@ -7,17 +7,20 @@ class Board;
 class Pawn : public sf::Drawable
 {
 public:
-    Pawn(Board* board, const sf::Vector2i& position, bool isLight);
-    void select(bool decision);
-    void move(const sf::Vector2i& dest);
-    bool canMove(const sf::Vector2i& dest);
-    bool canFight(const sf::Vector2i& dest);
-    bool canFight();
-    void fight(const sf::Vector2i& dest);
+    Pawn(Board* board, const sf::Vector2i& position, Color color);
 
-    bool isLight() { return mIsLight; }
-    bool isKing() { return mIsKing; }
-    const sf::Vector2i& getPosition() { return mPosition; }
+    void select(bool value);
+    void move(const sf::Vector2i& destination);
+    bool canMove(const sf::Vector2i& destination) const;
+
+    void fight(const sf::Vector2i& destination);
+    bool canFight(const sf::Vector2i& destination) const;
+    bool canFight() const;
+
+    const sf::Vector2i& getPosition() const;
+    Color getColor() const;
+    bool isKing() const;
+    bool isSelected() const;
 
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -26,7 +29,7 @@ private:
     Board* mBoard;
     sf::Sprite mSprite;
     sf::Vector2i mPosition;
-    bool mIsLight;
+    Color mColor;
     bool mIsKing;
     bool mIsSelected;
 };

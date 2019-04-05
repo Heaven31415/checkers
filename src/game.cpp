@@ -4,7 +4,7 @@ Game::Game()
 : mWindow{sf::VideoMode{896, 640}, "Checkers", sf::Style::Close}
 , mBoard{}
 , mSelected{NULL}
-, mLightPlayerTurn{true}
+, mActualPlayerColor{Color::Light}
 , mTurnText{"Light Player Turn", Resources::getFont("Candara"), 30}
 , mFinished{false}
 {
@@ -17,12 +17,12 @@ Game::Game()
 
 void Game::handlePlayerAction(sf::Vector2i dest)
 {
-    bool fightPossible = mBoard.isFightPossible(mLightPlayerTurn);
+    bool fightPossible = mBoard.isFightPossible(mActualPlayerColor);
 
     if (!mSelected)
     {
         mSelected = mBoard.getPawn(dest);
-        if (mSelected && mSelected->isLight() == mLightPlayerTurn && (!fightPossible || (fightPossible && mSelected->canFight())))
+        if (mSelected && mSelected->getColor() == mActualPlayerColor && (!fightPossible || (fightPossible && mSelected->canFight())))
             mSelected->select(true);
         else
         {
@@ -65,7 +65,10 @@ void Game::handlePlayerAction(sf::Vector2i dest)
 
 void Game::nextTurn()
 {
-    mLightPlayerTurn = !mLightPlayerTurn;
+    if (mActualPlayerColor == Color::Light)
+        mActualPlayerColor = Color::Dark;
+    else
+        mActualPlayerColor = Color::Light;
 
     if (mTurnText.getString() == "Light Player Turn")
         mTurnText.setString("Dark Player Turn");
@@ -78,7 +81,7 @@ void Game::nextTurn()
 
 void Game::tryToFinish()
 {
-    if (mBoard.pawnCount(true) == 0 || mBoard.pawnCount(false) == 0)
+    if (mBoard.pawnCount(Color::Light) == 0 || mBoard.pawnCount(Color::Dark) == 0)
         mFinished = true;
 }
 
