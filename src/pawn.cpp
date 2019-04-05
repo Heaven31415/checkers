@@ -1,25 +1,15 @@
 ﻿#include "pawn.hpp"
 #include "board.hpp"
 
-Pawn::Pawn(Board* board, sf::Vector2i position, bool isLight)
+Pawn::Pawn(Board* board, const sf::Vector2i& position, bool isLight)
 : mBoard{board}
-, mSprite{}
+, mSprite{Resources::getTexture(isLight ? "LightPawn" : "DarkPawn")}
 , mPosition{position}
 , mIsLight{isLight}
 , mIsKing{false}
 , mIsSelected{false}
 {
-    if (mIsLight)
-        mSprite.setTexture(Resources::getTexture("LightPawn"));
-    else
-        mSprite.setTexture(Resources::getTexture("DarkPawn"));
-
     move(mPosition);
-}
-
-void Pawn::draw(sf::RenderWindow* window)
-{
-    window->draw(mSprite);
 }
 
 void Pawn::select(bool decision)
@@ -38,7 +28,7 @@ void Pawn::select(bool decision)
     mIsSelected = decision;
 }
 
-void Pawn::move(sf::Vector2i dest)
+void Pawn::move(const sf::Vector2i& dest)
 {
     mPosition = dest;
     mSprite.setPosition(64.f * (dest.x + 5), 64.f * (dest.y + 1));
@@ -54,18 +44,15 @@ void Pawn::move(sf::Vector2i dest)
     }
 }
 
-bool Pawn::canMove(sf::Vector2i dest)
+bool Pawn::canMove(const sf::Vector2i& dest)
 {
-    if (!validatePosition(dest))
-        return false;
+    if (!validatePosition(dest)) return false;
 
-    if (dest == mPosition) 
-        return false;
+    if (dest == mPosition) return false;
 
     if (mIsKing)
     {
-        if (abs(dest.x - mPosition.x) != abs(dest.y - mPosition.y))
-            return false;
+        if (abs(dest.x - mPosition.x) != abs(dest.y - mPosition.y)) return false;
 
         int dx = (dest.x > mPosition.x) ? 1 : -1;
         int dy = (dest.y > mPosition.y) ? 1 : -1;
@@ -94,33 +81,29 @@ bool Pawn::canMove(sf::Vector2i dest)
         if (mIsLight)
         {
             if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y + 1))
-                return mBoard->getPawn(dest) == NULL;
+                return mBoard->getPawn(dest) == nullptr;
         }
         else
         {
             if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y - 1))
-                return mBoard->getPawn(dest) == NULL;
+                return mBoard->getPawn(dest) == nullptr;
         }
     }
 
     return false;
 }
 
-bool Pawn::canFight(sf::Vector2i dest)
+bool Pawn::canFight(const sf::Vector2i& dest)
 {
-    if (!validatePosition(dest))
-        return false;
+    if (!validatePosition(dest)) return false;
 
-    if (dest == mPosition) 
-        return false;
+    if (dest == mPosition) return false;
 
-    if (mBoard->getPawn(dest) != NULL) 
-        return false;
+    if (mBoard->getPawn(dest) != nullptr) return false;
 
     if (mIsKing)
     {
-        if (abs(dest.x - mPosition.x) != abs(dest.y - mPosition.y))
-            return false;
+        if (abs(dest.x - mPosition.x) != abs(dest.y - mPosition.y)) return false;
 
         int dx = (dest.x > mPosition.x) ? 1 : -1;
         int dy = (dest.y > mPosition.y) ? 1 : -1;
@@ -133,7 +116,7 @@ bool Pawn::canFight(sf::Vector2i dest)
 
         while (actualX != dest.x && actualY != dest.y)
         {
-            Pawn* pawn = mBoard->getPawn(sf::Vector2i{ actualX, actualY });
+            auto* pawn = mBoard->getPawn(sf::Vector2i{ actualX, actualY });
             if (pawn)
             {
                 if (pawn->isLight() == mIsLight)
@@ -149,7 +132,7 @@ bool Pawn::canFight(sf::Vector2i dest)
         return foundAllies == 0 && foundEnemies == 1 && !mBoard->getPawn(dest);
     }
 
-    Pawn* pawn = NULL;
+    Pawn* pawn = nullptr;
 
     if (dest.x == mPosition.x + 2 && dest.y == mPosition.y + 2)
         pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x + 1, mPosition.y + 1 });
@@ -173,8 +156,7 @@ bool Pawn::canFight()
 
         while (validatePosition(x, y))
         {
-            if (canFight(sf::Vector2i{ x, y }))
-                return true;
+            if (canFight(sf::Vector2i{ x, y })) return true;
 
             x++;
             y++;
@@ -185,8 +167,7 @@ bool Pawn::canFight()
 
         while (validatePosition(x, y))
         {
-            if (canFight(sf::Vector2i{ x, y }))
-                return true;
+            if (canFight(sf::Vector2i{ x, y })) return true;
 
             x--;
             y++;
@@ -197,8 +178,7 @@ bool Pawn::canFight()
 
         while (validatePosition(x, y))
         {
-            if (canFight(sf::Vector2i{ x, y }))
-                return true;
+            if (canFight(sf::Vector2i{ x, y })) return true;
 
             x++;
             y--;
@@ -209,8 +189,7 @@ bool Pawn::canFight()
 
         while (validatePosition(x, y))
         {
-            if (canFight(sf::Vector2i{ x, y }))
-                return true;
+            if (canFight(sf::Vector2i{ x, y })) return true;
 
             x--;
             y--;
@@ -227,16 +206,13 @@ bool Pawn::canFight()
     }
 }
 
-void Pawn::fight(sf::Vector2i dest)
+void Pawn::fight(const sf::Vector2i& dest)
 {
-    if (!validatePosition(dest))
-        return;
+    if (!validatePosition(dest)) return;
 
-    if (dest == mPosition) 
-        return;
+    if (dest == mPosition) return;
 
-    if (mBoard->getPawn(dest) != NULL)
-        return;
+    if (mBoard->getPawn(dest) != nullptr) return;
 
     if (mIsKing)
     {
@@ -248,7 +224,7 @@ void Pawn::fight(sf::Vector2i dest)
 
         while (actualX != dest.x && actualY != dest.y)
         {
-            Pawn* pawn = mBoard->getPawn(sf::Vector2i{ actualX, actualY });
+            auto* pawn = mBoard->getPawn({ actualX, actualY });
             if (pawn && pawn->isLight() != mIsLight)
             {
                 move(dest);
@@ -262,7 +238,7 @@ void Pawn::fight(sf::Vector2i dest)
     }
     else
     {
-        Pawn* pawn = NULL;
+        Pawn* pawn = nullptr;
 
         if (dest.x == mPosition.x + 2 && dest.y == mPosition.y + 2)
             pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x + 1, mPosition.y + 1 });
@@ -279,4 +255,9 @@ void Pawn::fight(sf::Vector2i dest)
             mBoard->killPawn(pawn->getPosition());
         }
     }
+}
+
+void Pawn::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    target.draw(mSprite, states);
 }

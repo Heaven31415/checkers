@@ -4,21 +4,23 @@
 
 class Board;
 
-class Pawn
+class Pawn : public sf::Drawable
 {
 public:
-    Pawn(Board* board, sf::Vector2i position, bool isLight);
-    void draw(sf::RenderWindow* window);
+    Pawn(Board* board, const sf::Vector2i& position, bool isLight);
     void select(bool decision);
-    void move(sf::Vector2i dest);
-    bool canMove(sf::Vector2i dest);
-    bool canFight(sf::Vector2i dest);
+    void move(const sf::Vector2i& dest);
+    bool canMove(const sf::Vector2i& dest);
+    bool canFight(const sf::Vector2i& dest);
     bool canFight();
-    void fight(sf::Vector2i dest);
+    void fight(const sf::Vector2i& dest);
 
     bool isLight() { return mIsLight; }
     bool isKing() { return mIsKing; }
-    sf::Vector2i getPosition() { return mPosition; }
+    const sf::Vector2i& getPosition() { return mPosition; }
+
+private:
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
     Board* mBoard;
