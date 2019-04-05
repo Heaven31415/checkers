@@ -1,21 +1,22 @@
 #pragma once
 
+#include <memory>
 #include "pawn.hpp"
 
-class Board
+class Board : public sf::Drawable
 {
 public:
     Board();
-    Board(std::vector<Pawn*> pawns);
-    ~Board();
 
-    void draw(sf::RenderWindow* window);
-    Pawn* getPawn(sf::Vector2i position);
-    void killPawn(sf::Vector2i position);
-    bool isFightPossible(bool lightColor);
-    int pawnCount(bool lightColor);
+    Pawn* getPawn(const sf::Vector2i& position);
+    void killPawn(const sf::Vector2i& position);
+    bool isFightPossible(bool lightColor) const;
+    int pawnCount(bool lightColor) const;
+
+private:
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
     sf::Sprite mBackground;
-    std::vector<Pawn*> mPawns;
+    std::vector<std::unique_ptr<Pawn>> mPawns;
 };

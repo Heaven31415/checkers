@@ -2,109 +2,85 @@
 
 Board::Board()
 : mBackground{Resources::getTexture("Board")}
-, mPawns
+, mPawns{}
 {
+    mPawns.reserve(24);
+
     // Light Pawns
-    new Pawn{ this, {1, 0}, true },
-    new Pawn{ this, {3, 0}, true },
-    new Pawn{ this, {5, 0}, true },
-    new Pawn{ this, {7, 0}, true },
-    new Pawn{ this, {0, 1}, true },
-    new Pawn{ this, {2, 1}, true },
-    new Pawn{ this, {4, 1}, true },
-    new Pawn{ this, {6, 1}, true },
-    new Pawn{ this, {1, 2}, true },
-    new Pawn{ this, {3, 2}, true },
-    new Pawn{ this, {5, 2}, true },
-    new Pawn{ this, {7, 2}, true },
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 1, 0 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 3, 0 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 5, 0 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 7, 0 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 0, 1 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 2, 1 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 4, 1 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 6, 1 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 1, 2 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 3, 2 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 5, 2 }, true));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 7, 2 }, true));
 
     // Dark Pawns
-    new Pawn{ this, {0, 5}, false },
-    new Pawn{ this, {2, 5}, false },
-    new Pawn{ this, {4, 5}, false },
-    new Pawn{ this, {6, 5}, false },
-    new Pawn{ this, {1, 6}, false },
-    new Pawn{ this, {3, 6}, false },
-    new Pawn{ this, {5, 6}, false },
-    new Pawn{ this, {7, 6}, false },
-    new Pawn{ this, {0, 7}, false },
-    new Pawn{ this, {2, 7}, false },
-    new Pawn{ this, {4, 7}, false },
-    new Pawn{ this, {6, 7}, false }
-}
-{
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 0, 5 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 2, 5 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 4, 5 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 6, 5 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 1, 6 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 3, 6 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 5, 6 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 7, 6 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 0, 7 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 2, 7 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 4, 7 }, false));
+    mPawns.push_back(std::make_unique<Pawn>(this, sf::Vector2i{ 6, 7 }, false));
 }
 
-Board::Board(std::vector<Pawn*> pawns)
-: mBackground{Resources::getTexture("Board")}
-, mPawns{pawns}
+void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+    target.draw(mBackground, states);
+    // TODO: Add pawn drawing after Pawn refactor
 }
 
-Board::~Board()
+Pawn* Board::getPawn(const sf::Vector2i& position)
 {
-    for (size_t i = 0; i < mPawns.size(); i++)
-        delete mPawns[i];
+    if (position.x < 0 || position.x >= 8) return nullptr;
+
+    if (position.y < 0 || position.y >= 8) return nullptr;
+
+    for (const auto& pawn : mPawns)
+        if (pawn->getPosition() == position) return pawn.get();
+
+    return nullptr;
 }
 
-void Board::draw(sf::RenderWindow* window)
+void Board::killPawn(const sf::Vector2i& position)
 {
-    window->draw(mBackground);
-
-    for (size_t i = 0; i < mPawns.size(); i++)
-        mPawns[i]->draw(window);
+    mPawns.erase(
+        std::remove_if(
+            mPawns .begin(),
+            mPawns.end(),
+            [&position](const std::unique_ptr<Pawn>& pawn) { return pawn->getPosition() == position; }
+        ),
+        mPawns.end()
+    );
 }
 
-Pawn* Board::getPawn(sf::Vector2i position)
+bool Board::isFightPossible(bool lightColor) const
 {
-    if (position.x < 0 || position.x >= 8) 
-        return NULL;
-
-    if (position.y < 0 || position.y >= 8) 
-        return NULL;
-
-    for (size_t i = 0; i < mPawns.size(); i++)
-    {
-        if (mPawns[i]->getPosition() == position)
-            return mPawns[i];
-    }
-
-    return NULL;
-}
-
-void Board::killPawn(sf::Vector2i position)
-{
-    for (size_t i = 0; i < mPawns.size(); i++)
-    {
-        if (mPawns[i]->getPosition() == position)
-        {
-            delete mPawns[i];
-            mPawns.erase(mPawns.begin() + i);
-            break;
-        }
-    }
-}
-
-bool Board::isFightPossible(bool lightColor)
-{
-    for (size_t i = 0; i < mPawns.size(); i++)
-    {
-        if (mPawns[i]->isLight() == lightColor && mPawns[i]->canFight())
+    for (const auto& pawn : mPawns)
+        if (pawn->isLight() == lightColor && pawn->canFight())
             return true;
-    }
 
     return false;
 }
 
-int Board::pawnCount(bool lightColor)
+int Board::pawnCount(bool lightColor) const
 {
-    int count = 0;
+    int count{ 0 };
 
-    for (size_t i = 0; i < mPawns.size(); i++)
-    {
-        if (mPawns[i]->isLight() == lightColor)
+    for (const auto& pawn : mPawns)
+        if (pawn->isLight() == lightColor)
             count++;
-    }
 
     return count;
 }

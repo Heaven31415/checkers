@@ -99,7 +99,7 @@ void Game::handleEvents()
 void Game::render()
 {
     mWindow.clear();
-    mBoard.draw(&mWindow);
+    mWindow.draw(mBoard);
     mWindow.draw(mTurnText);
     mWindow.display();
 }
