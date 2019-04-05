@@ -1,10 +1,12 @@
 #include "resources.hpp"
 
 Resources::Resources()
-: mSoundBuffers{}
+: mFonts{}
+, mSoundBuffers{}
 , mTextures{}
-, mFont{}
 {
+    loadFont("Candara", "resources/Candara.ttf");
+
     loadSoundBuffer("Fight", "resources/Fight.wav");
     loadSoundBuffer("Impossible", "resources/Impossible.wav");
     loadSoundBuffer("Move", "resources/Move.wav");
@@ -19,50 +21,55 @@ Resources::Resources()
     loadTexture("DarkKingSelected", "resources/DarkKingSelected.png");
     loadTexture("DarkPawn", "resources/DarkPawn.png");
     loadTexture("DarkPawnSelected", "resources/DarkPawnSelected.png");
-
-    if(!mFont.loadFromFile("resources/Candara.ttf"))
-        throw std::runtime_error("Unable to load 'resources/Candara.ttf'");
 }
 
-sf::SoundBuffer& Resources::getSoundBuffer(std::string name)
+Resources& Resources::getInstance()
 {
-    return mSoundBuffers[name];
+    static Resources instance{};
+    return instance;
 }
 
-sf::Texture& Resources::getTexture(std::string name)
+sf::Font& Resources::getFont(const std::string& name)
 {
-    return mTextures[name];
+    return getInstance().mFonts.at(name);
 }
 
-sf::Font& Resources::getFont()
+sf::SoundBuffer& Resources::getSoundBuffer(const std::string& name)
 {
-    return mFont;
+    return getInstance().mSoundBuffers.at(name);
 }
 
-void Resources::loadSoundBuffer(std::string key, std::string filename)
+sf::Texture& Resources::getTexture(const std::string& name)
 {
-    if (mSoundBuffers.find(key) == mSoundBuffers.end())
-    {
-        sf::SoundBuffer soundBuffer;
-        if (!soundBuffer.loadFromFile(filename))
-            throw std::runtime_error("Unable to load '" + filename + "'");
-
-        mSoundBuffers[key] = soundBuffer;
-    }
-    else
-        throw std::runtime_error("Key '" + key + "' already exists");
+    return getInstance().mTextures.at(name);
 }
 
-void Resources::loadTexture(std::string key, std::string filename)
+void Resources::loadFont(const std::string & key, const std::string & filename)
 {
-    if (mTextures.find(key) == mTextures.end())
-    {
-        sf::Texture texture;
-        if (!texture.loadFromFile(filename))
-            throw std::runtime_error("Unable to load '" + filename + "'");
+    if (mFonts.find(key) != mFonts.end())
+        throw std::runtime_error("Unable to load Font from '" + filename + "' because key '" + key + "' already exists");
 
-        mTextures[key] = texture;
-    }
-    else
-        throw std::runtime_error("Key '" + key + "' already exists");
+    mFonts[key] = sf::Font{};
+    if (!mFonts[key].loadFromFile(filename))
+        throw std::runtime_error("Unable to load Font from '" + filename + "' because loadFromFile method failed");
+}
+
+void Resources::loadSoundBuffer(const std::string& key, const std::string& filename)
+{
+    if(mSoundBuffers.find(key) != mSoundBuffers.end())
+        throw std::runtime_error("Unable to load SoundBuffer from '" + filename + "' because key '" + key + "' already exists");
+
+    mSoundBuffers[key] = sf::SoundBuffer{};
+    if (!mSoundBuffers[key].loadFromFile(filename))
+        throw std::runtime_error("Unable to load SoundBuffer from '" + filename + "' because loadFromFile method failed");
+}
+
+void Resources::loadTexture(const std::string& key, const std::string& filename)
+{
+    if (mTextures.find(key) != mTextures.end())
+        throw std::runtime_error("Unable to load Texture from '" + filename + "' because key '" + key + "' already exists");
+
+    mTextures[key] = sf::Texture{};
+    if (!mTextures[key].loadFromFile(filename))
+        throw std::runtime_error("Unable to load Texture from '" + filename + "' because loadFromFile method failed");
 }

@@ -2,12 +2,11 @@
 
 Game::Game()
 : mWindow{sf::VideoMode{896, 640}, "Checkers", sf::Style::Close}
-, mResources{}
-, mSoundPlayer{&mResources}
-, mBoard{&mResources}
+, mSoundPlayer{}
+, mBoard{}
 , mSelected{NULL}
 , mLightPlayerTurn{true}
-, mTurnText{"Light Player Turn", mResources.getFont(), 30}
+, mTurnText{"Light Player Turn", Resources::getFont("Candara"), 30}
 , mFinished{false}
 {
     mWindow.setFramerateLimit(60);

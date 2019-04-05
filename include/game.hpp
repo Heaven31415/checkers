@@ -18,7 +18,6 @@ public:
     void run();
 private:
     sf::RenderWindow mWindow;
-    Resources mResources;
     SoundPlayer mSoundPlayer;
     Board mBoard;
 

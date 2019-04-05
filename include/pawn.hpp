@@ -7,7 +7,7 @@ class Board;
 class Pawn
 {
 public:
-    Pawn(Resources* resources, Board* board, sf::Vector2i position, bool isLight);
+    Pawn(Board* board, sf::Vector2i position, bool isLight);
     void draw(sf::RenderWindow* window);
     void select(bool decision);
     void move(sf::Vector2i dest);
@@ -21,7 +21,6 @@ public:
     sf::Vector2i getPosition() { return mPosition; }
 
 private:
-    Resources* mResources;
     Board* mBoard;
     sf::Sprite mSprite;
     sf::Vector2i mPosition;

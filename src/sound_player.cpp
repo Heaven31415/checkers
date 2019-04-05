@@ -1,8 +1,7 @@
 #include "sound_player.hpp"
 
-SoundPlayer::SoundPlayer(Resources* resources)
-: mResources{resources}
-, mSounds{}
+SoundPlayer::SoundPlayer()
+: mSounds{}
 {
 }
 
@@ -15,7 +14,7 @@ SoundPlayer::~SoundPlayer()
 void SoundPlayer::playSound(std::string name, float volume, float pitch)
 {
     sf::Sound* sound = new sf::Sound{};
-    sound->setBuffer(mResources->getSoundBuffer(name));
+    sound->setBuffer(Resources::getSoundBuffer(name));
     sound->setVolume(volume);
     sound->setPitch(pitch);
     sound->play();

@@ -1,44 +1,42 @@
 #include "board.hpp"
 
-Board::Board(Resources* resources)
-: mResources{resources}
-, mBackground{resources->getTexture("Board")}
+Board::Board()
+: mBackground{Resources::getTexture("Board")}
 , mPawns
 {
     // Light Pawns
-    new Pawn{ mResources, this, {1, 0}, true },
-    new Pawn{ mResources, this, {3, 0}, true },
-    new Pawn{ mResources, this, {5, 0}, true },
-    new Pawn{ mResources, this, {7, 0}, true },
-    new Pawn{ mResources, this, {0, 1}, true },
-    new Pawn{ mResources, this, {2, 1}, true },
-    new Pawn{ mResources, this, {4, 1}, true },
-    new Pawn{ mResources, this, {6, 1}, true },
-    new Pawn{ mResources, this, {1, 2}, true },
-    new Pawn{ mResources, this, {3, 2}, true },
-    new Pawn{ mResources, this, {5, 2}, true },
-    new Pawn{ mResources, this, {7, 2}, true },
+    new Pawn{ this, {1, 0}, true },
+    new Pawn{ this, {3, 0}, true },
+    new Pawn{ this, {5, 0}, true },
+    new Pawn{ this, {7, 0}, true },
+    new Pawn{ this, {0, 1}, true },
+    new Pawn{ this, {2, 1}, true },
+    new Pawn{ this, {4, 1}, true },
+    new Pawn{ this, {6, 1}, true },
+    new Pawn{ this, {1, 2}, true },
+    new Pawn{ this, {3, 2}, true },
+    new Pawn{ this, {5, 2}, true },
+    new Pawn{ this, {7, 2}, true },
 
     // Dark Pawns
-    new Pawn{ mResources, this, {0, 5}, false },
-    new Pawn{ mResources, this, {2, 5}, false },
-    new Pawn{ mResources, this, {4, 5}, false },
-    new Pawn{ mResources, this, {6, 5}, false },
-    new Pawn{ mResources, this, {1, 6}, false },
-    new Pawn{ mResources, this, {3, 6}, false },
-    new Pawn{ mResources, this, {5, 6}, false },
-    new Pawn{ mResources, this, {7, 6}, false },
-    new Pawn{ mResources, this, {0, 7}, false },
-    new Pawn{ mResources, this, {2, 7}, false },
-    new Pawn{ mResources, this, {4, 7}, false },
-    new Pawn{ mResources, this, {6, 7}, false }
+    new Pawn{ this, {0, 5}, false },
+    new Pawn{ this, {2, 5}, false },
+    new Pawn{ this, {4, 5}, false },
+    new Pawn{ this, {6, 5}, false },
+    new Pawn{ this, {1, 6}, false },
+    new Pawn{ this, {3, 6}, false },
+    new Pawn{ this, {5, 6}, false },
+    new Pawn{ this, {7, 6}, false },
+    new Pawn{ this, {0, 7}, false },
+    new Pawn{ this, {2, 7}, false },
+    new Pawn{ this, {4, 7}, false },
+    new Pawn{ this, {6, 7}, false }
 }
 {
 }
 
-Board::Board(Resources* resources, std::vector<Pawn*> pawns)
-: mResources{ resources }
-, mBackground{ resources->getTexture("Board") }
+Board::Board(std::vector<Pawn*> pawns)
+: mBackground{Resources::getTexture("Board")}
 , mPawns{pawns}
 {
 }
