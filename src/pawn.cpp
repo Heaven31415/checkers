@@ -1,4 +1,4 @@
-#include "pawn.hpp"
+﻿#include "pawn.hpp"
 #include "board.hpp"
 
 Pawn::Pawn(Resources* resources, Board* board, sf::Vector2i position, bool isLight)
@@ -18,11 +18,13 @@ Pawn::Pawn(Resources* resources, Board* board, sf::Vector2i position, bool isLig
     move(mPosition);
 }
 
+// Rysuje pionek.
 void Pawn::draw(sf::RenderWindow* window)
 {
     window->draw(mSprite);
 }
 
+// Zmienia wygląd pionka.
 void Pawn::select(bool decision)
 {
     std::string textureName = "";
@@ -39,6 +41,8 @@ void Pawn::select(bool decision)
     mIsSelected = decision;
 }
 
+// Porusza pionkiem na wybraną pozycję. Zamienia go w damkę
+// jeśli dojdzie on do odpowiedniego miejsca.
 void Pawn::move(sf::Vector2i dest)
 {
     mPosition = dest;
@@ -55,12 +59,10 @@ void Pawn::move(sf::Vector2i dest)
     }
 }
 
+// Sprawdza czy pionek (damka) jest w stanie ruszyć się do wskazanego miejsca.
 bool Pawn::canMove(sf::Vector2i dest)
 {
-    if (dest.x < 0 || dest.x >= 8)
-        return false;
-
-    if (dest.y < 0 || dest.y >= 8)
+    if (!validatePosition(dest))
         return false;
 
     if (dest == mPosition) 
@@ -81,7 +83,7 @@ bool Pawn::canMove(sf::Vector2i dest)
 
         while (actualX != dest.x && actualY != dest.y)
         {
-            if (mBoard->getPawn({ actualX, actualY }))
+            if (mBoard->getPawn(sf::Vector2i{ actualX, actualY }))
             {
                 foundSomebody = true;
                 break;
@@ -93,27 +95,28 @@ bool Pawn::canMove(sf::Vector2i dest)
 
         return !foundSomebody && !mBoard->getPawn(dest);
     }
-
-    if (mIsLight)
-    {
-        if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y + 1))
-            return mBoard->getPawn(dest) == NULL;
-    }
     else
     {
-        if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y - 1))
-            return mBoard->getPawn(dest) == NULL;
+        if (mIsLight)
+        {
+            if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y + 1))
+                return mBoard->getPawn(dest) == NULL;
+        }
+        else
+        {
+            if ((dest.x == mPosition.x - 1 || dest.x == mPosition.x + 1) && (dest.y == mPosition.y - 1))
+                return mBoard->getPawn(dest) == NULL;
+        }
     }
 
     return false;
 }
 
+// Sprawdza czy pionek lub damka jest w stanie wykonać bicie, 
+// które zakończy się na podanej pozycji.
 bool Pawn::canFight(sf::Vector2i dest)
 {
-    if (dest.x < 0 || dest.x >= 8)
-        return false;
-
-    if (dest.y < 0 || dest.y >= 8)
+    if (!validatePosition(dest))
         return false;
 
     if (dest == mPosition) 
@@ -138,7 +141,7 @@ bool Pawn::canFight(sf::Vector2i dest)
 
         while (actualX != dest.x && actualY != dest.y)
         {
-            Pawn* pawn = mBoard->getPawn({ actualX, actualY });
+            Pawn* pawn = mBoard->getPawn(sf::Vector2i{ actualX, actualY });
             if (pawn)
             {
                 if (pawn->isLight() == mIsLight)
@@ -154,42 +157,77 @@ bool Pawn::canFight(sf::Vector2i dest)
         return foundAllies == 0 && foundEnemies == 1 && !mBoard->getPawn(dest);
     }
 
-    Pawn* enemy = NULL;
+    Pawn* pawn = NULL;
 
     if (dest.x == mPosition.x + 2 && dest.y == mPosition.y + 2)
-        enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y + 1 });
+        pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x + 1, mPosition.y + 1 });
     else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y + 2)
-        enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y + 1 });
+        pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x - 1, mPosition.y + 1 });
     else if (dest.x == mPosition.x + 2 && dest.y == mPosition.y - 2)
-        enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y - 1 });
+        pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x + 1, mPosition.y - 1 });
     else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y - 2)
-        enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y - 1 });
+        pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x - 1, mPosition.y - 1 });
 
-    return enemy && enemy->isLight() != mIsLight;
+    return pawn && pawn->isLight() != mIsLight;
 }
 
+// Sprawdza czy pionek lub damka jest w stanie wykonać jakiekolwiek bicie. 
 bool Pawn::canFight()
 {
     if (mIsKing)
     {
-        // TODO: Implement me
+        // TODO: Test me!
+        int x = mPosition.x + 1;
+        int y = mPosition.y + 1;
+
+        while (validatePosition(x, y))
+        {
+            if (canFight(sf::Vector2i{ x, y }))
+                return true;
+        }
+
+        x = mPosition.x - 1;
+        y = mPosition.y + 1;
+
+        while (validatePosition(x, y))
+        {
+            if (canFight(sf::Vector2i{ x, y }))
+                return true;
+        }
+
+        x = mPosition.x + 1;
+        y = mPosition.y - 1;
+
+        while (validatePosition(x, y))
+        {
+            if (canFight(sf::Vector2i{ x, y }))
+                return true;
+        }
+
+        x = mPosition.x - 1;
+        y = mPosition.y - 1;
+
+        while (validatePosition(x, y))
+        {
+            if (canFight(sf::Vector2i{ x, y }))
+                return true;
+        }
+
         return false;
     }
     else
     {
-        return canFight({ mPosition.x + 2, mPosition.y + 2 })
-            || canFight({ mPosition.x - 2, mPosition.y + 2 })
-            || canFight({ mPosition.x + 2, mPosition.y - 2 })
-            || canFight({ mPosition.x - 2, mPosition.y - 2 });
+        return canFight(sf::Vector2i{ mPosition.x + 2, mPosition.y + 2 })
+            || canFight(sf::Vector2i{ mPosition.x - 2, mPosition.y + 2 })
+            || canFight(sf::Vector2i{ mPosition.x + 2, mPosition.y - 2 })
+            || canFight(sf::Vector2i{ mPosition.x - 2, mPosition.y - 2 });
     }
 }
 
+// Bije inny pionek lub damkę, ustawiając się na podanej pozycji.
 void Pawn::fight(sf::Vector2i dest)
 {
-    if (dest.x < 0 || dest.x >= 8)
-        return;
-
-    if (dest.y < 0 || dest.y >= 8)
+    if (!validatePosition(dest))
         return;
 
     if (dest == mPosition) 
@@ -208,8 +246,8 @@ void Pawn::fight(sf::Vector2i dest)
 
         while (actualX != dest.x && actualY != dest.y)
         {
-            Pawn* pawn = mBoard->getPawn({ actualX, actualY });
-            if (pawn)
+            Pawn* pawn = mBoard->getPawn(sf::Vector2i{ actualX, actualY });
+            if (pawn && pawn->isLight() != mIsLight)
             {
                 move(dest);
                 mBoard->killPawn(pawn->getPosition());
@@ -222,21 +260,21 @@ void Pawn::fight(sf::Vector2i dest)
     }
     else
     {
-        Pawn* enemy = NULL;
+        Pawn* pawn = NULL;
 
         if (dest.x == mPosition.x + 2 && dest.y == mPosition.y + 2)
-            enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y + 1 });
+            pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x + 1, mPosition.y + 1 });
         else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y + 2)
-            enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y + 1 });
+            pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x - 1, mPosition.y + 1 });
         else if (dest.x == mPosition.x + 2 && dest.y == mPosition.y - 2)
-            enemy = mBoard->getPawn({ mPosition.x + 1, mPosition.y - 1 });
+            pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x + 1, mPosition.y - 1 });
         else if (dest.x == mPosition.x - 2 && dest.y == mPosition.y - 2)
-            enemy = mBoard->getPawn({ mPosition.x - 1, mPosition.y - 1 });
+            pawn = mBoard->getPawn(sf::Vector2i{ mPosition.x - 1, mPosition.y - 1 });
 
-        if (enemy && enemy->isLight() != mIsLight)
+        if (pawn && pawn->isLight() != mIsLight)
         {
             move(dest);
-            mBoard->killPawn(enemy->getPosition());
+            mBoard->killPawn(pawn->getPosition());
         }
     }
 }

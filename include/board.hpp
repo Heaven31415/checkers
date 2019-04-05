@@ -6,6 +6,7 @@ class Board
 {
 public:
     Board(Resources* resources);
+    Board(Resources* resources, std::vector<Pawn*> pawns);
     ~Board();
 
     void draw(sf::RenderWindow* window);

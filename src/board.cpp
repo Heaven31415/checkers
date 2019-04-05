@@ -36,6 +36,13 @@ Board::Board(Resources* resources)
 {
 }
 
+Board::Board(Resources* resources, std::vector<Pawn*> pawns)
+: mResources{ resources }
+, mBackground{ resources->getTexture("Board") }
+, mPawns{pawns}
+{
+}
+
 Board::~Board()
 {
     for (size_t i = 0; i < mPawns.size(); i++)
