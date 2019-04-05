@@ -18,7 +18,6 @@ public:
     void run();
 private:
     sf::RenderWindow mWindow;
-    SoundPlayer mSoundPlayer;
     Board mBoard;
 
     Pawn* mSelected;

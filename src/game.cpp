@@ -2,7 +2,6 @@
 
 Game::Game()
 : mWindow{sf::VideoMode{896, 640}, "Checkers", sf::Style::Close}
-, mSoundPlayer{}
 , mBoard{}
 , mSelected{NULL}
 , mLightPlayerTurn{true}
@@ -28,7 +27,7 @@ void Game::handlePlayerAction(sf::Vector2i dest)
         else
         {
             mSelected = NULL;
-            mSoundPlayer.playSound("Impossible", 10, 1.2f);
+            SoundPlayer::playSound("Impossible", 10, 1.2f);
         }
     }
     else
@@ -39,12 +38,12 @@ void Game::handlePlayerAction(sf::Vector2i dest)
             mSelected->move(dest);
             mSelected = NULL;
             nextTurn();
-            mSoundPlayer.playSound("Move", 20, 1.2f);
+            SoundPlayer::playSound("Move", 20, 1.2f);
         }
         else if (mSelected->canFight(dest))
         {
             mSelected->fight(dest);
-            mSoundPlayer.playSound("Fight", 20, 1.2f);
+            SoundPlayer::playSound("Fight", 20, 1.2f);
 
             if (!mSelected->canFight())
             {
@@ -57,7 +56,7 @@ void Game::handlePlayerAction(sf::Vector2i dest)
         {
             mSelected->select(false);
             mSelected = NULL;
-            mSoundPlayer.playSound("Impossible", 10, 1.2f);
+            SoundPlayer::playSound("Impossible", 10, 1.2f);
         }
     }
 
