@@ -46,7 +46,7 @@ void Pawn::move(const sf::Vector2i& dest)
 
 bool Pawn::canMove(const sf::Vector2i& destination) const
 {
-    if (!validatePosition(destination)) return false;
+    if (!isValidPosition(destination)) return false;
 
     if (destination == mPosition) return false;
 
@@ -104,7 +104,7 @@ bool Pawn::canMove() const
         int x = mPosition.x + 1;
         int y = mPosition.y + 1;
 
-        while (validatePosition(x, y))
+        while (isValidPosition(x, y))
         {
             if (canMove({ x, y })) return true;
             x++;
@@ -114,7 +114,7 @@ bool Pawn::canMove() const
         x = mPosition.x - 1;
         y = mPosition.y + 1;
 
-        while (validatePosition(x, y))
+        while (isValidPosition(x, y))
         {
             if (canMove({ x, y })) return true;
             x--;
@@ -124,7 +124,7 @@ bool Pawn::canMove() const
         x = mPosition.x + 1;
         y = mPosition.y - 1;
 
-        while (validatePosition(x, y))
+        while (isValidPosition(x, y))
         {
             if (canMove({ x, y })) return true;
             x++;
@@ -134,7 +134,7 @@ bool Pawn::canMove() const
         x = mPosition.x - 1;
         y = mPosition.y - 1;
 
-        while (validatePosition(x, y))
+        while (isValidPosition(x, y))
         {
             if (canMove({ x, y })) return true;
             x--;
@@ -154,7 +154,7 @@ bool Pawn::canMove() const
 
 bool Pawn::canFight(const sf::Vector2i& destination) const
 {
-    if (!validatePosition(destination)) return false;
+    if (!isValidPosition(destination)) return false;
 
     if (destination == mPosition) return false;
 
@@ -212,7 +212,7 @@ bool Pawn::canFight() const
         int x = mPosition.x + 1;
         int y = mPosition.y + 1;
 
-        while (validatePosition(x, y))
+        while (isValidPosition(x, y))
         {
             if (canFight({ x, y })) return true;
             x++;
@@ -222,7 +222,7 @@ bool Pawn::canFight() const
         x = mPosition.x - 1;
         y = mPosition.y + 1;
 
-        while (validatePosition(x, y))
+        while (isValidPosition(x, y))
         {
             if (canFight({ x, y })) return true;
             x--;
@@ -232,7 +232,7 @@ bool Pawn::canFight() const
         x = mPosition.x + 1;
         y = mPosition.y - 1;
 
-        while (validatePosition(x, y))
+        while (isValidPosition(x, y))
         {
             if (canFight({ x, y })) return true;
             x++;
@@ -242,7 +242,7 @@ bool Pawn::canFight() const
         x = mPosition.x - 1;
         y = mPosition.y - 1;
 
-        while (validatePosition(x, y))
+        while (isValidPosition(x, y))
         {
             if (canFight({ x, y })) return true;
             x--;
@@ -282,7 +282,7 @@ bool Pawn::isSelected() const
 
 void Pawn::fight(const sf::Vector2i& destination)
 {
-    if (!validatePosition(destination)) return;
+    if (!isValidPosition(destination)) return;
 
     if (destination == mPosition) return;
 

@@ -9,5 +9,5 @@ enum class Color
     Dark
 };
 
-bool validatePosition(int x, int y);
-bool validatePosition(const sf::Vector2i& position);
+bool isValidPosition(int x, int y);
+bool isValidPosition(const sf::Vector2i& position);
