@@ -15,6 +15,7 @@ public:
     Pawn* getPawn(const sf::Vector2i& position) const;
     void killPawn(const sf::Vector2i& position);
     bool isFightPossible(Color color) const;
+    bool isMovePossible(Color color) const;
     int pawnCount(Color color) const;
 
 private:

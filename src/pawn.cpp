@@ -6,7 +6,7 @@ Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
 , mSprite{Resources::getTexture(color == Color::Light ? "LightPawn" : "DarkPawn")}
 , mPosition{position}
 , mColor{color}
-, mIsKing{false}
+, mIsKing{true}
 , mIsSelected{false}
 {
     move(mPosition);
@@ -93,6 +93,65 @@ bool Pawn::canMove(const sf::Vector2i& destination) const
     return false;
 }
 
+// for int i = -1; i <= 1; i += 2
+//   for int j = -1; j <= 1; j += 2
+//     ...
+
+bool Pawn::canMove() const
+{
+    if (mIsKing)
+    {
+        int x = mPosition.x + 1;
+        int y = mPosition.y + 1;
+
+        while (validatePosition(x, y))
+        {
+            if (canMove({ x, y })) return true;
+            x++;
+            y++;
+        }
+
+        x = mPosition.x - 1;
+        y = mPosition.y + 1;
+
+        while (validatePosition(x, y))
+        {
+            if (canMove({ x, y })) return true;
+            x--;
+            y++;
+        }
+
+        x = mPosition.x + 1;
+        y = mPosition.y - 1;
+
+        while (validatePosition(x, y))
+        {
+            if (canMove({ x, y })) return true;
+            x++;
+            y--;
+        }
+
+        x = mPosition.x - 1;
+        y = mPosition.y - 1;
+
+        while (validatePosition(x, y))
+        {
+            if (canMove({ x, y })) return true;
+            x--;
+            y--;
+        }
+    }
+    else
+    {
+        if (mColor == Color::Light)
+            return canMove({ mPosition.x - 1, mPosition.y + 1 }) || canMove({ mPosition.x + 1, mPosition.y + 1 });
+        else
+            return canMove({ mPosition.x - 1, mPosition.y - 1 }) || canMove({ mPosition.x + 1, mPosition.y - 1 });
+    }
+
+    return false;
+}
+
 bool Pawn::canFight(const sf::Vector2i& destination) const
 {
     if (!validatePosition(destination)) return false;
@@ -150,7 +209,6 @@ bool Pawn::canFight() const
 {
     if (mIsKing)
     {
-        // TODO: Fix me, I'm not working.
         int x = mPosition.x + 1;
         int y = mPosition.y + 1;
 

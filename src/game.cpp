@@ -4,6 +4,7 @@ Game::Game()
 : mWindow{sf::VideoMode{896, 640}, "Checkers", sf::Style::Close}
 , mBoard{}
 , mSelected{nullptr}
+, mLock{false}
 , mActualPlayerColor{Color::Light}
 , mTurnText{"Light Player Turn", Resources::getFont("Candara"), 30}
 , mFinished{false}
@@ -32,15 +33,9 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
     }
     else
     {
-        if (mSelected->canMove(destination))
-        {
-            mSelected->select(false);
-            mSelected->move(destination);
-            mSelected = nullptr;
-            nextTurn();
-            SoundPlayer::playSound("Move", 20, 1.2f);
-        }
-        else if (mSelected->canFight(destination))
+        bool canFight = mSelected->canFight();
+
+        if (canFight && mSelected->canFight(destination))
         {
             mSelected->fight(destination);
             SoundPlayer::playSound("Fight", 20, 1.2f);
@@ -50,17 +45,36 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
                 mSelected->select(false);
                 mSelected = nullptr;
                 nextTurn();
+                mLock = false;
             }
+            else
+            {
+                mLock = true;
+            }
+
         }
-        else
+        else if (!canFight && mSelected->canMove(destination))
+        {
+            mSelected->move(destination);
+            mSelected->select(false);
+            mSelected = nullptr;
+            nextTurn();
+            SoundPlayer::playSound("Move", 20, 1.2f);
+        }
+        else if(!mLock)
         {
             mSelected->select(false);
             mSelected = nullptr;
             SoundPlayer::playSound("Impossible", 10, 1.2f);
         }
+        else
+        {
+            SoundPlayer::playSound("Impossible", 10, 1.2f);
+        }
     }
 
-    tryToFinish();
+    if ((!mBoard.isFightPossible(mActualPlayerColor) && !mBoard.isMovePossible(mActualPlayerColor)) || mBoard.pawnCount(mActualPlayerColor) == 0)
+        mFinished = true;
 }
 
 void Game::nextTurn()
@@ -78,12 +92,6 @@ void Game::nextTurn()
    
     sf::FloatRect rect = mTurnText.getLocalBounds();
     mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
-}
-
-void Game::tryToFinish()
-{
-    if (mBoard.pawnCount(Color::Light) == 0 || mBoard.pawnCount(Color::Dark) == 0)
-        mFinished = true;
 }
 
 void Game::handleEvents()

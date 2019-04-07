@@ -12,6 +12,7 @@ public:
     void select(bool value);
     void move(const sf::Vector2i& destination);
     bool canMove(const sf::Vector2i& destination) const;
+    bool canMove() const;
 
     void fight(const sf::Vector2i& destination);
     bool canFight(const sf::Vector2i& destination) const;

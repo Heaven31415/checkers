@@ -11,7 +11,6 @@ public:
 
     void handlePlayerAction(const sf::Vector2i& destination);
     void nextTurn();
-    void tryToFinish();
 
     void handleEvents();
     void render();
@@ -20,6 +19,7 @@ private:
     sf::RenderWindow mWindow;
     Board mBoard;
     Pawn* mSelected;
+    bool mLock;
     Color mActualPlayerColor;
     sf::Text mTurnText;
     bool mFinished;

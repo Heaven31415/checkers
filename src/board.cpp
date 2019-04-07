@@ -79,6 +79,15 @@ bool Board::isFightPossible(Color color) const
     return false;
 }
 
+bool Board::isMovePossible(Color color) const
+{
+    for (const auto& pawn : mPawns)
+        if (pawn->getColor() == color && pawn->canMove())
+            return true;
+
+    return false;
+}
+
 int Board::pawnCount(Color color) const
 {
     int count{ 0 };
