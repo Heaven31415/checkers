@@ -3,8 +3,9 @@
 #include "board.hpp"
 #include "pawn.hpp"
 #include "sound_player.hpp"
+#include "state.hpp"
 
-class Game
+class Game : public State
 {
 public:
     Game();
@@ -14,7 +15,7 @@ public:
 
     void handleEvents();
     void render();
-    void run();
+    State::Type run() override;
 private:
     sf::RenderWindow mWindow;
     Board mBoard;

@@ -1,12 +1,12 @@
 #include <iostream>
-#include "game.hpp"
+#include "state_manager.hpp"
 
 int main()
 {
     try
     {
-        Game game{};
-        game.run();
+        StateManager manager{};
+        manager.run();
     }
     catch (const std::runtime_error& error)
     {

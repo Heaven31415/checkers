@@ -109,14 +109,31 @@ void Game::handleEvents()
     sf::Event event;
     while (mWindow.pollEvent(event))
     {
-        if (event.type == sf::Event::Closed)
-            mWindow.close();
-        else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F4 && event.key.control)
-            mWindow.close();
-        else if (!mFinished && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-            handlePlayerAction(sf::Vector2i { event.mouseButton.x / 64 - 5, event.mouseButton.y / 64 - 1 });
-        else if (mFinished && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
-            mWindow.close();
+        switch (event.type)
+        {
+            case sf::Event::Closed:
+            {
+                nextState(State::Type::Exit);
+            }
+            break;
+
+            case sf::Event::KeyPressed:
+            {
+                if (mFinished)
+                    nextState(State::Type::Title);
+                else if (event.key.code == sf::Keyboard::F4 && event.key.alt)
+                    nextState(State::Type::Exit);
+                else if (event.key.code == sf::Keyboard::Escape)
+                    nextState(State::Type::Menu);
+            } break;
+
+            case sf::Event::MouseButtonPressed:
+            {
+                if (!mFinished && event.mouseButton.button == sf::Mouse::Left)
+                    handlePlayerAction({ event.mouseButton.x / 64 - 5, event.mouseButton.y / 64 - 1 });
+
+            } break;
+        }
     }
 }
 
@@ -128,11 +145,15 @@ void Game::render()
     mWindow.display();
 }
 
-void Game::run()
+State::Type Game::run()
 {
     while (mWindow.isOpen())
     {
         handleEvents();
         render();
+
+        if (mGoToNextState) return mNextState;
     }
+
+    return State::Type::Exit;
 }
