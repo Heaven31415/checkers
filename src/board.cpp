@@ -6,7 +6,6 @@ Board::Board()
 {
     mPawns.reserve(24);
 
-    // Light Pawns
     ADD_LIGHT_PAWN(1, 0);
     ADD_LIGHT_PAWN(3, 0);
     ADD_LIGHT_PAWN(5, 0);
@@ -20,7 +19,6 @@ Board::Board()
     ADD_LIGHT_PAWN(5, 2);
     ADD_LIGHT_PAWN(7, 2);
 
-    // Dark Pawns
     ADD_DARK_PAWN(0, 5);
     ADD_DARK_PAWN(2, 5);
     ADD_DARK_PAWN(4, 5);
@@ -43,9 +41,9 @@ void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 Pawn* Board::getPawn(int x, int y) const
 {
-    if (x < 0 || x >= 8) return nullptr;
+    if (x < 0 || x >= BoardWidth) return nullptr;
 
-    if (y < 0 || y >= 8) return nullptr;
+    if (y < 0 || y >= BoardHeight) return nullptr;
 
     for (const auto& pawn : mPawns)
         if (pawn->getPosition() == sf::Vector2i{x, y}) return pawn.get();

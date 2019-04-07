@@ -1,7 +1,7 @@
 #include "game.hpp"
 
 Game::Game()
-: mWindow{sf::VideoMode{896, 640}, "Checkers", sf::Style::Close}
+: mWindow{sf::VideoMode{unsigned(WindowWidth), unsigned(WindowHeight)}, "Checkers", sf::Style::Close}
 , mBoard{}
 , mSelected{nullptr}
 , mLock{false}
@@ -130,7 +130,7 @@ void Game::handleEvents()
             case sf::Event::MouseButtonPressed:
             {
                 if (!mFinished && event.mouseButton.button == sf::Mouse::Left)
-                    handlePlayerAction({ event.mouseButton.x / 64 - 5, event.mouseButton.y / 64 - 1 });
+                    handlePlayerAction({ event.mouseButton.x / TileSize - OffsetX, event.mouseButton.y / TileSize - OffsetY });
 
             } break;
         }

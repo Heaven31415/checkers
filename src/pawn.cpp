@@ -2,12 +2,12 @@
 #include "board.hpp"
 
 Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
-: mBoard{board}
-, mSprite{Resources::getTexture(color == Color::Light ? "LightPawn" : "DarkPawn")}
-, mPosition{position}
-, mColor{color}
-, mIsKing{false}
-, mIsSelected{false}
+: mBoard{ board }
+, mSprite{ Resources::getTexture(color == Color::Light ? "LightPawn" : "DarkPawn") }
+, mPosition{ position }
+, mColor{ color }
+, mIsKing{ false }
+, mIsSelected{ false }
 {
     move(mPosition);
 }
@@ -31,7 +31,7 @@ void Pawn::select(bool value)
 void Pawn::move(const sf::Vector2i& dest)
 {
     mPosition = dest;
-    mSprite.setPosition(64.f * (dest.x + 5), 64.f * (dest.y + 1));
+    mSprite.setPosition(float(TileSize) * (dest.x + OffsetX), float(TileSize) * (dest.y + OffsetY));
 
     if (!mIsKing && (mColor == Color::Light && dest.y == 7 || mColor == Color::Dark && dest.y == 0))
     {
