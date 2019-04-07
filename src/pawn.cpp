@@ -6,7 +6,7 @@ Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
 , mSprite{Resources::getTexture(color == Color::Light ? "LightPawn" : "DarkPawn")}
 , mPosition{position}
 , mColor{color}
-, mIsKing{true}
+, mIsKing{false}
 , mIsSelected{false}
 {
     move(mPosition);

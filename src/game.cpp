@@ -74,7 +74,17 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
     }
 
     if ((!mBoard.isFightPossible(mActualPlayerColor) && !mBoard.isMovePossible(mActualPlayerColor)) || mBoard.pawnCount(mActualPlayerColor) == 0)
+    {
         mFinished = true;
+
+        if (mActualPlayerColor == Color::Light)
+            mTurnText.setString("Light Player Won!");
+        else
+            mTurnText.setString("Dark Player Won!");
+
+        sf::FloatRect rect = mTurnText.getLocalBounds();
+        mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
+    }
 }
 
 void Game::nextTurn()
@@ -103,8 +113,10 @@ void Game::handleEvents()
             mWindow.close();
         else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F4 && event.key.control)
             mWindow.close();
-        else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+        else if (!mFinished && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
             handlePlayerAction(sf::Vector2i { event.mouseButton.x / 64 - 5, event.mouseButton.y / 64 - 1 });
+        else if (mFinished && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
+            mWindow.close();
     }
 }
 
@@ -121,10 +133,6 @@ void Game::run()
     while (mWindow.isOpen())
     {
         handleEvents();
-
-        if (mFinished)
-            mWindow.close();
-
         render();
     }
 }
