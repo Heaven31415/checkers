@@ -20,4 +20,3 @@ public:
     virtual void update() = 0;
     virtual void render(sf::RenderWindow& window) const = 0;
 };
-
