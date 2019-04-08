@@ -6,7 +6,7 @@ Game::Game()
 , mSelected{nullptr}
 , mLock{false}
 , mActualPlayerColor{Color::Light}
-, mTurnText{"Light Player Turn", Resources::getFont("Candara"), 30}
+, mTurnText{"White Player Turn", Resources::getFont("Candara"), 30}
 , mFinished{false}
 {
     mWindow.setFramerateLimit(60);
@@ -78,9 +78,9 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
         mFinished = true;
 
         if (mActualPlayerColor == Color::Light)
-            mTurnText.setString("Light Player Won!");
+            mTurnText.setString("White Player Won!");
         else
-            mTurnText.setString("Dark Player Won!");
+            mTurnText.setString("Black Player Won!");
 
         sf::FloatRect rect = mTurnText.getLocalBounds();
         mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
@@ -92,12 +92,12 @@ void Game::nextTurn()
     if (mActualPlayerColor == Color::Light)
     {
         mActualPlayerColor = Color::Dark;
-        mTurnText.setString("Dark Player Turn");
+        mTurnText.setString("Black Player Turn");
     }
     else
     {
         mActualPlayerColor = Color::Light;
-        mTurnText.setString("Light Player Turn");
+        mTurnText.setString("White Player Turn");
     }
    
     sf::FloatRect rect = mTurnText.getLocalBounds();
