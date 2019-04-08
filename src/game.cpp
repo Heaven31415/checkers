@@ -1,22 +1,14 @@
 #include "game.hpp"
+#include "state_stack.hpp"
 
 Game::Game()
-: mWindow{sf::VideoMode{unsigned(WindowWidth), unsigned(WindowHeight)}, "Checkers", sf::Style::Close}
-, mBoard{}
+: mBoard{}
 , mSelected{nullptr}
 , mLock{false}
 , mActualPlayerColor{Color::Light}
 , mTurnText{"White Player Turn", Resources::getFont("Candara"), 30}
 , mFinished{false}
 {
-    mWindow.setFramerateLimit(60);
-    
-    sf::Image icon{};
-    if (!icon.loadFromFile("resources/Icon.png"))
-        throw std::runtime_error("Unable to load Icon from 'resources/Icon.png' because loadFromFile method failed");
-
-    mWindow.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-    
     centerOrigin(mTurnText);
     mTurnText.setPosition(WindowWidth / 2.f, 96.f);
 }
@@ -107,56 +99,46 @@ void Game::nextTurn()
     centerOrigin(mTurnText);
 }
 
-void Game::handleEvents()
+void Game::processEvent(const sf::Event& event)
 {
-    sf::Event event;
-    while (mWindow.pollEvent(event))
+    switch (event.type)
     {
-        switch (event.type)
+        case sf::Event::Closed:
         {
-            case sf::Event::Closed:
-            {
-                nextState(State::Type::Exit);
-            }
-            break;
-
-            case sf::Event::KeyPressed:
-            {
-                if (mFinished)
-                    nextState(State::Type::Title);
-                else if (event.key.code == sf::Keyboard::F4 && event.key.alt)
-                    nextState(State::Type::Exit);
-                else if (event.key.code == sf::Keyboard::Escape)
-                    nextState(State::Type::Menu);
-            } break;
-
-            case sf::Event::MouseButtonPressed:
-            {
-                if (!mFinished && event.mouseButton.button == sf::Mouse::Left)
-                    handlePlayerAction({ event.mouseButton.x / TileSize - OffsetX, event.mouseButton.y / TileSize - OffsetY });
-
-            } break;
+            StateStack::pop();
         }
+        break;
+
+        case sf::Event::KeyPressed:
+        {
+            if (mFinished)
+                StateStack::pop();
+            else if (event.key.code == sf::Keyboard::F4 && event.key.alt)
+                StateStack::pop();
+            else if (event.key.code == sf::Keyboard::Escape)
+                StateStack::push(State::Type::Menu);
+        } 
+        break;
+
+        case sf::Event::MouseButtonPressed:
+        {
+            if (mFinished)
+                StateStack::pop();
+            else if (!mFinished && event.mouseButton.button == sf::Mouse::Left)
+                handlePlayerAction({ event.mouseButton.x / TileSize - OffsetX, event.mouseButton.y / TileSize - OffsetY });
+        } 
+        break;
     }
 }
 
-void Game::render()
+void Game::update()
 {
-    mWindow.clear();
-    mWindow.draw(mBoard);
-    mWindow.draw(mTurnText);
-    mWindow.display();
 }
 
-State::Type Game::run()
+void Game::render(sf::RenderWindow& window) const
 {
-    while (mWindow.isOpen())
-    {
-        handleEvents();
-        render();
-
-        if (mGoToNextState) return mNextState;
-    }
-
-    return State::Type::Exit;
+    window.clear();
+    window.draw(mBoard);
+    window.draw(mTurnText);
+    window.display();
 }

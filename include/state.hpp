@@ -5,7 +5,7 @@
 class State
 {
 public:
-    typedef std::unique_ptr<State> Ptr;
+    using Ptr = std::unique_ptr<State>;
 
     enum class Type
     {
@@ -16,16 +16,8 @@ public:
     };
 
     virtual ~State() {};
-    virtual State::Type run() = 0;
-
-protected:
-    void nextState(State::Type state)
-    {
-        mGoToNextState = true;
-        mNextState = state;
-    }
-
-    bool mGoToNextState{ false };
-    State::Type mNextState{ State::Type::Exit };
+    virtual void processEvent(const sf::Event& event) = 0;
+    virtual void update() = 0;
+    virtual void render(sf::RenderWindow& window) const = 0;
 };
 

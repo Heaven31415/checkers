@@ -13,11 +13,10 @@ public:
     void handlePlayerAction(const sf::Vector2i& destination);
     void nextTurn();
 
-    void handleEvents();
-    void render();
-    State::Type run() override;
+    virtual void processEvent(const sf::Event& event) override;
+    virtual void update() override;
+    virtual void render(sf::RenderWindow& window) const override;
 private:
-    sf::RenderWindow mWindow;
     Board mBoard;
     Pawn* mSelected;
     bool mLock;

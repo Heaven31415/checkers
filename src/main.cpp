@@ -1,12 +1,12 @@
 #include <iostream>
-#include "state_manager.hpp"
+#include "state_stack.hpp"
 
 int main()
 {
     try
     {
-        StateManager manager{};
-        manager.run();
+        StateStack::push(State::Type::Game);
+        StateStack::run();
     }
     catch (const std::runtime_error& error)
     {
