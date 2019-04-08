@@ -75,9 +75,9 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
         mFinished = true;
 
         if (mActualPlayerColor == Color::Light)
-            mTurnText.setString("White Player Won!");
-        else
             mTurnText.setString("Black Player Won!");
+        else
+            mTurnText.setString("White Player Won!");
 
         centerOrigin(mTurnText);
     }
