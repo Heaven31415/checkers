@@ -11,8 +11,7 @@ public:
     {
         Title,
         Game,
-        Menu,
-        Exit
+        Menu
     };
 
     virtual ~State() {};

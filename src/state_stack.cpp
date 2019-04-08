@@ -80,8 +80,6 @@ State::Ptr StateStack::factory(State::Type type)
             return State::Ptr(new Game{});
         case State::Type::Menu:
             return nullptr;
-        case State::Type::Exit:
-            return nullptr;
     }
 
     return nullptr;
