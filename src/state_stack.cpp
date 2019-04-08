@@ -21,10 +21,7 @@ void StateStack::pushImpl(State::Type type)
 
 void StateStack::popImpl()
 {
-    if (mStack.empty())
-        throw std::runtime_error("Unable to pop an empty stack!");
-
-    mStack.pop();
+    if (!mStack.empty()) mStack.pop();
 }
 
 void StateStack::runImpl()
