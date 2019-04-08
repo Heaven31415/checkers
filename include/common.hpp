@@ -5,11 +5,11 @@
 
 const int BoardWidth = 8;
 const int BoardHeight = 8;
-const int WindowWidth = 896;
-const int WindowHeight = 640;
+const int WindowWidth = 640;
+const int WindowHeight = 768;
 const int TileSize = 64;
-const int OffsetX = 5;
-const int OffsetY = 1;
+const int OffsetX = 1;
+const int OffsetY = 3;
 
 enum class Color
 {
