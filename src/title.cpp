@@ -30,6 +30,5 @@ void Title::update()
 
 void Title::render(sf::RenderWindow& window) const
 {
-    window.clear(sf::Color::Red);
-    window.display();
+
 }

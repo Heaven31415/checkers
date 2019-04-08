@@ -21,6 +21,7 @@ Resources::Resources()
     loadTexture("DarkKingSelected", "resources/DarkKingSelected.png");
     loadTexture("DarkPawn", "resources/DarkPawn.png");
     loadTexture("DarkPawnSelected", "resources/DarkPawnSelected.png");
+    loadTexture("Cursor", "resources/Cursor.png");
 }
 
 Resources& Resources::getInstance()

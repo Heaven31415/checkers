@@ -26,9 +26,11 @@ private:
     void runImpl();
     void closeWindowImpl();
 
+    void updateCursor();
     State::Ptr factory(State::Type type);
 
     sf::RenderWindow mWindow;
     std::map<State::Type, State::Ptr> mStates;
     std::stack<State::Type> mStack;
+    sf::Sprite mCursor;
 };

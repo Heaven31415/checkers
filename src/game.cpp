@@ -137,8 +137,6 @@ void Game::update()
 
 void Game::render(sf::RenderWindow& window) const
 {
-    window.clear();
     window.draw(mBoard);
     window.draw(mTurnText);
-    window.display();
 }

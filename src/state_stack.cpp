@@ -4,6 +4,7 @@ StateStack::StateStack()
 : mWindow{ sf::VideoMode{unsigned(WindowWidth), unsigned(WindowHeight)}, "Checkers", sf::Style::Close }
 , mStates{}
 , mStack{}
+, mCursor{Resources::getTexture("Cursor")}
 {
     mWindow.setFramerateLimit(60);
 
@@ -12,6 +13,9 @@ StateStack::StateStack()
         throw std::runtime_error("Unable to load Icon from 'resources/Icon.png' because loadFromFile method failed");
 
     mWindow.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
+    mWindow.setMouseCursorVisible(false);
+    mCursor.setOrigin(5.f, 0.f);
 }
 
 void StateStack::pushImpl(State::Type type)
@@ -44,7 +48,14 @@ void StateStack::runImpl()
                 mStates[actual]->processEvent(event);
 
             mStates[actual]->update();
+            updateCursor();
+
+            mWindow.clear();
+
             mStates[actual]->render(mWindow);
+            mWindow.draw(mCursor);
+
+            mWindow.display();
         }
     }
 }
@@ -78,6 +89,11 @@ void StateStack::run()
 void StateStack::closeWindow()
 {
     getInstance().closeWindowImpl();
+}
+
+void StateStack::updateCursor()
+{
+    mCursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(mWindow)));
 }
 
 State::Ptr StateStack::factory(State::Type type)

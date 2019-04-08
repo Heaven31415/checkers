@@ -30,6 +30,4 @@ void Menu::update()
 
 void Menu::render(sf::RenderWindow& window) const
 {
-    window.clear(sf::Color::Blue);
-    window.display();
 }
