@@ -11,9 +11,15 @@ Game::Game()
 {
     mWindow.setFramerateLimit(60);
     
+    sf::Image icon{};
+    if (!icon.loadFromFile("resources/Icon.png"))
+        throw std::runtime_error("Unable to load Icon from 'resources/Icon.png' because loadFromFile method failed");
+
+    mWindow.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+    
     sf::FloatRect rect = mTurnText.getLocalBounds();
     mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
-    mTurnText.setPosition(160.f, 64.f);
+    mTurnText.setPosition(WindowWidth / 2.f, 96.f);
 }
 
 void Game::handlePlayerAction(const sf::Vector2i& destination)
