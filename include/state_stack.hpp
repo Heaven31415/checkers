@@ -3,7 +3,9 @@
 #include <map>
 #include <stack>
 #include "game.hpp"
+#include "menu.hpp"
 #include "state.hpp"
+#include "title.hpp"
 
 class StateStack
 {
@@ -15,12 +17,14 @@ public:
     static void push(State::Type type);
     static void pop();
     static void run();
+    static void closeWindow();
 private:
     StateStack();
 
     void pushImpl(State::Type type);
     void popImpl();
     void runImpl();
+    void closeWindowImpl();
 
     State::Ptr factory(State::Type type);
 

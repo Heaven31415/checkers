@@ -5,7 +5,7 @@ int main()
 {
     try
     {
-        StateStack::push(State::Type::Game);
+        StateStack::push(State::Type::Title);
         StateStack::run();
     }
     catch (const std::runtime_error& error)

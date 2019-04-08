@@ -49,6 +49,11 @@ void StateStack::runImpl()
     }
 }
 
+void StateStack::closeWindowImpl()
+{
+    mWindow.close();
+}
+
 StateStack& StateStack::getInstance()
 {
     static StateStack instance{};
@@ -70,16 +75,21 @@ void StateStack::run()
     getInstance().runImpl();
 }
 
+void StateStack::closeWindow()
+{
+    getInstance().closeWindowImpl();
+}
+
 State::Ptr StateStack::factory(State::Type type)
 {
     switch (type)
     {
         case State::Type::Title:
-            return nullptr;
+            return State::Ptr(new Title{});
         case State::Type::Game:
             return State::Ptr(new Game{});
         case State::Type::Menu:
-            return nullptr;
+            return State::Ptr(new Menu{});
     }
 
     return nullptr;

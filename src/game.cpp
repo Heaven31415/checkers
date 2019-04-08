@@ -105,7 +105,7 @@ void Game::processEvent(const sf::Event& event)
     {
         case sf::Event::Closed:
         {
-            StateStack::pop();
+            StateStack::closeWindow();
         }
         break;
 

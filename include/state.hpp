@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 class State
 {
