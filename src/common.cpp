@@ -9,3 +9,9 @@ bool isValidPosition(const sf::Vector2i& position)
 {
     return position.x >= 0 && position.x < 8 && position.y >= 0 && position.y < 8;
 }
+
+void centerOrigin(sf::Text& text)
+{
+    sf::FloatRect rect = text.getLocalBounds();
+    text.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
+}

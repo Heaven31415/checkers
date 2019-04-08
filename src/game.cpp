@@ -17,8 +17,7 @@ Game::Game()
 
     mWindow.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     
-    sf::FloatRect rect = mTurnText.getLocalBounds();
-    mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
+    centerOrigin(mTurnText);
     mTurnText.setPosition(WindowWidth / 2.f, 96.f);
 }
 
@@ -88,8 +87,7 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
         else
             mTurnText.setString("Black Player Won!");
 
-        sf::FloatRect rect = mTurnText.getLocalBounds();
-        mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
+        centerOrigin(mTurnText);
     }
 }
 
@@ -106,8 +104,7 @@ void Game::nextTurn()
         mTurnText.setString("White Player Turn");
     }
    
-    sf::FloatRect rect = mTurnText.getLocalBounds();
-    mTurnText.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
+    centerOrigin(mTurnText);
 }
 
 void Game::handleEvents()
