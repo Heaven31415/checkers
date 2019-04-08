@@ -21,6 +21,9 @@ void StateStack::pushImpl(State::Type type)
 
 void StateStack::popImpl()
 {
+    if (mStack.empty())
+        throw std::runtime_error("Unable to pop an empty stack!");
+
     mStack.pop();
 }
 
@@ -31,7 +34,12 @@ void StateStack::runImpl()
         auto actual = mStack.top();
 
         if (mStates.find(actual) == mStates.end())
+        {
             mStates[actual] = factory(actual);
+
+            if (mStates[actual] == nullptr)
+                throw std::runtime_error("Unable to construct state using factory");
+        }
         else
         {
             sf::Event event;
