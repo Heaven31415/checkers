@@ -3,7 +3,7 @@
 SoundPlayer::SoundPlayer()
 : mMusic{}
 , mSongIndex{2}
-, mSongs{"resources/Forest.wav", "resources/Nature.wav", "resources/Woods.wav"}
+, mSongs{"resources/Forest.ogg", "resources/Nature.ogg", "resources/Woods.ogg"}
 , mSounds{}
 {
     mSounds.reserve(32);
@@ -43,7 +43,7 @@ void SoundPlayer::updateMusicImpl(sf::Time dt)
     if (mMusic.getStatus() != sf::SoundSource::Playing)
     {
         mSongIndex = (mSongIndex + 1) % mSongs.size();
-        if(!mMusic.openFromFile(mSongs[mSongIndex]))
+        if (!mMusic.openFromFile(mSongs[mSongIndex]))
             throw std::runtime_error("Unable to load Music because openFromFile method failed");
         mMusic.setVolume(0.f);
         mMusic.play();
@@ -55,6 +55,8 @@ void SoundPlayer::updateMusicImpl(sf::Time dt)
         mMusic.setVolume(progress / 10.f * 100.f);
     else if (progress > 90.f)
         mMusic.setVolume(100.f - ((progress - 90.f) / 10.f * 100.f));
+    else
+        mMusic.setVolume(100.f);
 }
 
 void SoundPlayer::clean()
