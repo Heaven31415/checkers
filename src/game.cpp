@@ -77,12 +77,7 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
     if ((!mBoard.isFightPossible(mActualPlayerColor) && !mBoard.isMovePossible(mActualPlayerColor)) || mBoard.pawnCount(mActualPlayerColor) == 0)
     {
         mFinished = true;
-
-        if (mActualPlayerColor == Color::Light)
-            mTurnText.setString("Black Player Won!");
-        else
-            mTurnText.setString("White Player Won!");
-
+        mTurnText.setString(mActualPlayerColor == Color::Light ? "Black Player Won!" : "White Player Won!");
         centerOrigin(mTurnText);
     }
 }
@@ -115,9 +110,7 @@ void Game::processEvent(const sf::Event& event)
 
         case sf::Event::KeyPressed:
         {
-            if (mFinished)
-                StateStack::pop();
-            else if (event.key.code == sf::Keyboard::F4 && event.key.alt)
+            if (mFinished || (event.key.code == sf::Keyboard::F4 && event.key.alt))
                 StateStack::pop();
             else if (event.key.code == sf::Keyboard::Escape)
                 StateStack::push(State::Type::Menu);
