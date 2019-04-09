@@ -1,9 +1,0 @@
-1. pointers (wskaźniki)
-2. references (referencje)
-3. class (klasa)
-4. std::vector
-5. const (stała)
-6. access modifiers: private and public (modyfikatoru dostępu: prywatne i publiczne)
-7. for (pętla)
-8. initializer list (lista inicjalizacyjna)
-9. this (wskaźnik)

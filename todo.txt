@@ -1,12 +1,6 @@
-1. Zintegrować SFMLa z projektem oraz napisać skrypt który umożliwi jego skompilowanie
-2. Zaimplementować proste menu z możliwością przejścia do gry
-3. Zaimplementować stan końcowy pokazujący kto wygrał daną rozgrywkę
-4. Dodać jakąś lekką i cichą muzykę w czasie gry
-5. Dodać przycisk umożliwiający wyłączenie dźwięków i muzyki
-6. Zaimplementować obsługę różnych skrótów klawiszowych (np. ALT-F4)
+1. Zaimplementować proste menu z możliwością przejścia do gry
+2. Dodać przycisk umożliwiający wyłączenie dźwięków i muzyki
+3. Znaleźć wszystkie błędy i niezgodności z zasadami gry w warcaby i je naprawić.
 
-7. Zaimplementować funkcję, która sprawdzi czy dana damka w aktualnej chwili jest w stanie kogoś zbić
-8. Znaleźć wszystkie błędy i niezgodności z zasadami w gry w warcaby i je naprawić.
-
-9. Refaktoryzacja, refaktoryzacja i refaktoryzacja
-10. Testy, testy i testy
+4. Refaktoryzacja, refaktoryzacja i refaktoryzacja
+5. Testy, testy i testy
