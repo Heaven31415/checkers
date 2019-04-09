@@ -142,6 +142,8 @@ void Game::update(sf::Time dt)
         if (mShadow[i].getPosition().x >= WindowWidth) mShadow[i].move(-2.f * WindowWidth, 0.f);
         mShadow[i].move(30.f * dt.asSeconds(), 0.f);
     }
+
+    SoundPlayer::updateMusic(dt);
 }
 
 void Game::render(sf::RenderWindow& window) const

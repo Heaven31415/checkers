@@ -1,7 +1,10 @@
 #include "sound_player.hpp"
 
 SoundPlayer::SoundPlayer()
-: mSounds{}
+: mMusic{}
+, mSongIndex{2}
+, mSongs{"resources/Forest.wav", "resources/Nature.wav", "resources/Woods.wav"}
+, mSounds{}
 {
     mSounds.reserve(32);
 }
@@ -17,6 +20,11 @@ void SoundPlayer::playSound(const std::string& name, float volume, float pitch)
     getInstance().playSoundImpl(name, volume, pitch);
 }
 
+void SoundPlayer::updateMusic(sf::Time dt)
+{
+    getInstance().updateMusicImpl(dt);
+}
+
 void SoundPlayer::playSoundImpl(const std::string& name, float volume, float pitch)
 {
     auto sound = std::make_unique<sf::Sound>();
@@ -28,6 +36,25 @@ void SoundPlayer::playSoundImpl(const std::string& name, float volume, float pit
     mSounds.push_back(std::move(sound));
 
     clean();
+}
+
+void SoundPlayer::updateMusicImpl(sf::Time dt)
+{
+    if (mMusic.getStatus() != sf::SoundSource::Playing)
+    {
+        mSongIndex = (mSongIndex + 1) % mSongs.size();
+        if(!mMusic.openFromFile(mSongs[mSongIndex]))
+            throw std::runtime_error("Unable to load Music because openFromFile method failed");
+        mMusic.setVolume(0.f);
+        mMusic.play();
+    }
+
+    float progress = (mMusic.getPlayingOffset() / mMusic.getDuration()) * 100.f;
+
+    if (progress < 10.f)
+        mMusic.setVolume(progress / 10.f * 100.f);
+    else if (progress > 90.f)
+        mMusic.setVolume(100.f - ((progress - 90.f) / 10.f * 100.f));
 }
 
 void SoundPlayer::clean()
