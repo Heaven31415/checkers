@@ -22,6 +22,6 @@ private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
-    sf::Sprite mBackground;
+    sf::Sprite mSprite;
     std::vector<std::unique_ptr<Pawn>> mPawns;
 };

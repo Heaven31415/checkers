@@ -14,13 +14,15 @@ public:
     void nextTurn();
 
     virtual void processEvent(const sf::Event& event) override;
-    virtual void update() override;
+    virtual void update(sf::Time dt) override;
     virtual void render(sf::RenderWindow& window) const override;
 private:
+    sf::Sprite mBackground;
     Board mBoard;
     Pawn* mSelected;
     bool mLock;
     Color mActualPlayerColor;
     sf::Text mTurnText;
     bool mFinished;
+    sf::Sprite mShadow[2];
 };

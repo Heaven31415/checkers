@@ -12,6 +12,7 @@ Resources::Resources()
     loadSoundBuffer("Move", "resources/Move.wav");
     loadSoundBuffer("Win", "resources/Win.wav");
 
+    loadTexture("Background", "resources/Background.png");
     loadTexture("Board", "resources/Board.png");
     loadTexture("LightKing", "resources/LightKing.png");
     loadTexture("LightKingSelected", "resources/LightKingSelected.png");
@@ -22,6 +23,7 @@ Resources::Resources()
     loadTexture("DarkPawn", "resources/DarkPawn.png");
     loadTexture("DarkPawnSelected", "resources/DarkPawnSelected.png");
     loadTexture("Cursor", "resources/Cursor.png");
+    loadTexture("Shadow", "resources/Shadow.png");
 }
 
 Resources& Resources::getInstance()

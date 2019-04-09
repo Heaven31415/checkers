@@ -24,7 +24,7 @@ void Title::processEvent(const sf::Event& event)
     }
 }
 
-void Title::update()
+void Title::update(sf::Time dt)
 {
 }
 

@@ -24,7 +24,7 @@ void Menu::processEvent(const sf::Event& event)
     }
 }
 
-void Menu::update()
+void Menu::update(sf::Time dt)
 {
 }
 

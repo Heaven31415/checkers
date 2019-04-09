@@ -2,15 +2,19 @@
 #include "state_stack.hpp"
 
 Game::Game()
-: mBoard{}
+: mBackground{Resources::getTexture("Background")}
+, mBoard{}
 , mSelected{nullptr}
 , mLock{false}
 , mActualPlayerColor{Color::Light}
 , mTurnText{"White Player Turn", Resources::getFont("Candara"), 30}
 , mFinished{false}
+, mShadow{sf::Sprite{Resources::getTexture("Shadow")}, sf::Sprite{Resources::getTexture("Shadow")}}
 {
     centerOrigin(mTurnText);
     mTurnText.setPosition(WindowWidth / 2.f, 96.f);
+
+    mShadow[0].move(-WindowWidth, 0.f);
 }
 
 void Game::handlePlayerAction(const sf::Vector2i& destination)
@@ -131,12 +135,20 @@ void Game::processEvent(const sf::Event& event)
     }
 }
 
-void Game::update()
+void Game::update(sf::Time dt)
 {
+    for (size_t i = 0; i <= 1; i++)
+    {
+        if (mShadow[i].getPosition().x >= WindowWidth) mShadow[i].move(-2.f * WindowWidth, 0.f);
+        mShadow[i].move(30.f * dt.asSeconds(), 0.f);
+    }
 }
 
 void Game::render(sf::RenderWindow& window) const
 {
+    window.draw(mBackground);
+    window.draw(mShadow[0]);
+    window.draw(mShadow[1]);
     window.draw(mBoard);
     window.draw(mTurnText);
 }

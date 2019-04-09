@@ -1,7 +1,7 @@
 #include "board.hpp"
 
 Board::Board()
-: mBackground{ Resources::getTexture("Board") }
+: mSprite{ Resources::getTexture("Board") }
 , mPawns{}
 {
     mPawns.reserve(24);
@@ -35,7 +35,7 @@ Board::Board()
 
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(mBackground, states);
+    target.draw(mSprite, states);
     for (const auto& pawn : mPawns) target.draw(*pawn, states);
 }
 

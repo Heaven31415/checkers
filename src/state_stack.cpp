@@ -6,8 +6,6 @@ StateStack::StateStack()
 , mStack{}
 , mCursor{Resources::getTexture("Cursor")}
 {
-    mWindow.setFramerateLimit(60);
-
     sf::Image icon{};
     if (!icon.loadFromFile("resources/Icon.png"))
         throw std::runtime_error("Unable to load Icon from 'resources/Icon.png' because loadFromFile method failed");
@@ -30,6 +28,9 @@ void StateStack::popImpl()
 
 void StateStack::runImpl()
 {
+    sf::Clock clock{};
+    sf::Time dt{};
+
     while (!mStack.empty() && mWindow.isOpen())
     {
         auto actual = mStack.top();
@@ -47,8 +48,14 @@ void StateStack::runImpl()
             while (mWindow.pollEvent(event))
                 mStates[actual]->processEvent(event);
 
-            mStates[actual]->update();
-            updateCursor();
+            dt += clock.restart();
+            while (dt >= TimePerFrame)
+            {
+                mStates[actual]->update(TimePerFrame);
+                updateCursor();
+
+                dt -= TimePerFrame;
+            }
 
             mWindow.clear();
 
