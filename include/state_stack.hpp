@@ -3,7 +3,7 @@
 #include <map>
 #include <stack>
 #include "game.hpp"
-#include "menu.hpp"
+#include "options.hpp"
 #include "state.hpp"
 #include "title.hpp"
 

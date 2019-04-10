@@ -1,11 +1,11 @@
-#include "menu.hpp"
+#include "options.hpp"
 #include "state_stack.hpp"
 
-Menu::Menu()
+Options::Options()
 {
 }
 
-void Menu::processEvent(const sf::Event& event)
+void Options::processEvent(const sf::Event& event)
 {
     switch (event.type)
     {
@@ -24,10 +24,10 @@ void Menu::processEvent(const sf::Event& event)
     }
 }
 
-void Menu::update(sf::Time dt)
+void Options::update(sf::Time dt)
 {
 }
 
-void Menu::render(sf::RenderWindow& window) const
+void Options::render(sf::RenderWindow& window) const
 {
 }

@@ -11,9 +11,9 @@ public:
 
     enum class Type
     {
-        Title,
         Game,
-        Menu
+        Options,
+        Title
     };
 
     virtual ~State() {};

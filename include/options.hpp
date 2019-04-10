@@ -2,10 +2,10 @@
 
 #include "state.hpp"
 
-class Menu : public State
+class Options : public State
 {
 public:
-    Menu();
+    Options();
 
     virtual void processEvent(const sf::Event& event) override;
     virtual void update(sf::Time dt) override;

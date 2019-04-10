@@ -113,7 +113,7 @@ void Game::processEvent(const sf::Event& event)
             if (mFinished || (event.key.code == sf::Keyboard::F4 && event.key.alt))
                 StateStack::pop();
             else if (event.key.code == sf::Keyboard::Escape)
-                StateStack::push(State::Type::Menu);
+                StateStack::push(State::Type::Options);
         } 
         break;
 

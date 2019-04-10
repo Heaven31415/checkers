@@ -107,12 +107,12 @@ State::Ptr StateStack::factory(State::Type type)
 {
     switch (type)
     {
-        case State::Type::Title:
-            return State::Ptr(new Title{});
         case State::Type::Game:
             return State::Ptr(new Game{});
-        case State::Type::Menu:
-            return State::Ptr(new Menu{});
+        case State::Type::Options:
+            return State::Ptr(new Options{});
+        case State::Type::Title:
+            return State::Ptr(new Title{});
     }
 
     return nullptr;
