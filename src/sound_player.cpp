@@ -2,7 +2,7 @@
 
 SoundPlayer::SoundPlayer()
 : mMusic{}
-, mSongIndex{0}
+, mSongIndex{}
 , mSongs{}
 , mSounds{}
 {
@@ -16,23 +16,13 @@ SoundPlayer::SoundPlayer()
     mSounds.reserve(32);
 }
 
-SoundPlayer& SoundPlayer::getInstance()
+SoundPlayer& SoundPlayer::get()
 {
     static SoundPlayer instance;
     return instance;
 }
 
 void SoundPlayer::playSound(const std::string& name, float volume, float pitch)
-{
-    getInstance().playSoundImpl(name, volume, pitch);
-}
-
-void SoundPlayer::updateMusic(sf::Time dt)
-{
-    getInstance().updateMusicImpl(dt);
-}
-
-void SoundPlayer::playSoundImpl(const std::string& name, float volume, float pitch)
 {
     auto sound = std::make_unique<sf::Sound>();
     sound->setBuffer(Resources::getSoundBuffer(name));
@@ -45,7 +35,7 @@ void SoundPlayer::playSoundImpl(const std::string& name, float volume, float pit
     clean();
 }
 
-void SoundPlayer::updateMusicImpl(sf::Time dt)
+void SoundPlayer::updateMusic()
 {
     if (mMusic.getStatus() != sf::SoundSource::Playing)
     {
