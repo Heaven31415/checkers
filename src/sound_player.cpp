@@ -2,10 +2,17 @@
 
 SoundPlayer::SoundPlayer()
 : mMusic{}
-, mSongIndex{2}
-, mSongs{"resources/Forest.ogg", "resources/Nature.ogg", "resources/Woods.ogg"}
+, mSongIndex{0}
+, mSongs{}
 , mSounds{}
 {
+    ADD_SONG("resources/Decision.ogg");
+    ADD_SONG("resources/Forest.ogg");
+    ADD_SONG("resources/JourneyToTheEastRocks.ogg");
+    ADD_SONG("resources/Nature.ogg");
+    ADD_SONG("resources/WoodlandFantasy.ogg");
+    ADD_SONG("resources/Woods.ogg");
+
     mSounds.reserve(32);
 }
 

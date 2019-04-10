@@ -3,6 +3,8 @@
 #include <memory>
 #include "resources.hpp"
 
+#define ADD_SONG(path) mSongs.push_back(path);
+
 class SoundPlayer
 {
 public:
