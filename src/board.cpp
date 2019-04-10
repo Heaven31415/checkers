@@ -1,7 +1,7 @@
 #include "board.hpp"
 
 Board::Board()
-: mSprite{ Resources::getTexture("Board") }
+: mSprite{ Resources::get().texture("Board") }
 , mPawns{}
 {
     mPawns.reserve(24);

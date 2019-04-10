@@ -8,10 +8,11 @@ public:
     Resources(const Resources&) = delete;
     Resources& operator=(const Resources&) = delete;
 
-    static Resources& getInstance();
-    static sf::Font& getFont(const std::string& name);
-    static sf::SoundBuffer& getSoundBuffer(const std::string& name);
-    static sf::Texture& getTexture(const std::string& name);
+    static Resources& get();
+
+    sf::Font& font(const std::string& name);
+    sf::SoundBuffer& soundBuffer(const std::string& name);
+    sf::Texture& texture(const std::string& name);
 private:
     Resources();
 

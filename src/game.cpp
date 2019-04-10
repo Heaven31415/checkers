@@ -2,14 +2,14 @@
 #include "state_stack.hpp"
 
 Game::Game()
-: mBackground{Resources::getTexture("Background")}
+: mBackground{Resources::get().texture("Background")}
 , mBoard{}
 , mSelected{nullptr}
 , mLock{false}
 , mActualPlayerColor{Color::Light}
-, mTurnText{"White Player Turn", Resources::getFont("Candara"), 30}
+, mTurnText{"White Player Turn", Resources::get().font("Candara"), 30}
 , mFinished{false}
-, mShadow{sf::Sprite{Resources::getTexture("Shadow")}, sf::Sprite{Resources::getTexture("Shadow")}}
+, mShadow{sf::Sprite{Resources::get().texture("Shadow")}, sf::Sprite{Resources::get().texture("Shadow")}}
 {
     centerOrigin(mTurnText);
     mTurnText.setPosition(WindowWidth / 2.f, 96.f);

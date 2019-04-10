@@ -4,7 +4,7 @@ StateStack::StateStack()
 : mWindow{ sf::VideoMode{unsigned(WindowWidth), unsigned(WindowHeight)}, "Checkers", sf::Style::Close }
 , mStates{}
 , mStack{}
-, mCursor{Resources::getTexture("Cursor")}
+, mCursor{Resources::get().texture("Cursor")}
 {
     sf::Image icon{};
     if (!icon.loadFromFile("resources/Icon.png"))

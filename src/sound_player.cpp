@@ -82,7 +82,7 @@ void SoundPlayer::play(const std::string& name, float volume, float pitch)
     if (!mPlaySounds) return;
 
     auto sound = std::make_unique<sf::Sound>();
-    sound->setBuffer(Resources::getSoundBuffer(name));
+    sound->setBuffer(Resources::get().soundBuffer(name));
     sound->setVolume(volume * mSoundsVolume / 100.f);
     sound->setPitch(pitch);
     sound->play();

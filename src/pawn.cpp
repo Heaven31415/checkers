@@ -3,7 +3,7 @@
 
 Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
 : mBoard{ board }
-, mSprite{ Resources::getTexture(color == Color::Light ? "LightPawn" : "DarkPawn") }
+, mSprite{ Resources::get().texture(color == Color::Light ? "LightPawn" : "DarkPawn") }
 , mPosition{ position }
 , mColor{ color }
 , mIsKing{ false }
@@ -24,7 +24,7 @@ void Pawn::select(bool value)
 
     if (value) textureName += "Selected";
 
-    mSprite.setTexture(Resources::getTexture(textureName));
+    mSprite.setTexture(Resources::get().texture(textureName));
     mIsSelected = value;
 }
 
@@ -36,7 +36,7 @@ void Pawn::move(const sf::Vector2i& dest)
     if (!mIsKing && (mColor == Color::Light && dest.y == BoardHeight - 1 || mColor == Color::Dark && dest.y == 0))
     {
         mIsKing = true;
-        mSprite.setTexture(Resources::getTexture(mColor == Color::Light ? "LightKing" : "DarkKing"));
+        mSprite.setTexture(Resources::get().texture(mColor == Color::Light ? "LightKing" : "DarkKing"));
     }
 }
 

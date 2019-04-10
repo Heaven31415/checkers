@@ -26,25 +26,25 @@ Resources::Resources()
     loadTexture("Shadow", "resources/Shadow.png");
 }
 
-Resources& Resources::getInstance()
+Resources& Resources::get()
 {
     static Resources instance{};
     return instance;
 }
 
-sf::Font& Resources::getFont(const std::string& name)
+sf::Font& Resources::font(const std::string& name)
 {
-    return getInstance().mFonts.at(name);
+    return mFonts.at(name);
 }
 
-sf::SoundBuffer& Resources::getSoundBuffer(const std::string& name)
+sf::SoundBuffer& Resources::soundBuffer(const std::string& name)
 {
-    return getInstance().mSoundBuffers.at(name);
+    return mSoundBuffers.at(name);
 }
 
-sf::Texture& Resources::getTexture(const std::string& name)
+sf::Texture& Resources::texture(const std::string& name)
 {
-    return getInstance().mTextures.at(name);
+    return mTextures.at(name);
 }
 
 void Resources::loadFont(const std::string & key, const std::string & filename)
