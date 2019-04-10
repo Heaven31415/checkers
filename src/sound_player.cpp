@@ -1,19 +1,24 @@
 #include "sound_player.hpp"
 
 SoundPlayer::SoundPlayer()
-: mMusic{}
-, mSongIndex{}
+: mPlayMusic{ true }
+, mMusic{}
+, mSongIndices{}
 , mSongs{}
+, mMusicVolume{ 30.f }
+, mPlaySounds{ true }
 , mSounds{}
+, mSoundsVolume{ 30.f }
 {
-    ADD_SONG("resources/Decision.ogg");
-    ADD_SONG("resources/Forest.ogg");
-    ADD_SONG("resources/JourneyToTheEastRocks.ogg");
-    ADD_SONG("resources/Nature.ogg");
-    ADD_SONG("resources/WoodlandFantasy.ogg");
-    ADD_SONG("resources/Woods.ogg");
+    ADD_SONG("Decision", "resources/Decision.ogg");
+    ADD_SONG("Forest", "resources/Forest.ogg");
+    ADD_SONG("Journey To The East Rocks", "resources/JourneyToTheEastRocks.ogg");
+    ADD_SONG("Nature", "resources/Nature.ogg");
+    ADD_SONG("Woodland Fantasy", "resources/WoodlandFantasy.ogg");
+    ADD_SONG("Woods", "resources/Woods.ogg");
 
-    mSounds.reserve(32);
+    for (size_t i = 0; i < mSongs.size(); i++)
+        mSongIndices.push_back(i);
 }
 
 SoundPlayer& SoundPlayer::get()
@@ -22,41 +27,82 @@ SoundPlayer& SoundPlayer::get()
     return instance;
 }
 
-void SoundPlayer::playSound(const std::string& name, float volume, float pitch)
+void SoundPlayer::updateMusic()
 {
+    auto status = mMusic.getStatus();
+
+    if (!mPlayMusic)
+    {
+        if(status == sf::SoundSource::Playing) mMusic.stop();
+        return;
+    }
+        
+    if (status != sf::SoundSource::Playing)
+    {
+        if (mSongIndices.size() == 0)
+        {
+            for (size_t i = 0; i < mSongs.size(); i++)
+                mSongIndices.push_back(i);
+        }
+
+        size_t songIndex = randomInt(0, mSongIndices.size() - 1);
+
+        if (!mMusic.openFromFile(mSongs[mSongIndices[songIndex]].second))
+            throw std::runtime_error("Unable to load Music because openFromFile method failed");
+        mMusic.setVolume(0.f);
+        mMusic.play();
+
+        mSongIndices.erase(mSongIndices.begin() + songIndex);
+    }
+    else
+    {
+        float progress = mMusic.getPlayingOffset() / mMusic.getDuration();
+
+        if (progress < 0.1f)
+            mMusic.setVolume(progress * mMusicVolume * 10.f);
+        else if (progress > 0.9f)
+            mMusic.setVolume((1.0f - progress) * mMusicVolume * 10.f);
+        else
+            mMusic.setVolume(mMusicVolume);
+    }
+}
+
+void SoundPlayer::playMusic(bool value)
+{
+    mPlayMusic = value;
+}
+
+void SoundPlayer::setMusicVolume(float volume)
+{
+    mMusicVolume = volume;
+}
+
+void SoundPlayer::play(const std::string& name, float volume, float pitch)
+{
+    if (!mPlaySounds) return;
+
     auto sound = std::make_unique<sf::Sound>();
     sound->setBuffer(Resources::getSoundBuffer(name));
-    sound->setVolume(volume);
+    sound->setVolume(volume * mSoundsVolume / 100.f);
     sound->setPitch(pitch);
     sound->play();
 
     mSounds.push_back(std::move(sound));
 
-    clean();
+    cleanSounds();
 }
 
-void SoundPlayer::updateMusic()
+void SoundPlayer::playSounds(bool value)
 {
-    if (mMusic.getStatus() != sf::SoundSource::Playing)
-    {
-        mSongIndex = (mSongIndex + 1) % mSongs.size();
-        if (!mMusic.openFromFile(mSongs[mSongIndex]))
-            throw std::runtime_error("Unable to load Music because openFromFile method failed");
-        mMusic.setVolume(0.f);
-        mMusic.play();
-    }
-
-    float progress = (mMusic.getPlayingOffset() / mMusic.getDuration()) * 100.f;
-
-    if (progress < 10.f)
-        mMusic.setVolume(progress / 10.f * 100.f);
-    else if (progress > 90.f)
-        mMusic.setVolume(100.f - ((progress - 90.f) / 10.f * 100.f));
-    else
-        mMusic.setVolume(100.f);
+    mPlaySounds = value;
 }
 
-void SoundPlayer::clean()
+void SoundPlayer::setSoundsVolume(float volume)
+{
+    mSoundsVolume = volume;
+}
+
+void SoundPlayer::cleanSounds()
 {
     mSounds.erase(
         std::remove_if(

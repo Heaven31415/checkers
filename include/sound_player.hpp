@@ -3,7 +3,7 @@
 #include <memory>
 #include "resources.hpp"
 
-#define ADD_SONG(path) mSongs.push_back(path);
+#define ADD_SONG(name, filename) mSongs.push_back({ name, filename })
 
 class SoundPlayer
 {
@@ -13,14 +13,25 @@ public:
 
     static SoundPlayer& get();
 
-    void playSound(const std::string& name, float volume, float pitch);
     void updateMusic();
-    void clean();
+    void playMusic(bool value);
+    void setMusicVolume(float volume);
+
+    void play(const std::string& name, float volume = 100.f, float pitch = 1.0f);
+    void playSounds(bool value);
+    void setSoundsVolume(float volume);
 private:
     SoundPlayer();
+    void cleanSounds();
+
 private:
+    bool mPlayMusic;
     sf::Music mMusic;
-    size_t mSongIndex;
-    std::vector<std::string> mSongs;
+    std::vector<size_t> mSongIndices;
+    std::vector<std::pair<std::string, std::string>> mSongs;
+    float mMusicVolume;
+
+    bool mPlaySounds;
     std::vector<std::unique_ptr<sf::Sound>> mSounds;
+    float mSoundsVolume;
 };

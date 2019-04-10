@@ -29,7 +29,7 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
         else
         {
             mSelected = nullptr;
-            SoundPlayer::playSound("Impossible", 10, 1.2f);
+            SoundPlayer::get().play("Impossible", 10, 1.2f);
         }
     }
     else
@@ -39,7 +39,7 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
         if (canFight && mSelected->canFight(destination))
         {
             mSelected->fight(destination);
-            SoundPlayer::playSound("Fight", 20, 1.2f);
+            SoundPlayer::get().play("Fight", 20, 1.2f);
 
             if (!mSelected->canFight())
             {
@@ -60,17 +60,17 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
             mSelected->select(false);
             mSelected = nullptr;
             nextTurn();
-            SoundPlayer::playSound("Move", 20, 1.2f);
+            SoundPlayer::get().play("Move", 20, 1.2f);
         }
         else if(!mLock)
         {
             mSelected->select(false);
             mSelected = nullptr;
-            SoundPlayer::playSound("Impossible", 10, 1.2f);
+            SoundPlayer::get().play("Impossible", 10, 1.2f);
         }
         else
         {
-            SoundPlayer::playSound("Impossible", 10, 1.2f);
+            SoundPlayer::get().play("Impossible", 10, 1.2f);
         }
     }
 
@@ -136,7 +136,7 @@ void Game::update(sf::Time dt)
         mShadow[i].move(30.f * dt.asSeconds(), 0.f);
     }
 
-    SoundPlayer::updateMusic(dt);
+    SoundPlayer::get().updateMusic();
 }
 
 void Game::render(sf::RenderWindow& window) const
