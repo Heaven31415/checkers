@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -21,3 +22,8 @@ enum class Color
 bool isValidPosition(int x, int y);
 bool isValidPosition(const sf::Vector2i& position);
 void centerOrigin(sf::Text& text);
+
+static std::random_device device{};
+static std::mt19937 engine{ device() };
+
+size_t randomInt(size_t min, size_t max);

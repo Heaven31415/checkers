@@ -15,3 +15,9 @@ void centerOrigin(sf::Text& text)
     sf::FloatRect rect = text.getLocalBounds();
     text.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
 }
+
+size_t randomInt(size_t min, size_t max)
+{
+    std::uniform_int_distribution<size_t> dist(min, max);
+    return dist(engine);
+}
