@@ -2,6 +2,7 @@
 
 StateStack::StateStack()
 : mWindow{ sf::VideoMode{unsigned(WindowWidth), unsigned(WindowHeight)}, "Checkers", sf::Style::Close }
+, mActual{ State::Type::None }
 , mStates{}
 , mStack{}
 , mCursor{Resources::get().texture("Cursor")}
@@ -12,67 +13,15 @@ StateStack::StateStack()
 
     mWindow.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
+    mStates[State::Type::Game] = State::Ptr(new Game{});
+    mStates[State::Type::Options] = State::Ptr(new Options{});
+    mStates[State::Type::Title] = State::Ptr(new Title{});
+
     mWindow.setMouseCursorVisible(false);
     mCursor.setOrigin(5.f, 0.f);
 }
 
-void StateStack::pushImpl(State::Type type)
-{
-    mStack.push(type);
-}
-
-void StateStack::popImpl()
-{
-    if (!mStack.empty()) mStack.pop();
-}
-
-void StateStack::runImpl()
-{
-    sf::Clock clock{};
-    sf::Time dt{};
-
-    while (!mStack.empty() && mWindow.isOpen())
-    {
-        auto actual = mStack.top();
-
-        if (mStates.find(actual) == mStates.end())
-        {
-            mStates[actual] = factory(actual);
-
-            if (mStates[actual] == nullptr)
-                throw std::runtime_error("Unable to construct state using factory");
-        }
-        else
-        {
-            sf::Event event;
-            while (mWindow.pollEvent(event))
-                mStates[actual]->processEvent(event);
-
-            dt += clock.restart();
-            while (dt >= TimePerFrame)
-            {
-                mStates[actual]->update(TimePerFrame);
-                updateCursor();
-
-                dt -= TimePerFrame;
-            }
-
-            mWindow.clear();
-
-            mStates[actual]->render(mWindow);
-            mWindow.draw(mCursor);
-
-            mWindow.display();
-        }
-    }
-}
-
-void StateStack::closeWindowImpl()
-{
-    mWindow.close();
-}
-
-StateStack& StateStack::getInstance()
+StateStack& StateStack::get()
 {
     static StateStack instance{};
     return instance;
@@ -80,40 +29,48 @@ StateStack& StateStack::getInstance()
 
 void StateStack::push(State::Type type)
 {
-    getInstance().pushImpl(type);
+    mStack.push(type);
 }
 
 void StateStack::pop()
 {
-    getInstance().popImpl();
+    if (!mStack.empty()) mStack.pop();
 }
 
 void StateStack::run()
 {
-    getInstance().runImpl();
+    while (!mStack.empty() && mWindow.isOpen())
+    {
+        if (mActual != mStack.top())
+        {
+            mActual = mStack.top();
+            mStates[mActual]->activation();
+        }
+
+        sf::Clock clock{};
+
+        sf::Event event;
+        while (mWindow.pollEvent(event))
+            mStates[mActual]->processEvent(event);
+
+        mStates[mActual]->update(TimePerFrame);
+        updateCursor();
+
+        mWindow.clear();
+        mStates[mActual]->render(mWindow);
+        mWindow.draw(mCursor);
+        mWindow.display();
+
+        sf::sleep(TimePerFrame - clock.restart());
+    }
 }
 
 void StateStack::closeWindow()
 {
-    getInstance().closeWindowImpl();
+    mWindow.close();
 }
 
 void StateStack::updateCursor()
 {
     mCursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(mWindow)));
-}
-
-State::Ptr StateStack::factory(State::Type type)
-{
-    switch (type)
-    {
-        case State::Type::Game:
-            return State::Ptr(new Game{});
-        case State::Type::Options:
-            return State::Ptr(new Options{});
-        case State::Type::Title:
-            return State::Ptr(new Title{});
-    }
-
-    return nullptr;
 }

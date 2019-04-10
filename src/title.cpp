@@ -5,20 +5,25 @@ Title::Title()
 {
 }
 
+void Title::activation()
+{
+    std::cout << "Title has been activated!" << '\n';
+}
+
 void Title::processEvent(const sf::Event& event)
 {
     switch (event.type)
     {
         case sf::Event::Closed:
         {
-            StateStack::closeWindow();
+            StateStack::get().closeWindow();
         }
         break;
 
         case sf::Event::KeyPressed:
         {
             if (event.key.code == sf::Keyboard::Enter)
-                StateStack::push(State::Type::Game);
+                StateStack::get().push(State::Type::Game);
         }
         break;
     }

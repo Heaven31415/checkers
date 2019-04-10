@@ -5,20 +5,25 @@ Options::Options()
 {
 }
 
+void Options::activation()
+{
+    std::cout << "Options has been activated!" << '\n';
+}
+
 void Options::processEvent(const sf::Event& event)
 {
     switch (event.type)
     {
         case sf::Event::Closed:
         {
-            StateStack::closeWindow();
+            StateStack::get().closeWindow();
         }
         break;
 
         case sf::Event::KeyPressed:
         {
             if (event.key.code == sf::Keyboard::Escape)
-                StateStack::pop();
+                StateStack::get().pop();
         }
         break;
     }

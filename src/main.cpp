@@ -5,8 +5,8 @@ int main()
 {
     try
     {
-        StateStack::push(State::Type::Title);
-        StateStack::run();
+        StateStack::get().push(State::Type::Title);
+        StateStack::get().run();
     }
     catch (const std::runtime_error& error)
     {

@@ -98,29 +98,34 @@ void Game::nextTurn()
     centerOrigin(mTurnText);
 }
 
+void Game::activation()
+{
+    std::cout << "Game has been activated!" << '\n';
+}
+
 void Game::processEvent(const sf::Event& event)
 {
     switch (event.type)
     {
         case sf::Event::Closed:
         {
-            StateStack::closeWindow();
+            StateStack::get().closeWindow();
         }
         break;
 
         case sf::Event::KeyPressed:
         {
             if (mFinished || (event.key.code == sf::Keyboard::F4 && event.key.alt))
-                StateStack::pop();
+                StateStack::get().pop();
             else if (event.key.code == sf::Keyboard::Escape)
-                StateStack::push(State::Type::Options);
+                StateStack::get().push(State::Type::Options);
         } 
         break;
 
         case sf::Event::MouseButtonPressed:
         {
             if (mFinished)
-                StateStack::pop();
+                StateStack::get().pop();
             else if (!mFinished && event.mouseButton.button == sf::Mouse::Left)
                 handlePlayerAction({ event.mouseButton.x / TileSize - OffsetX, event.mouseButton.y / TileSize - OffsetY });
         } 
