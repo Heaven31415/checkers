@@ -7,6 +7,8 @@ StateStack::StateStack()
 , mBackground{ Resources::get().texture("Background") }
 , mShadow{ sf::Sprite{Resources::get().texture("Shadow")}, sf::Sprite{Resources::get().texture("Shadow")} }
 , mCursor{ Resources::get().texture("Cursor") }
+, mTransition{ false }
+, mTransitionTimer{}
 {
     sf::Image icon{};
     if (!icon.loadFromFile("resources/Icon.png"))
@@ -28,7 +30,9 @@ void StateStack::processEvents()
 {
     sf::Event event;
     while (mWindow.pollEvent(event))
-        mStack.top()->processEvent(event);
+    {
+        if(!mTransition) mStack.top()->processEvent(event);
+    }
 }
 
 void StateStack::update(sf::Time dt)
@@ -43,17 +47,34 @@ void StateStack::update(sf::Time dt)
 
     mStack.top()->update(dt);
 
-    // SoundPlayer::get().updateMusic();
+    SoundPlayer::get().updateMusic();
 }
 
 void StateStack::render()
 {
+    sf::RenderStates states;
+
+    if (mTransition)
+    {
+        float progress = mTransitionTimer.asSeconds();
+
+        states.transform.translate((-0.5f + progress) * WindowWidth, 0.f);
+        states.transform.scale(0.5f + progress, 0.5f + progress, WindowWidth / 2.f, WindowHeight / 2.f);
+
+        mTransitionTimer += TimePerFrame;
+
+        if (mTransitionTimer >= sf::seconds(0.5f)) mTransition = false;
+
+        std::cout << mTransitionTimer.asSeconds() << '\n';
+    }
+
     mWindow.clear();
 
     mWindow.draw(mBackground);
     mWindow.draw(mShadow[0]);
     mWindow.draw(mShadow[1]);
-    mWindow.draw(*mStack.top());
+
+    mWindow.draw(*mStack.top(), states);
     mWindow.draw(mCursor);
 
     mWindow.display();
@@ -69,6 +90,9 @@ void StateStack::push(State::Type type)
 {
     mStack.push(mStates[type].get());
     mStack.top()->activation();
+
+    mTransition = true;
+    mTransitionTimer = sf::Time::Zero;
 }
 
 void StateStack::pop()
@@ -78,6 +102,9 @@ void StateStack::pop()
 
     mStack.top()->deactivation();
     mStack.pop();
+
+    mTransition = true;
+    mTransitionTimer = sf::Time::Zero;
 }
 
 void StateStack::run()

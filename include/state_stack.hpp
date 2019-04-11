@@ -7,6 +7,8 @@
 #include "state.hpp"
 #include "title.hpp"
 
+#include <iostream>
+
 class StateStack
 {
 public:
@@ -32,4 +34,7 @@ private:
     sf::Sprite mBackground;
     sf::Sprite mShadow[2];
     sf::Sprite mCursor;
+
+    bool mTransition;
+    sf::Time mTransitionTimer;
 };
