@@ -4,33 +4,7 @@ Board::Board()
 : mSprite{ Resources::get().texture("Board") }
 , mPawns{}
 {
-    mPawns.reserve(24);
-
-    ADD_LIGHT_PAWN(1, 0);
-    ADD_LIGHT_PAWN(3, 0);
-    ADD_LIGHT_PAWN(5, 0);
-    ADD_LIGHT_PAWN(7, 0);
-    ADD_LIGHT_PAWN(0, 1);
-    ADD_LIGHT_PAWN(2, 1);
-    ADD_LIGHT_PAWN(4, 1);
-    ADD_LIGHT_PAWN(6, 1);
-    ADD_LIGHT_PAWN(1, 2);
-    ADD_LIGHT_PAWN(3, 2);
-    ADD_LIGHT_PAWN(5, 2);
-    ADD_LIGHT_PAWN(7, 2);
-
-    ADD_DARK_PAWN(0, 5);
-    ADD_DARK_PAWN(2, 5);
-    ADD_DARK_PAWN(4, 5);
-    ADD_DARK_PAWN(6, 5);
-    ADD_DARK_PAWN(1, 6);
-    ADD_DARK_PAWN(3, 6);
-    ADD_DARK_PAWN(5, 6);
-    ADD_DARK_PAWN(7, 6);
-    ADD_DARK_PAWN(0, 7);
-    ADD_DARK_PAWN(2, 7);
-    ADD_DARK_PAWN(4, 7);
-    ADD_DARK_PAWN(6, 7);
+    reset();
 }
 
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -95,4 +69,35 @@ int Board::pawnCount(Color color) const
             count++;
 
     return count;
+}
+
+void Board::reset()
+{
+    mPawns.clear();
+
+    ADD_LIGHT_PAWN(1, 0);
+    ADD_LIGHT_PAWN(3, 0);
+    ADD_LIGHT_PAWN(5, 0);
+    ADD_LIGHT_PAWN(7, 0);
+    ADD_LIGHT_PAWN(0, 1);
+    ADD_LIGHT_PAWN(2, 1);
+    ADD_LIGHT_PAWN(4, 1);
+    ADD_LIGHT_PAWN(6, 1);
+    ADD_LIGHT_PAWN(1, 2);
+    ADD_LIGHT_PAWN(3, 2);
+    ADD_LIGHT_PAWN(5, 2);
+    ADD_LIGHT_PAWN(7, 2);
+
+    ADD_DARK_PAWN(0, 5);
+    ADD_DARK_PAWN(2, 5);
+    ADD_DARK_PAWN(4, 5);
+    ADD_DARK_PAWN(6, 5);
+    ADD_DARK_PAWN(1, 6);
+    ADD_DARK_PAWN(3, 6);
+    ADD_DARK_PAWN(5, 6);
+    ADD_DARK_PAWN(7, 6);
+    ADD_DARK_PAWN(0, 7);
+    ADD_DARK_PAWN(2, 7);
+    ADD_DARK_PAWN(4, 7);
+    ADD_DARK_PAWN(6, 7);
 }

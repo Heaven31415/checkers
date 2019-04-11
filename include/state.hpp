@@ -4,8 +4,6 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include <iostream> // TODO: remove me in the future
-
 class State
 {
 public:

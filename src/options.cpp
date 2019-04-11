@@ -8,12 +8,10 @@ Options::Options()
 
 void Options::activation()
 {
-    std::cout << "Options has been activated!" << '\n';
 }
 
 void Options::deactivation()
 {
-    std::cout << "Options has been deactivated!" << '\n';
 }
 
 void Options::processEvent(const sf::Event& event)

@@ -96,12 +96,18 @@ void Game::nextTurn()
 
 void Game::activation()
 {
-    std::cout << "Game has been activated!" << '\n';
 }
 
 void Game::deactivation()
 {
-    std::cout << "Game has been deactivated!" << '\n';
+    mBoard.reset();
+    mSelected = nullptr;
+    mLock = false;
+    mActualPlayerColor = Color::Light;
+    mFinished = false;
+
+    mTurnText.setString("White Player Turn");
+    centerOrigin(mTurnText);
 }
 
 void Game::processEvent(const sf::Event& event)

@@ -17,6 +17,7 @@ public:
     bool isFightPossible(Color color) const;
     bool isMovePossible(Color color) const;
     int pawnCount(Color color) const;
+    void reset();
 
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
