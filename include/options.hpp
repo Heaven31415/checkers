@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common.hpp"
 #include "state.hpp"
 
 class Options : public State
@@ -12,4 +13,7 @@ public:
     virtual void processEvent(const sf::Event& event) override;
     virtual void update(sf::Time dt) override;
     virtual void render(sf::RenderWindow& window) const override;
+
+private:
+    sf::Sprite mBackground;
 };

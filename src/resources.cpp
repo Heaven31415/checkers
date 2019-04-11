@@ -14,15 +14,16 @@ Resources::Resources()
 
     loadTexture("Background", "resources/Background.png");
     loadTexture("Board", "resources/Board.png");
-    loadTexture("LightKing", "resources/LightKing.png");
-    loadTexture("LightKingSelected", "resources/LightKingSelected.png");
-    loadTexture("LightPawn", "resources/LightPawn.png");
-    loadTexture("LightPawnSelected", "resources/LightPawnSelected.png");
+    loadTexture("Cursor", "resources/Cursor.png");
     loadTexture("DarkKing", "resources/DarkKing.png");
     loadTexture("DarkKingSelected", "resources/DarkKingSelected.png");
     loadTexture("DarkPawn", "resources/DarkPawn.png");
     loadTexture("DarkPawnSelected", "resources/DarkPawnSelected.png");
-    loadTexture("Cursor", "resources/Cursor.png");
+    loadTexture("LightKing", "resources/LightKing.png");
+    loadTexture("LightKingSelected", "resources/LightKingSelected.png");
+    loadTexture("LightPawn", "resources/LightPawn.png");
+    loadTexture("LightPawnSelected", "resources/LightPawnSelected.png");
+    loadTexture("Options", "resources/Options.png");
     loadTexture("Shadow", "resources/Shadow.png");
 }
 

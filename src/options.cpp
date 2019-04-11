@@ -2,6 +2,7 @@
 #include "state_stack.hpp"
 
 Options::Options()
+: mBackground{Resources::get().texture("Options")}
 {
 }
 
@@ -40,4 +41,5 @@ void Options::update(sf::Time dt)
 
 void Options::render(sf::RenderWindow& window) const
 {
+    window.draw(mBackground);
 }
