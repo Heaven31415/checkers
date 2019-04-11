@@ -2,10 +2,9 @@
 
 StateStack::StateStack()
 : mWindow{ sf::VideoMode{unsigned(WindowWidth), unsigned(WindowHeight)}, "Checkers", sf::Style::Close }
-, mActual{ State::Type::None }
 , mStates{}
 , mStack{}
-, mCursor{Resources::get().texture("Cursor")}
+, mCursor{ Resources::get().texture("Cursor") }
 {
     sf::Image icon{};
     if (!icon.loadFromFile("resources/Icon.png"))
@@ -29,35 +28,36 @@ StateStack& StateStack::get()
 
 void StateStack::push(State::Type type)
 {
-    mStack.push(type);
+    mStack.push(mStates[type].get());
+    mStack.top()->activation();
 }
 
 void StateStack::pop()
 {
-    if (!mStack.empty()) mStack.pop();
+    if (mStack.empty())
+        throw std::runtime_error("Unable to pop an empty stack");
+
+    mStack.top()->deactivation();
+    mStack.pop();
 }
 
 void StateStack::run()
 {
     while (!mStack.empty() && mWindow.isOpen())
     {
-        if (mActual != mStack.top())
-        {
-            mActual = mStack.top();
-            mStates[mActual]->activation();
-        }
+        auto* state = mStack.top();
 
         sf::Clock clock{};
 
         sf::Event event;
         while (mWindow.pollEvent(event))
-            mStates[mActual]->processEvent(event);
+            state->processEvent(event);
 
-        mStates[mActual]->update(TimePerFrame);
+        state->update(TimePerFrame);
         updateCursor();
 
         mWindow.clear();
-        mStates[mActual]->render(mWindow);
+        state->render(mWindow);
         mWindow.draw(mCursor);
         mWindow.display();
 

@@ -24,8 +24,7 @@ private:
     void updateCursor();
     
     sf::RenderWindow mWindow;
-    State::Type mActual;
     std::map<State::Type, State::Ptr> mStates;
-    std::stack<State::Type> mStack;
+    std::stack<State*> mStack;
     sf::Sprite mCursor;
 };

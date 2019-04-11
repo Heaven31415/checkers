@@ -103,6 +103,11 @@ void Game::activation()
     std::cout << "Game has been activated!" << '\n';
 }
 
+void Game::deactivation()
+{
+    std::cout << "Game has been deactivated!" << '\n';
+}
+
 void Game::processEvent(const sf::Event& event)
 {
     switch (event.type)

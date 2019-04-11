@@ -10,6 +10,11 @@ void Title::activation()
     std::cout << "Title has been activated!" << '\n';
 }
 
+void Title::deactivation()
+{
+    std::cout << "Title has been deactivated!" << '\n';
+}
+
 void Title::processEvent(const sf::Event& event)
 {
     switch (event.type)
