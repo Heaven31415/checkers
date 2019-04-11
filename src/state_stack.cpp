@@ -64,8 +64,6 @@ void StateStack::render()
         mTransitionTimer += TimePerFrame;
 
         if (mTransitionTimer >= sf::seconds(0.5f)) mTransition = false;
-
-        std::cout << mTransitionTimer.asSeconds() << '\n';
     }
 
     mWindow.clear();
@@ -80,6 +78,12 @@ void StateStack::render()
     mWindow.display();
 }
 
+void StateStack::transition()
+{
+    mTransition = true;
+    mTransitionTimer = sf::Time::Zero;
+}
+
 StateStack& StateStack::get()
 {
     static StateStack instance{};
@@ -91,8 +95,7 @@ void StateStack::push(State::Type type)
     mStack.push(mStates[type].get());
     mStack.top()->activation();
 
-    mTransition = true;
-    mTransitionTimer = sf::Time::Zero;
+    transition();
 }
 
 void StateStack::pop()
@@ -103,8 +106,7 @@ void StateStack::pop()
     mStack.top()->deactivation();
     mStack.pop();
 
-    mTransition = true;
-    mTransitionTimer = sf::Time::Zero;
+    transition();
 }
 
 void StateStack::run()

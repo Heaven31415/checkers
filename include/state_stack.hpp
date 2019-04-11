@@ -7,8 +7,6 @@
 #include "state.hpp"
 #include "title.hpp"
 
-#include <iostream>
-
 class StateStack
 {
 public:
@@ -27,6 +25,7 @@ private:
     void processEvents();
     void update(sf::Time dt);
     void render();
+    void transition();
 
     sf::RenderWindow mWindow;
     std::map<State::Type, State::Ptr> mStates;
