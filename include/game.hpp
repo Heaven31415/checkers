@@ -5,14 +5,17 @@
 #include "sound_player.hpp"
 #include "state.hpp"
 
+#include <iostream>
+
 class Game : public State
 {
 public:
     Game();
 
     void handlePlayerAction(const sf::Vector2i& destination);
-    void handleEnemyAction();
+    Pawn* handleEnemyAction();
     void nextTurn();
+    void tryToFinish();
 
     virtual void activation() override;
     virtual void deactivation() override;

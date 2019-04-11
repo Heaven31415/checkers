@@ -47,7 +47,7 @@ void StateStack::update(sf::Time dt)
 
     mStack.top()->update(dt);
 
-    SoundPlayer::get().updateMusic();
+    // SoundPlayer::get().updateMusic();
 }
 
 void StateStack::render()

@@ -30,6 +30,16 @@ Pawn* Board::getPawn(const sf::Vector2i& position) const
     return getPawn(position.x, position.y);
 }
 
+std::vector<Pawn*> Board::getPawns(Color color) const
+{
+    std::vector<Pawn*> pawns;
+
+    for (const auto& pawn : mPawns)
+        if (pawn->getColor() == color) pawns.push_back(pawn.get());
+
+    return pawns;
+}
+
 void Board::killPawn(const sf::Vector2i& position)
 {
     mPawns.erase(

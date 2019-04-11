@@ -112,6 +112,42 @@ bool Pawn::canMove() const
     return false;
 }
 
+std::vector<sf::Vector2i> Pawn::getMovePositions() const
+{
+    std::vector<sf::Vector2i> movePositions{};
+
+    if (mIsKing)
+    {
+        for (int i = -1; i <= 1; i += 2)
+        {
+            for (int j = -1; j <= 1; j += 2)
+            {
+                int x = mPosition.x + i;
+                int y = mPosition.y + j;
+
+                while (isValidPosition(x, y))
+                {
+                    if (canMove({ x, y })) movePositions.push_back({ x, y });
+                    x += i;
+                    y += j;
+                }
+            }
+        }
+    }
+    else
+    {
+        int offset = (mColor == Color::Light ? 1 : -1);
+
+        if (canMove({ mPosition.x - 1, mPosition.y + offset }))
+            movePositions.push_back({ mPosition.x - 1, mPosition.y + offset });
+
+        if (canMove({ mPosition.x + 1, mPosition.y + offset }))
+            movePositions.push_back({ mPosition.x + 1, mPosition.y + offset });
+    }
+
+    return movePositions;
+}
+
 void Pawn::fight(const sf::Vector2i& destination)
 {
     if (!isValidPosition(destination)) return;
@@ -250,6 +286,46 @@ bool Pawn::canFight() const
         || canFight({ mPosition.x - 2, mPosition.y + 2 })
         || canFight({ mPosition.x + 2, mPosition.y - 2 })
         || canFight({ mPosition.x - 2, mPosition.y - 2 });
+}
+
+std::vector<sf::Vector2i> Pawn::getFightPositions() const
+{
+    std::vector<sf::Vector2i> fightPositions{};
+
+    if (mIsKing)
+    {
+        for (int i = -1; i <= 1; i += 2)
+        {
+            for (int j = -1; j <= 1; j += 2)
+            {
+                int x = mPosition.x + i;
+                int y = mPosition.y + j;
+
+                while (isValidPosition(x, y))
+                {
+                    if (canFight({ x, y })) fightPositions.push_back({ x, y });
+                    x += i;
+                    y += j;
+                }
+            }
+        }
+    }
+    else
+    {
+        if (canFight({ mPosition.x + 2, mPosition.y + 2 }))
+            fightPositions.push_back({ mPosition.x + 2, mPosition.y + 2 });
+
+        if (canFight({ mPosition.x - 2, mPosition.y + 2 }))
+            fightPositions.push_back({ mPosition.x - 2, mPosition.y + 2 });
+
+        if (canFight({ mPosition.x + 2, mPosition.y - 2 }))
+            fightPositions.push_back({ mPosition.x + 2, mPosition.y - 2 });
+
+        if (canFight({ mPosition.x - 2, mPosition.y - 2 }))
+            fightPositions.push_back({ mPosition.x - 2, mPosition.y - 2 });
+    }
+
+    return fightPositions;
 }
 
 const sf::Vector2i& Pawn::getPosition() const

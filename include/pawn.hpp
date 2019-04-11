@@ -13,10 +13,12 @@ public:
     void move(const sf::Vector2i& destination);
     bool canMove(const sf::Vector2i& destination) const;
     bool canMove() const;
+    std::vector<sf::Vector2i> getMovePositions() const;
 
     void fight(const sf::Vector2i& destination);
     bool canFight(const sf::Vector2i& destination) const;
     bool canFight() const;
+    std::vector<sf::Vector2i> getFightPositions() const;
 
     const sf::Vector2i& getPosition() const;
     Color getColor() const;

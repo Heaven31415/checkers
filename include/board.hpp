@@ -13,6 +13,7 @@ public:
 
     Pawn* getPawn(int x, int y) const;
     Pawn* getPawn(const sf::Vector2i& position) const;
+    std::vector<Pawn*> getPawns(Color color) const;
     void killPawn(const sf::Vector2i& position);
     bool isFightPossible(Color color) const;
     bool isMovePossible(Color color) const;
