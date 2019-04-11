@@ -146,6 +146,6 @@ void Game::update(sf::Time dt)
 
 void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(mBoard);
-    target.draw(mTurnText);
+    target.draw(mBoard, states);
+    target.draw(mTurnText, states);
 }

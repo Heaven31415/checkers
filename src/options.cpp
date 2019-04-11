@@ -39,5 +39,5 @@ void Options::update(sf::Time dt)
 
 void Options::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(mBackground);
+    target.draw(mBackground, states);
 }
