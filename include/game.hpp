@@ -11,6 +11,7 @@ public:
     Game();
 
     void handlePlayerAction(const sf::Vector2i& destination);
+    void handleEnemyAction();
     void nextTurn();
 
     virtual void activation() override;
@@ -22,7 +23,10 @@ private:
     Board mBoard;
     Pawn* mSelected;
     bool mLock;
+    bool mTraining;
+    Color mPlayerColor;
     Color mActualPlayerColor;
+    sf::Time mEnemyTimer;
     sf::Text mTurnText;
     bool mFinished;
 };

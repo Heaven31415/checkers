@@ -3,11 +3,14 @@
 
 Game::Game()
 : mBoard{}
-, mSelected{nullptr}
-, mLock{false}
-, mActualPlayerColor{Color::Light}
-, mTurnText{"White Player Turn", Resources::get().font("Candara"), 30}
-, mFinished{false}
+, mSelected{ nullptr }
+, mLock{ false }
+, mTraining{ false }
+, mPlayerColor{ Color::Light }
+, mActualPlayerColor{ Color::Light }
+, mEnemyTimer{}
+, mTurnText{ "White Player Turn", Resources::get().font("Candara"), 30 }
+, mFinished{ false }
 {
     centerOrigin(mTurnText);
     mTurnText.setPosition(WindowWidth / 2.f, 96.f);
@@ -78,6 +81,11 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
     }
 }
 
+void Game::handleEnemyAction()
+{
+    nextTurn();
+}
+
 void Game::nextTurn()
 {
     if (mActualPlayerColor == Color::Light)
@@ -134,7 +142,10 @@ void Game::processEvent(const sf::Event& event)
             if (mFinished)
                 StateStack::get().pop();
             else if (!mFinished && event.mouseButton.button == sf::Mouse::Left)
-                handlePlayerAction({ event.mouseButton.x / TileSize - OffsetX, event.mouseButton.y / TileSize - OffsetY });
+            {
+                if(mTraining || (!mTraining && mActualPlayerColor == mPlayerColor))
+                    handlePlayerAction({ event.mouseButton.x / TileSize - OffsetX, event.mouseButton.y / TileSize - OffsetY });
+            }
         } 
         break;
     }
@@ -142,6 +153,16 @@ void Game::processEvent(const sf::Event& event)
 
 void Game::update(sf::Time dt)
 {
+    if (!mTraining && mActualPlayerColor != mPlayerColor)
+    {
+        mEnemyTimer += dt;
+
+        if (mEnemyTimer >= sf::seconds(1.f))
+        {
+            handleEnemyAction();
+            mEnemyTimer = sf::Time::Zero;
+        }
+    }
 }
 
 void Game::draw(sf::RenderTarget& target, sf::RenderStates states) const
