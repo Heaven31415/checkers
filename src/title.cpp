@@ -36,7 +36,6 @@ void Title::update(sf::Time dt)
 {
 }
 
-void Title::render(sf::RenderWindow& window) const
+void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-
 }

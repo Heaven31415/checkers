@@ -37,7 +37,7 @@ void Options::update(sf::Time dt)
 {
 }
 
-void Options::render(sf::RenderWindow& window) const
+void Options::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    window.draw(mBackground);
+    target.draw(mBackground);
 }

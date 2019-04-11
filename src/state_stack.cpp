@@ -53,7 +53,7 @@ void StateStack::render()
     mWindow.draw(mBackground);
     mWindow.draw(mShadow[0]);
     mWindow.draw(mShadow[1]);
-    mStack.top()->render(mWindow);
+    mWindow.draw(*mStack.top());
     mWindow.draw(mCursor);
 
     mWindow.display();
