@@ -84,6 +84,7 @@ Pawn* Game::handleEnemyAction()
         if (!fightPositions.empty())
         {
             mSelected->fight(fightPositions[0]);
+            SoundPlayer::get().play("Fight", 20, 1.2f);
             return mSelected;
         }
     }
@@ -110,6 +111,7 @@ Pawn* Game::handleEnemyAction()
         if (fightPositions.empty()) continue;
 
         king->fight(fightPositions[0]);
+        SoundPlayer::get().play("Fight", 20, 1.2f);
         return king;
     }
 
@@ -119,6 +121,7 @@ Pawn* Game::handleEnemyAction()
         if (fightPositions.empty()) continue;
 
         pawn->fight(fightPositions[0]);
+        SoundPlayer::get().play("Fight", 20, 1.2f);
         return pawn;
     }
 
@@ -128,6 +131,7 @@ Pawn* Game::handleEnemyAction()
         if (movePositions.empty()) continue;
 
         pawn->move(movePositions[0]);
+        SoundPlayer::get().play("Move", 20, 1.2f);
         return nullptr;
     }
 
@@ -137,6 +141,7 @@ Pawn* Game::handleEnemyAction()
         if (movePositions.empty()) continue;
 
         king->move(movePositions[0]);
+        SoundPlayer::get().play("Move", 20, 1.2f);
         return nullptr;
     }
 
