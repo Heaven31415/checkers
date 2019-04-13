@@ -4,12 +4,12 @@
 Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
 : mBoard{ board }
 , mSprite{ Resources::get().texture(color == Color::Light ? "LightPawn" : "DarkPawn") }
-, mPosition{ position }
+, mPosition{}
 , mColor{ color }
 , mIsKing{ false }
 , mIsSelected{ false }
 {
-    move(mPosition);
+    move(position);
 }
 
 void Pawn::select(bool value)
@@ -28,7 +28,7 @@ void Pawn::select(bool value)
     mIsSelected = value;
 }
 
-void Pawn::move(const sf::Vector2i& destination)
+void Pawn::move(const sf::Vector2i& destination, bool duringFight)
 {
     if (!isValidPosition(destination)) return;
 
@@ -41,6 +41,8 @@ void Pawn::move(const sf::Vector2i& destination)
 
     if (!mIsKing && (mColor == Color::Light && destination.y == BoardHeight - 1 || mColor == Color::Dark && destination.y == 0))
     {
+        if (duringFight && canFight()) return;
+
         mIsKing = true;
         mSprite.setTexture(Resources::get().texture(mColor == Color::Light ? "LightKing" : "DarkKing"));
     }
@@ -175,8 +177,8 @@ void Pawn::fight(const sf::Vector2i& destination)
             auto* pawn = mBoard->getPawn({ actualX, actualY });
             if (pawn && pawn->getColor() != mColor)
             {
-                move(destination);
                 mBoard->killPawn(pawn->getPosition());
+                move(destination, true);
                 break;
             }
 
@@ -204,6 +206,7 @@ void Pawn::fight(const sf::Vector2i& destination)
         {
             move(destination);
             mBoard->killPawn(pawn->getPosition());
+            move(destination);
         }
     }
 }

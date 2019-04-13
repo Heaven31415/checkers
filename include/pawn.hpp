@@ -10,7 +10,7 @@ public:
     Pawn(Board* board, const sf::Vector2i& position, Color color);
 
     void select(bool value);
-    void move(const sf::Vector2i& destination);
+    void move(const sf::Vector2i& destination, bool duringFight = false);
     bool canMove(const sf::Vector2i& destination) const;
     bool canMove() const;
     std::vector<sf::Vector2i> getMovePositions() const;
