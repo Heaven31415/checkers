@@ -5,8 +5,6 @@
 #include "sound_player.hpp"
 #include "state.hpp"
 
-#include <iostream>
-
 class Game : public State
 {
 public:
