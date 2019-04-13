@@ -1,4 +1,4 @@
-﻿#include "pawn.hpp"
+#include "pawn.hpp"
 #include "board.hpp"
 
 Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
@@ -28,12 +28,18 @@ void Pawn::select(bool value)
     mIsSelected = value;
 }
 
-void Pawn::move(const sf::Vector2i& dest)
+void Pawn::move(const sf::Vector2i& destination)
 {
-    mPosition = dest;
-    mSprite.setPosition(float(TileSize) * (dest.x + OffsetX), float(TileSize) * (dest.y + OffsetY));
+    if (!isValidPosition(destination)) return;
 
-    if (!mIsKing && (mColor == Color::Light && dest.y == BoardHeight - 1 || mColor == Color::Dark && dest.y == 0))
+    if (destination == mPosition) return;
+
+    if (mBoard->getPawn(destination) != nullptr) return;
+
+    mPosition = destination;
+    mSprite.setPosition(float(TileSize) * (destination.x + OffsetX), float(TileSize) * (destination.y + OffsetY));
+
+    if (!mIsKing && (mColor == Color::Light && destination.y == BoardHeight - 1 || mColor == Color::Dark && destination.y == 0))
     {
         mIsKing = true;
         mSprite.setTexture(Resources::get().texture(mColor == Color::Light ? "LightKing" : "DarkKing"));
