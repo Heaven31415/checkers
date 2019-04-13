@@ -72,7 +72,7 @@ bool Board::isMovePossible(Color color) const
 
 int Board::pawnCount(Color color) const
 {
-    int count{ 0 };
+    int count = 0;
 
     for (const auto& pawn : mPawns)
         if (pawn->getColor() == color)
