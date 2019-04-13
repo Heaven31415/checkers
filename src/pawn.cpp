@@ -320,17 +320,14 @@ std::vector<sf::Vector2i> Pawn::getFightPositions() const
     }
     else
     {
-        if (canFight({ mPosition.x + 2, mPosition.y + 2 }))
-            fightPositions.push_back({ mPosition.x + 2, mPosition.y + 2 });
-
-        if (canFight({ mPosition.x - 2, mPosition.y + 2 }))
-            fightPositions.push_back({ mPosition.x - 2, mPosition.y + 2 });
-
-        if (canFight({ mPosition.x + 2, mPosition.y - 2 }))
-            fightPositions.push_back({ mPosition.x + 2, mPosition.y - 2 });
-
-        if (canFight({ mPosition.x - 2, mPosition.y - 2 }))
-            fightPositions.push_back({ mPosition.x - 2, mPosition.y - 2 });
+        for (int i = -2; i <= 2; i += 4)
+        {
+            for (int j = -2; j <= 2; j += 4)
+            {
+                if (canFight({ mPosition.x + i, mPosition.y + j }))
+                    fightPositions.push_back({ mPosition.x + i, mPosition.y + j });
+            }
+        }
     }
 
     return fightPositions;
