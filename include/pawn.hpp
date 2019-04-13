@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ai.hpp"
 #include "resources.hpp"
 
 class Board;
@@ -19,6 +20,8 @@ public:
     bool canFight(const sf::Vector2i& destination) const;
     bool canFight() const;
     std::vector<sf::Vector2i> getFightPositions() const;
+
+    ai::Pawn getAI() const;
 
     const sf::Vector2i& getPosition() const;
     Color getColor() const;

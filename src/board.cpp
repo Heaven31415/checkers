@@ -111,3 +111,14 @@ void Board::reset()
     ADD_DARK_PAWN(4, 7);
     ADD_DARK_PAWN(6, 7);
 }
+
+ai::Board Board::getAI() const
+{
+    ai::Board board{};
+    board.pawns.reserve(mPawns.size());
+
+    for (const auto& pawn : mPawns)
+        board.pawns.push_back(pawn->getAI());
+
+    return board;
+}

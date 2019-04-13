@@ -1,4 +1,4 @@
-#include "pawn.hpp"
+﻿#include "pawn.hpp"
 #include "board.hpp"
 
 Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
@@ -334,6 +334,11 @@ std::vector<sf::Vector2i> Pawn::getFightPositions() const
     }
 
     return fightPositions;
+}
+
+ai::Pawn Pawn::getAI() const
+{
+    return ai::Pawn{ mPosition, mColor, mIsKing };
 }
 
 const sf::Vector2i& Pawn::getPosition() const
