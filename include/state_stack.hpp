@@ -28,6 +28,7 @@ private:
     void transition();
 
     sf::RenderWindow mWindow;
+    sf::RenderTexture mTexture;
     std::map<State::Type, State::Ptr> mStates;
     std::stack<State*> mStack;
     sf::Sprite mBackground;

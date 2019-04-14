@@ -2,6 +2,7 @@
 
 StateStack::StateStack()
 : mWindow{ sf::VideoMode{unsigned(WindowWidth), unsigned(WindowHeight)}, "Checkers", sf::Style::Close }
+, mTexture{}
 , mStates{}
 , mStack{}
 , mBackground{ Resources::get().texture("Background") }
@@ -10,6 +11,9 @@ StateStack::StateStack()
 , mTransition{ false }
 , mTransitionTimer{}
 {
+    if (!mTexture.create(WindowWidth, WindowHeight))
+        throw std::runtime_error("Unable to create RenderTexture because create method failed");
+
     sf::Image icon{};
     if (!icon.loadFromFile("resources/Icon.png"))
         throw std::runtime_error("Unable to load Icon from 'resources/Icon.png' because loadFromFile method failed");
@@ -60,11 +64,15 @@ void StateStack::render()
 
         states.transform.translate((-0.5f + progress) * WindowWidth, 0.f);
         states.transform.scale(0.5f + progress, 0.5f + progress, WindowWidth / 2.f, WindowHeight / 2.f);
-
+        
         mTransitionTimer += TimePerFrame;
 
         if (mTransitionTimer >= sf::seconds(0.5f)) mTransition = false;
     }
+
+    mTexture.clear(sf::Color::Transparent);
+    mTexture.draw(*mStack.top(), states);
+    mTexture.display();
 
     mWindow.clear();
 
@@ -72,7 +80,10 @@ void StateStack::render()
     mWindow.draw(mShadow[0]);
     mWindow.draw(mShadow[1]);
 
-    mWindow.draw(*mStack.top(), states);
+    sf::Sprite sprite{ mTexture.getTexture() };
+    if (mTransition) sprite.setColor(sf::Color{ 255, 255, 255, static_cast<sf::Uint8>(255.f * (0.5f + mTransitionTimer.asSeconds())) });
+
+    mWindow.draw(sprite);
     mWindow.draw(mCursor);
 
     mWindow.display();
