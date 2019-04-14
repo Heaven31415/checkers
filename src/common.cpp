@@ -21,3 +21,37 @@ size_t randomInt(size_t min, size_t max)
     std::uniform_int_distribution<size_t> dist(min, max);
     return dist(engine);
 }
+
+std::vector<std::pair<std::string, std::string>> getDirectoryEntries(const std::string& directoryPath, std::vector<std::string> extensions)
+{
+    if (!fs::exists(directoryPath))
+        throw std::runtime_error("Unable to find anything at '" + directoryPath + "'");
+
+    if (!fs::is_directory(directoryPath))
+        throw std::runtime_error("Unable to find directory at '" + directoryPath + "'");
+
+    std::vector<std::pair<std::string, std::string>> entries;
+
+    for (const auto& entry : fs::directory_iterator(directoryPath))
+    {
+        const auto& path = entry.path();
+
+        if (fs::is_regular_file(path))
+        {
+            bool validExtension = false;
+
+            for (const auto& extension : extensions)
+            {
+                if (path.extension() == extension) 
+                {
+                    validExtension = true;
+                    break;
+                }
+            }
+
+            if (validExtension) entries.push_back({ path.stem().string(), path.string() });
+        }
+    }
+
+    return entries;
+}

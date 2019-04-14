@@ -15,8 +15,8 @@ StateStack::StateStack()
         throw std::runtime_error("Unable to create RenderTexture because create method failed");
 
     sf::Image icon{};
-    if (!icon.loadFromFile("resources/Icon.png"))
-        throw std::runtime_error("Unable to load Icon from 'resources/Icon.png' because loadFromFile method failed");
+    if (!icon.loadFromFile(TexturesDirectory + "/" + "Icon.png"))
+        throw std::runtime_error("Unable to load Icon because loadFromFile method failed");
 
     mWindow.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
