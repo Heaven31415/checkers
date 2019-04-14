@@ -6,7 +6,7 @@ StateStack::StateStack()
 , mStates{}
 , mStack{}
 , mBackground{ Resources::get().texture("Background") }
-, mShadow{ sf::Sprite{Resources::get().texture("Shadow")}, sf::Sprite{Resources::get().texture("Shadow")} }
+, mShadowTimer{}
 , mCursor{ Resources::get().texture("Cursor") }
 , mTransition{ false }
 , mTransitionTimer{}
@@ -24,10 +24,10 @@ StateStack::StateStack()
     mStates[State::Type::Options] = State::Ptr(new Options{});
     mStates[State::Type::Title] = State::Ptr(new Title{});
 
-    mShadow[0].move(-WindowWidth, 0.f);
-
     mWindow.setMouseCursorVisible(false);
     mCursor.setOrigin(5.f, 0.f);
+
+    Resources::get().shader("Shadow").setUniform("texture", sf::Shader::CurrentTexture);
 }
 
 void StateStack::processEvents()
@@ -41,14 +41,9 @@ void StateStack::processEvents()
 
 void StateStack::update(sf::Time dt)
 {
-    for (size_t i = 0; i <= 1; i++)
-    {
-        if (mShadow[i].getPosition().x >= WindowWidth) mShadow[i].move(-2.f * WindowWidth, 0.f);
-        mShadow[i].move(30.f * dt.asSeconds(), 0.f);
-    }
-
+    mShadowTimer += dt;
+    Resources::get().shader("Shadow").setUniform("time", mShadowTimer.asSeconds());
     mCursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(mWindow)));
-
     mStack.top()->update(dt);
 
     // SoundPlayer::get().updateMusic();
@@ -76,9 +71,7 @@ void StateStack::render()
 
     mWindow.clear();
 
-    mWindow.draw(mBackground);
-    mWindow.draw(mShadow[0]);
-    mWindow.draw(mShadow[1]);
+    mWindow.draw(mBackground, &Resources::get().shader("Shadow"));
 
     sf::Sprite sprite{ mTexture.getTexture() };
     if (mTransition) sprite.setColor(sf::Color{ 255, 255, 255, static_cast<sf::Uint8>(255.f * (0.5f + mTransitionTimer.asSeconds())) });

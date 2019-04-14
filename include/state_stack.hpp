@@ -32,7 +32,7 @@ private:
     std::map<State::Type, State::Ptr> mStates;
     std::stack<State*> mStack;
     sf::Sprite mBackground;
-    sf::Sprite mShadow[2];
+    sf::Time mShadowTimer;
     sf::Sprite mCursor;
 
     bool mTransition;
