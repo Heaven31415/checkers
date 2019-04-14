@@ -5,17 +5,13 @@ SoundPlayer::SoundPlayer()
 , mMusic{}
 , mSongIndices{}
 , mSongs{}
-, mMusicVolume{ 30.f }
+, mMusicVolume{ 15.f }
 , mPlaySounds{ true }
 , mSounds{}
-, mSoundsVolume{ 30.f }
+, mSoundsVolume{ 50.f }
 {
-    ADD_SONG("Decision", "resources/Decision.ogg");
-    ADD_SONG("Forest", "resources/Forest.ogg");
-    ADD_SONG("Journey To The East Rocks", "resources/JourneyToTheEastRocks.ogg");
-    ADD_SONG("Nature", "resources/Nature.ogg");
-    ADD_SONG("Woodland Fantasy", "resources/WoodlandFantasy.ogg");
-    ADD_SONG("Woods", "resources/Woods.ogg");
+    for (const auto& entry : getDirectoryEntries(MusicDirectory, { ".ogg" }))
+        mSongs.push_back({ entry.first, entry.second });
 
     for (size_t i = 0; i < mSongs.size(); i++)
         mSongIndices.push_back(i);

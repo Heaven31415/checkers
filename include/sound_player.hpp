@@ -3,8 +3,6 @@
 #include <memory>
 #include "resources.hpp"
 
-#define ADD_SONG(name, filename) mSongs.push_back({ name, filename })
-
 class SoundPlayer
 {
 public:
