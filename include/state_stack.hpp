@@ -19,6 +19,7 @@ public:
     void pop();
     void run();
     void closeWindow();
+    sf::Time globalTimer();
 private:
     StateStack();
 
@@ -32,7 +33,7 @@ private:
     std::map<State::Type, State::Ptr> mStates;
     std::stack<State*> mStack;
     sf::Sprite mBackground;
-    sf::Time mShadowTimer;
+    sf::Time mGlobalTimer;
     sf::Sprite mCursor;
 
     bool mTransition;

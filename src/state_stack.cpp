@@ -6,7 +6,7 @@ StateStack::StateStack()
 , mStates{}
 , mStack{}
 , mBackground{ Resources::get().texture("Background") }
-, mShadowTimer{}
+, mGlobalTimer{}
 , mCursor{ Resources::get().texture("Cursor") }
 , mTransition{ false }
 , mTransitionTimer{}
@@ -41,8 +41,10 @@ void StateStack::processEvents()
 
 void StateStack::update(sf::Time dt)
 {
-    mShadowTimer += dt;
-    Resources::get().shader("Shadow").setUniform("time", mShadowTimer.asSeconds());
+    mGlobalTimer += dt;
+    mGlobalTimer %= sf::seconds(1.f);
+
+    Resources::get().shader("Shadow")->setUniform("time", mGlobalTimer.asSeconds());
     mCursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(mWindow)));
     mStack.top()->update(dt);
 
@@ -130,4 +132,9 @@ void StateStack::run()
 void StateStack::closeWindow()
 {
     mWindow.close();
+}
+
+sf::Time StateStack::globalTimer()
+{
+    return mGlobalTimer;
 }
