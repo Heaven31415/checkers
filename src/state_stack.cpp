@@ -27,7 +27,8 @@ StateStack::StateStack()
     mWindow.setMouseCursorVisible(false);
     mCursor.setOrigin(5.f, 0.f);
 
-    Resources::get().shader("Shadow").setUniform("texture", sf::Shader::CurrentTexture);
+    Resources::get().shader("Shadow")->setUniform("texture", sf::Shader::CurrentTexture);
+    Resources::get().shader("Transition")->setUniform("texture", sf::Shader::CurrentTexture);
 }
 
 void StateStack::processEvents()
@@ -59,12 +60,13 @@ void StateStack::render()
     {
         float progress = mTransitionTimer.asSeconds();
 
-        states.transform.translate((-0.5f + progress) * WindowWidth, 0.f);
-        states.transform.scale(0.5f + progress, 0.5f + progress, WindowWidth / 2.f, WindowHeight / 2.f);
+        auto* transition = Resources::get().shader("Transition");
+        transition->setUniform("progress", mTransitionTimer / sf::seconds(1.0f));
+        states.shader = transition;
         
         mTransitionTimer += TimePerFrame;
 
-        if (mTransitionTimer >= sf::seconds(0.5f)) mTransition = false;
+        if (mTransitionTimer >= sf::seconds(1.0f)) mTransition = false;
     }
 
     mTexture.clear(sf::Color::Transparent);
@@ -73,10 +75,9 @@ void StateStack::render()
 
     mWindow.clear();
 
-    mWindow.draw(mBackground, &Resources::get().shader("Shadow"));
+    mWindow.draw(mBackground, Resources::get().shader("Shadow"));
 
     sf::Sprite sprite{ mTexture.getTexture() };
-    if (mTransition) sprite.setColor(sf::Color{ 255, 255, 255, static_cast<sf::Uint8>(255.f * (0.5f + mTransitionTimer.asSeconds())) });
 
     mWindow.draw(sprite);
     mWindow.draw(mCursor);
