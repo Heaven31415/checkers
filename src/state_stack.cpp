@@ -27,6 +27,7 @@ StateStack::StateStack()
     mWindow.setMouseCursorVisible(false);
     mCursor.setOrigin(5.f, 0.f);
 
+    Resources::get().shader("Selection")->setUniform("texture", sf::Shader::CurrentTexture);
     Resources::get().shader("Shadow")->setUniform("texture", sf::Shader::CurrentTexture);
     Resources::get().shader("Transition")->setUniform("texture", sf::Shader::CurrentTexture);
 }
@@ -43,9 +44,8 @@ void StateStack::processEvents()
 void StateStack::update(sf::Time dt)
 {
     mGlobalTimer += dt;
-    mGlobalTimer %= sf::seconds(1.f);
 
-    Resources::get().shader("Shadow")->setUniform("time", mGlobalTimer.asSeconds());
+    Resources::get().shader("Shadow")->setUniform("time", globalTimer().asSeconds());
     mCursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(mWindow)));
     mStack.top()->update(dt);
 
@@ -63,7 +63,7 @@ void StateStack::render()
         auto* transition = Resources::get().shader("Transition");
         transition->setUniform("progress", mTransitionTimer / sf::seconds(1.0f));
         states.shader = transition;
-        
+
         mTransitionTimer += TimePerFrame;
 
         if (mTransitionTimer >= sf::seconds(1.0f)) mTransition = false;

@@ -1,5 +1,6 @@
-﻿#include "pawn.hpp"
-#include "board.hpp"
+﻿#include "board.hpp"
+#include "pawn.hpp"
+#include "state_stack.hpp"
 
 Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
 : mBoard{ board }
@@ -21,8 +22,6 @@ void Pawn::select(bool value)
 
     if (mIsKing) textureName += "King";
     else textureName += "Pawn";
-
-    if (value) textureName += "Selected";
 
     mSprite.setTexture(Resources::get().texture(textureName));
     mIsSelected = value;
@@ -360,5 +359,11 @@ bool Pawn::isSelected() const
 
 void Pawn::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+    if (mIsSelected)
+    {
+        sf::Shader* shader = Resources::get().shader("Selection");
+        shader->setUniform("time", StateStack::get().globalTimer().asSeconds());
+        states.shader = shader;
+    }
     target.draw(mSprite, states);
 }

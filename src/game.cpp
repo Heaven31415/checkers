@@ -5,7 +5,7 @@ Game::Game()
 : mBoard{}
 , mSelected{ nullptr }
 , mLock{ false }
-, mTraining{ false }
+, mTraining{ true }
 , mPlayerColor{ Color::Light }
 , mActualPlayerColor{ Color::Light }
 , mEnemyTimer{}
