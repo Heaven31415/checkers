@@ -21,7 +21,7 @@ public:
     int pawnCount(Color color) const;
     void reset();
 
-    ai::Board getAI() const;
+    std::unique_ptr<ai::Board> getAI() const;
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 private:

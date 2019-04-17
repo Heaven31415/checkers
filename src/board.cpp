@@ -112,13 +112,17 @@ void Board::reset()
     ADD_DARK_PAWN(6, 7);
 }
 
-ai::Board Board::getAI() const
+std::unique_ptr<ai::Board> Board::getAI() const
 {
-    ai::Board board{};
-    board.pawns.reserve(mPawns.size());
+    auto board = std::make_unique<ai::Board>();
 
     for (const auto& pawn : mPawns)
-        board.pawns.push_back(pawn->getAI());
+    {
+        auto p = pawn->getAI();
+        p.board = board.get();
+
+        board->pawns.push_back(p);
+    }
 
     return board;
 }

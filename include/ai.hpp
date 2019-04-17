@@ -9,18 +9,20 @@ namespace ai
 
     struct Pawn
     {
+        ai::Board* board;
         sf::Vector2i position;
         Color color;
         bool isKing;
 
-        void move(ai::Board* board, const sf::Vector2i& destination);
-        bool canMove(ai::Board* board, const sf::Vector2i& destination) const;
-        std::vector<sf::Vector2i> getMovePositions(ai::Board* board) const;
+        void move(const sf::Vector2i& destination, bool duringFight = false);
+        bool canMove(const sf::Vector2i& destination) const;
+        bool canMove() const;
+        std::vector<sf::Vector2i> getMovePositions() const;
 
-        void fight(ai::Board* board, const sf::Vector2i& destination);
-        bool canFight(ai::Board* board, const sf::Vector2i& destination) const;
-        bool canFight(ai::Board* board) const;
-        std::vector<sf::Vector2i> getFightPositions(ai::Board* board) const;
+        void fight(const sf::Vector2i& destination);
+        bool canFight(const sf::Vector2i& destination) const;
+        bool canFight() const;
+        std::vector<sf::Vector2i> getFightPositions() const;
     };
 
     struct Board

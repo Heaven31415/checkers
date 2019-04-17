@@ -334,7 +334,7 @@ std::vector<sf::Vector2i> Pawn::getFightPositions() const
 
 ai::Pawn Pawn::getAI() const
 {
-    return ai::Pawn{ mPosition, mColor, mIsKing };
+    return ai::Pawn{ nullptr, mPosition, mColor, mIsKing };
 }
 
 const sf::Vector2i& Pawn::getPosition() const
