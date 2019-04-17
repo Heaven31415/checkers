@@ -9,7 +9,6 @@ project "checkers"
   targetdir "bin/%{cfg.buildcfg}"
 
   files {"**.hpp", "**.cpp"}
-  removefiles {"include/ai.hpp", "src/ai.cpp"}
 
   includedirs "include"
   includedirs (SFML_INSTALL_DIR .. "/" .. "include")

@@ -3,8 +3,11 @@
 #include "state_stack.hpp"
 
 Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
-: mData{board, position, color, false}
+: mBoard{ board }
 , mSprite{ Resources::get().texture(color == Color::Light ? "LightPawn" : "DarkPawn") }
+, mPosition{}
+, mColor{ color }
+, mIsKing{ false }
 , mIsSelected{ false }
 {
     move(position);
@@ -14,10 +17,10 @@ void Pawn::select(bool value)
 {
     std::string textureName = "";
 
-    if (mData.color == Color::Light) textureName += "Light";
+    if (mColor == Color::Light) textureName += "Light";
     else textureName += "Dark";
 
-    if (mData.isKing) textureName += "King";
+    if (mIsKing) textureName += "King";
     else textureName += "Pawn";
 
     mSprite.setTexture(Resources::get().texture(textureName));
@@ -26,160 +29,77 @@ void Pawn::select(bool value)
 
 void Pawn::move(const sf::Vector2i& destination, bool duringFight)
 {
-    mData.move(destination, duringFight);
+    if (!isValidPosition(destination)) return;
 
-    mSprite.setPosition(float(TileSize) * (mData.position.x + OffsetX), float(TileSize) * (mData.position.y + OffsetY));
+    if (destination == mPosition) return;
 
-    if(mData.isKing)
-        mSprite.setTexture(Resources::get().texture(mData.color == Color::Light ? "LightKing" : "DarkKing"));
+    if (mBoard->getPawn(destination) != nullptr) return;
+
+    mPosition = destination;
+    mSprite.setPosition(float(TileSize) * (destination.x + OffsetX), float(TileSize) * (destination.y + OffsetY));
+
+    if (!mIsKing && (mColor == Color::Light && destination.y == BoardHeight - 1 || mColor == Color::Dark && destination.y == 0))
+    {
+        if (duringFight && canFight()) return;
+
+        mIsKing = true;
+        mSprite.setTexture(Resources::get().texture(mColor == Color::Light ? "LightKing" : "DarkKing"));
+    }
 }
 
 bool Pawn::canMove(const sf::Vector2i& destination) const
 {
-    return mData.canMove(destination);
-}
-
-bool Pawn::canMove() const
-{
-    return mData.canMove();
-}
-
-std::vector<sf::Vector2i> Pawn::getMovePositions() const
-{
-    return mData.getMovePositions();
-}
-
-void Pawn::fight(const sf::Vector2i& destination)
-{
-    mData.fight(destination);
-
-    mSprite.setPosition(float(TileSize) * (mData.position.x + OffsetX), float(TileSize) * (mData.position.y + OffsetY));
-
-    if (mData.isKing)
-        mSprite.setTexture(Resources::get().texture(mData.color == Color::Light ? "LightKing" : "DarkKing"));
-}
-
-bool Pawn::canFight(const sf::Vector2i& destination) const
-{
-    return mData.canFight(destination);
-}
-
-bool Pawn::canFight() const
-{
-    return mData.canFight();
-}
-
-std::vector<sf::Vector2i> Pawn::getFightPositions() const
-{
-    return mData.getFightPositions();
-}
-
-Pawn::Data Pawn::getData() const
-{
-    return mData;
-}
-
-const sf::Vector2i& Pawn::getPosition() const
-{
-    return mData.position;
-}
-
-Color Pawn::getColor() const
-{
-    return mData.color;
-}
-
-bool Pawn::isKing() const
-{
-    return mData.isKing;
-}
-
-bool Pawn::isSelected() const
-{
-    return mIsSelected;
-}
-
-void Pawn::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-    if (mIsSelected)
-    {
-        sf::Shader* shader = Resources::get().shader("Selection");
-        shader->setUniform("time", StateStack::get().globalTimer().asSeconds());
-        states.shader = shader;
-    }
-    target.draw(mSprite, states);
-}
-
-void Pawn::Data::move(const sf::Vector2i& destination, bool duringFight)
-{
-    if (!isValidPosition(destination)) return;
-
-    if (destination == position) return;
-
-    if (board->getPawn(destination) != nullptr) return;
-
-    position = destination;
-    
-    if (!isKing && (color == Color::Light && destination.y == BoardHeight - 1 || color == Color::Dark && destination.y == 0))
-    {
-        if (duringFight && canFight()) return;
-        isKing = true;
-    }
-}
-
-bool Pawn::Data::canMove(const sf::Vector2i& destination) const
-{
     if (!isValidPosition(destination)) return false;
 
-    if (destination == position) return false;
+    if (destination == mPosition) return false;
 
-    if (isKing)
+    if (mIsKing)
     {
         // check whether we are moving across some diagonal
-        if (abs(destination.x - position.x) != abs(destination.y - position.y)) return false;
+        if (abs(destination.x - mPosition.x) != abs(destination.y - mPosition.y)) return false;
 
-        int dx = (destination.x > position.x) ? 1 : -1;
-        int dy = (destination.y > position.y) ? 1 : -1;
+        int dx = (destination.x > mPosition.x) ? 1 : -1;
+        int dy = (destination.y > mPosition.y) ? 1 : -1;
 
         bool foundSomebody = false;
 
-        int actualX = position.x + dx;
-        int actualY = position.y + dy;
+        int actualX = mPosition.x + dx;
+        int actualY = mPosition.y + dy;
 
         while (actualX != destination.x && actualY != destination.y)
         {
-            if (board->getPawn(actualX, actualY))
+            if (mBoard->getPawn(actualX, actualY))
             {
                 foundSomebody = true;
                 break;
             }
 
-            actualX += dx;
+            actualX += dx; 
             actualY += dy;
         }
 
-        return !foundSomebody && !board->getPawn(destination);
+        return !foundSomebody && !mBoard->getPawn(destination);
     }
     else
     {
-        int offset = (color == Color::Light ? 1 : -1);
-        if ((destination.x == position.x - 1 || destination.x == position.x + 1) && (destination.y == position.y + offset))
-            return board->getPawn(destination) == nullptr;
+        int offset = (mColor == Color::Light ? 1 : -1);
+        if ((destination.x == mPosition.x - 1 || destination.x == mPosition.x + 1) && (destination.y == mPosition.y + offset))
+            return mBoard->getPawn(destination) == nullptr;
     }
 
     return false;
 }
 
-bool Pawn::Data::canMove() const
+bool Pawn::canMove() const
 {
-    if (isKing)
+    if (mIsKing)
     {
         for (int i = -1; i <= 1; i += 2)
         {
             for (int j = -1; j <= 1; j += 2)
             {
-                int x = position.x + i;
-                int y = position.y + j;
+                int x = mPosition.x + i;
+                int y = mPosition.y + j;
 
                 while (isValidPosition(x, y))
                 {
@@ -192,25 +112,25 @@ bool Pawn::Data::canMove() const
     }
     else
     {
-        int offset = (color == Color::Light ? 1 : -1);
-        return canMove({ position.x - 1, position.y + offset }) || canMove({ position.x + 1, position.y + offset });
+        int offset = (mColor == Color::Light ? 1 : -1);
+        return canMove({ mPosition.x - 1, mPosition.y + offset }) || canMove({ mPosition.x + 1, mPosition.y + offset });
     }
 
     return false;
 }
 
-std::vector<sf::Vector2i> Pawn::Data::getMovePositions() const
+std::vector<sf::Vector2i> Pawn::getMovePositions() const
 {
     std::vector<sf::Vector2i> movePositions{};
 
-    if (isKing)
+    if (mIsKing)
     {
         for (int i = -1; i <= 1; i += 2)
         {
             for (int j = -1; j <= 1; j += 2)
             {
-                int x = position.x + i;
-                int y = position.y + j;
+                int x = mPosition.x + i;
+                int y = mPosition.y + j;
 
                 while (isValidPosition(x, y))
                 {
@@ -223,40 +143,40 @@ std::vector<sf::Vector2i> Pawn::Data::getMovePositions() const
     }
     else
     {
-        int offset = (color == Color::Light ? 1 : -1);
+        int offset = (mColor == Color::Light ? 1 : -1);
 
-        if (canMove({ position.x - 1, position.y + offset }))
-            movePositions.push_back({ position.x - 1, position.y + offset });
+        if (canMove({ mPosition.x - 1, mPosition.y + offset }))
+            movePositions.push_back({ mPosition.x - 1, mPosition.y + offset });
 
-        if (canMove({ position.x + 1, position.y + offset }))
-            movePositions.push_back({ position.x + 1, position.y + offset });
+        if (canMove({ mPosition.x + 1, mPosition.y + offset }))
+            movePositions.push_back({ mPosition.x + 1, mPosition.y + offset });
     }
 
     return movePositions;
 }
 
-void Pawn::Data::fight(const sf::Vector2i& destination)
+void Pawn::fight(const sf::Vector2i& destination)
 {
     if (!isValidPosition(destination)) return;
 
-    if (destination == position) return;
+    if (destination == mPosition) return;
 
-    if (board->getPawn(destination) != nullptr) return;
+    if (mBoard->getPawn(destination) != nullptr) return;
 
-    if (isKing)
+    if (mIsKing)
     {
-        int dx = (destination.x > position.x) ? 1 : -1;
-        int dy = (destination.y > position.y) ? 1 : -1;
+        int dx = (destination.x > mPosition.x) ? 1 : -1;
+        int dy = (destination.y > mPosition.y) ? 1 : -1;
 
-        int actualX = position.x + dx;
-        int actualY = position.y + dy;
+        int actualX = mPosition.x + dx;
+        int actualY = mPosition.y + dy;
 
         while (actualX != destination.x && actualY != destination.y)
         {
-            auto* pawn = board->getPawn({ actualX, actualY });
-            if (pawn && pawn->getColor() != color)
+            auto* pawn = mBoard->getPawn({ actualX, actualY });
+            if (pawn && pawn->getColor() != mColor)
             {
-                board->killPawn(pawn->getPosition());
+                mBoard->killPawn(pawn->getPosition());
                 move(destination, true);
                 break;
             }
@@ -273,50 +193,50 @@ void Pawn::Data::fight(const sf::Vector2i& destination)
         {
             for (int j = -1; j <= 1; j++)
             {
-                if (destination.x == position.x + 2 * i && destination.y == position.y + 2 * j)
+                if (destination.x == mPosition.x + 2 * i && destination.y == mPosition.y + 2 * j)
                 {
-                    pawn = board->getPawn(position.x + i, position.y + j);
+                    pawn = mBoard->getPawn(mPosition.x + i, mPosition.y + j);
                     break;
                 }
             }
         }
 
-        if (pawn && pawn->getColor() != color)
+        if (pawn && pawn->getColor() != mColor)
         {
-            board->killPawn(pawn->getPosition());
+            mBoard->killPawn(pawn->getPosition());
             move(destination);
         }
     }
 }
 
-bool Pawn::Data::canFight(const sf::Vector2i& destination) const
+bool Pawn::canFight(const sf::Vector2i& destination) const
 {
     if (!isValidPosition(destination)) return false;
 
-    if (destination == position) return false;
+    if (destination == mPosition) return false;
 
-    if (board->getPawn(destination) != nullptr) return false;
+    if (mBoard->getPawn(destination) != nullptr) return false;
 
-    if (isKing)
+    if (mIsKing)
     {
         // check whether we are moving across some diagonal
-        if (abs(destination.x - position.x) != abs(destination.y - position.y)) return false;
+        if (abs(destination.x - mPosition.x) != abs(destination.y - mPosition.y)) return false;
 
-        int dx = (destination.x > position.x) ? 1 : -1;
-        int dy = (destination.y > position.y) ? 1 : -1;
+        int dx = (destination.x > mPosition.x) ? 1 : -1;
+        int dy = (destination.y > mPosition.y) ? 1 : -1;
 
         int foundEnemies = 0;
         int foundAllies = 0;
 
-        int actualX = position.x + dx;
-        int actualY = position.y + dy;
+        int actualX = mPosition.x + dx;
+        int actualY = mPosition.y + dy;
 
         while (actualX != destination.x && actualY != destination.y)
         {
-            auto* pawn = board->getPawn(actualX, actualY);
+            auto* pawn = mBoard->getPawn(actualX, actualY);
             if (pawn)
             {
-                if (pawn->getColor() == color)
+                if (pawn->getColor() == mColor)
                     foundAllies++;
                 else
                     foundEnemies++;
@@ -326,7 +246,7 @@ bool Pawn::Data::canFight(const sf::Vector2i& destination) const
             actualY += dy;
         }
 
-        return foundAllies == 0 && foundEnemies == 1 && !board->getPawn(destination);
+        return foundAllies == 0 && foundEnemies == 1 && !mBoard->getPawn(destination);
     }
 
     Pawn* pawn = nullptr;
@@ -335,27 +255,27 @@ bool Pawn::Data::canFight(const sf::Vector2i& destination) const
     {
         for (int j = -1; j <= 1; j++)
         {
-            if (destination.x == position.x + 2 * i && destination.y == position.y + 2 * j)
+            if (destination.x == mPosition.x + 2 * i && destination.y == mPosition.y + 2 * j)
             {
-                pawn = board->getPawn(position.x + i, position.y + j);
+                pawn = mBoard->getPawn(mPosition.x + i, mPosition.y + j);
                 break;
             }
         }
     }
 
-    return pawn && pawn->getColor() != color;
+    return pawn && pawn->getColor() != mColor;
 }
 
-bool Pawn::Data::canFight() const
+bool Pawn::canFight() const
 {
-    if (isKing)
+    if (mIsKing)
     {
         for (int i = -1; i <= 1; i += 2)
         {
             for (int j = -1; j <= 1; j += 2)
             {
-                int x = position.x + i;
-                int y = position.y + j;
+                int x = mPosition.x + i;
+                int y = mPosition.y + j;
 
                 while (isValidPosition(x, y))
                 {
@@ -369,24 +289,24 @@ bool Pawn::Data::canFight() const
         return false;
     }
 
-    return canFight({ position.x + 2, position.y + 2 })
-        || canFight({ position.x - 2, position.y + 2 })
-        || canFight({ position.x + 2, position.y - 2 })
-        || canFight({ position.x - 2, position.y - 2 });
+    return canFight({ mPosition.x + 2, mPosition.y + 2 })
+        || canFight({ mPosition.x - 2, mPosition.y + 2 })
+        || canFight({ mPosition.x + 2, mPosition.y - 2 })
+        || canFight({ mPosition.x - 2, mPosition.y - 2 });
 }
 
-std::vector<sf::Vector2i> Pawn::Data::getFightPositions() const
+std::vector<sf::Vector2i> Pawn::getFightPositions() const
 {
     std::vector<sf::Vector2i> fightPositions{};
 
-    if (isKing)
+    if (mIsKing)
     {
         for (int i = -1; i <= 1; i += 2)
         {
             for (int j = -1; j <= 1; j += 2)
             {
-                int x = position.x + i;
-                int y = position.y + j;
+                int x = mPosition.x + i;
+                int y = mPosition.y + j;
 
                 while (isValidPosition(x, y))
                 {
@@ -403,11 +323,47 @@ std::vector<sf::Vector2i> Pawn::Data::getFightPositions() const
         {
             for (int j = -2; j <= 2; j += 4)
             {
-                if (canFight({ position.x + i, position.y + j }))
-                    fightPositions.push_back({ position.x + i, position.y + j });
+                if (canFight({ mPosition.x + i, mPosition.y + j }))
+                    fightPositions.push_back({ mPosition.x + i, mPosition.y + j });
             }
         }
     }
 
     return fightPositions;
+}
+
+ai::Pawn Pawn::getAI() const
+{
+    return ai::Pawn{ mPosition, mColor, mIsKing };
+}
+
+const sf::Vector2i& Pawn::getPosition() const
+{
+    return mPosition;
+}
+
+Color Pawn::getColor() const
+{
+    return mColor;
+}
+
+bool Pawn::isKing() const
+{
+    return mIsKing;
+}
+
+bool Pawn::isSelected() const
+{
+    return mIsSelected;
+}
+
+void Pawn::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    if (mIsSelected)
+    {
+        sf::Shader* shader = Resources::get().shader("Selection");
+        shader->setUniform("time", StateStack::get().globalTimer().asSeconds());
+        states.shader = shader;
+    }
+    target.draw(mSprite, states);
 }
