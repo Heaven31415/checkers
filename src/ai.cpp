@@ -1,4 +1,4 @@
-﻿#include "ai.hpp"
+#include "ai.hpp"
 
 void ai::Pawn::move(const sf::Vector2i& destination, bool duringFight)
 {
@@ -38,6 +38,41 @@ bool ai::Pawn::canFight() const
 std::vector<sf::Vector2i> ai::Pawn::getFightPositions() const
 {
     return std::vector<sf::Vector2i>{};
+}
+
+ai::Pawn* ai::Board::getPawn(int x, int y)
+{
+    return nullptr;
+}
+
+ai::Pawn* ai::Board::getPawn(const sf::Vector2i& position)
+{
+    return nullptr;
+}
+
+std::vector<ai::Pawn*> ai::Board::getPawns(Color color)
+{
+    return std::vector<ai::Pawn*>{};
+}
+
+void ai::Board::killPawn(const sf::Vector2i& position)
+{
+    return;
+}
+
+bool ai::Board::isFightPossible(Color color) const
+{
+    return false;
+}
+
+bool ai::Board::isMovePossible(Color color) const
+{
+    return false;
+}
+
+int ai::Board::pawnCount(Color color) const
+{
+    return 0;
 }
 
 void ai::buildDecisionTree(ai::Board* board, Color color, int depth)

@@ -29,6 +29,14 @@ namespace ai
     {
         std::vector<ai::Pawn> pawns;
         std::vector<std::unique_ptr<ai::Board>> children;
+
+        ai::Pawn* getPawn(int x, int y);
+        ai::Pawn* getPawn(const sf::Vector2i& position);
+        std::vector<ai::Pawn*> getPawns(Color color);
+        void killPawn(const sf::Vector2i& position);
+        bool isFightPossible(Color color) const;
+        bool isMovePossible(Color color) const;
+        int pawnCount(Color color) const;
     };
 
     void buildDecisionTree(ai::Board* board, Color color, int depth);
