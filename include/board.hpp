@@ -12,9 +12,9 @@ class Board : public sf::Drawable
 public:
     Board();
 
-    Pawn* getPawn(int x, int y) const;
-    Pawn* getPawn(const sf::Vector2i& position) const;
-    std::vector<Pawn*> getPawns(Color color) const;
+    Pawn* getPawn(int x, int y);
+    Pawn* getPawn(const sf::Vector2i& position);
+    std::vector<Pawn*> getPawns(Color color);
     void killPawn(const sf::Vector2i& position);
     bool isFightPossible(Color color) const;
     bool isMovePossible(Color color) const;
@@ -22,10 +22,8 @@ public:
     void reset();
 
     ai::Board getAI() const;
-
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
 private:
     sf::Sprite mSprite;
     std::vector<std::unique_ptr<Pawn>> mPawns;

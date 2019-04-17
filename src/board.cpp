@@ -13,7 +13,7 @@ void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const
     for (const auto& pawn : mPawns) target.draw(*pawn, states);
 }
 
-Pawn* Board::getPawn(int x, int y) const
+Pawn* Board::getPawn(int x, int y)
 {
     if (x < 0 || x >= BoardWidth) return nullptr;
 
@@ -25,12 +25,12 @@ Pawn* Board::getPawn(int x, int y) const
     return nullptr;
 }
 
-Pawn* Board::getPawn(const sf::Vector2i& position) const
+Pawn* Board::getPawn(const sf::Vector2i& position)
 {
     return getPawn(position.x, position.y);
 }
 
-std::vector<Pawn*> Board::getPawns(Color color) const
+std::vector<Pawn*> Board::getPawns(Color color)
 {
     std::vector<Pawn*> pawns;
 
