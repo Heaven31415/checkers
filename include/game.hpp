@@ -30,6 +30,7 @@ private:
     bool mTraining;
     Color mPlayerColor;
     Color mActualPlayerColor;
+    int mSearchDepth;
     sf::Time mEnemyTimer;
     sf::Text mTurnText;
     bool mFinished;

@@ -8,6 +8,7 @@ Game::Game()
 , mTraining{ true }
 , mPlayerColor{ Color::Light }
 , mActualPlayerColor{ Color::Light }
+, mSearchDepth{ 4 }
 , mEnemyTimer{}
 , mTurnText{ "White Player Turn", Resources::get().font("Candara"), 30 }
 , mFinished{ false }
@@ -209,7 +210,7 @@ void Game::processEvent(const sf::Event& event)
             else if (event.key.code == sf::Keyboard::M)
             {
                 auto board = mBoard.getAI();
-                auto move = ai::getNextMove(board.get(), mActualPlayerColor, 4);
+                auto move = ai::getNextMove(board.get(), mActualPlayerColor, mSearchDepth);
 
                 if (move.type == ai::Move::Type::Fight)
                     std::cout << "Fight {";
