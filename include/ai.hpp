@@ -7,6 +7,19 @@ namespace ai
 {
     struct Board;
 
+    struct Move
+    {
+        enum class Type
+        {
+            Move,
+            Fight
+        };
+
+        Type type;
+        sf::Vector2i start;
+        sf::Vector2i end;
+    };
+
     struct Pawn
     {
         ai::Board* board;
@@ -27,6 +40,8 @@ namespace ai
 
     struct Board
     {
+        ai::Board* parent;
+        std::unique_ptr<Move> move;
         std::vector<ai::Pawn> pawns;
         std::vector<std::unique_ptr<ai::Board>> children;
 

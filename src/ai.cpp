@@ -1,4 +1,4 @@
-﻿#include "ai.hpp"
+#include "ai.hpp"
 
 void ai::Pawn::move(const sf::Vector2i& destination, bool duringFight)
 {
@@ -378,35 +378,61 @@ void ai::buildDecisionTree(ai::Board* board, Color color, int depth)
     {
         if (board->pawns[i].color != color) continue;
 
-        auto movePositions = board->pawns[i].getMovePositions();
-
-        for (const auto& movePosition : movePositions)
-        {
-            auto child = std::make_unique<ai::Board>();
-            child->pawns.assign(board->pawns.begin(), board->pawns.end());
-            child->pawns[i].move(movePosition);
-
-            board->children.push_back(std::move(child));
-        }
-
         auto fightPositions = board->pawns[i].getFightPositions();
 
         for (const auto& fightPosition : fightPositions)
         {
             auto child = std::make_unique<ai::Board>();
-            child->pawns.assign(board->pawns.begin(), board->pawns.end());
-            child->pawns[i].fight(fightPosition);
+            child->parent = board;
 
-            Pawn& pawn = child->pawns[i];
+            child->move = std::make_unique<ai::Move>();
+            child->move->type = Move::Type::Fight;
+            child->move->start = board->pawns[i].position;
+            child->move->end = fightPosition;
+
+            for (auto p : board->pawns)
+        {
+                p.board = child.get();
+                child->pawns.push_back(p);
+            }
+            child->pawns[i].fight(fightPosition);
 
             /*
                 TODO: This snippet doesn't handle situations in which after a first
                 fight, you can fight again and choose between more than one fight.
             */
-            while (pawn.canFight())
+            auto position = fightPosition;
+
+            while (auto* p = child->getPawn(position))
             {
-                pawn.fight(pawn.getFightPositions()[0]);
+                if (!p->canFight()) break;
+                else
+            {
+                    position = p->getFightPositions()[0];
+                    p->fight(position);
+                }
             }
+
+            board->children.push_back(std::move(child));
+            }
+
+        if (!fightPositions.empty()) continue;
+
+        auto movePositions = board->pawns[i].getMovePositions();
+
+        for (const auto& movePosition : movePositions)
+        {
+            auto child = std::make_unique<ai::Board>();
+            child->parent = board;
+
+            child->move = std::make_unique<ai::Move>();
+            child->move->type = Move::Type::Move;
+            child->move->start = board->pawns[i].position;
+            child->move->end = movePosition;
+            
+            for (const auto& p : board->pawns) child->pawns.push_back(p);
+            for (auto& p : child->pawns) p.board = child.get();
+            child->pawns[i].move(movePosition);
 
             board->children.push_back(std::move(child));
         }
