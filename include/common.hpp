@@ -33,6 +33,7 @@ enum class Color
 bool isValidPosition(int x, int y);
 bool isValidPosition(const sf::Vector2i& position);
 void centerOrigin(sf::Text& text);
+void centerOrigin(sf::Sprite& sprite);
 
 static std::random_device device{};
 static std::mt19937 engine{ device() };

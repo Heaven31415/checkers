@@ -16,6 +16,12 @@ void centerOrigin(sf::Text& text)
     text.setOrigin(rect.left + rect.width / 2.f, rect.top + rect.height / 2.f);
 }
 
+void centerOrigin(sf::Sprite& sprite)
+{
+    sf::FloatRect rect = sprite.getLocalBounds();
+    sprite.setOrigin(rect.width / 2.f, rect.height / 2.f);
+}
+
 size_t randomInt(size_t min, size_t max)
 {
     std::uniform_int_distribution<size_t> dist(min, max);
