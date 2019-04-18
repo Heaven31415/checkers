@@ -209,49 +209,14 @@ void Game::processEvent(const sf::Event& event)
             else if (event.key.code == sf::Keyboard::M)
             {
                 auto board = mBoard.getAI();
-                ai::buildDecisionTree(board.get(), mActualPlayerColor, 4);
+                auto move = ai::getNextMove(board.get(), mActualPlayerColor, 4);
 
-                bool canFight = false;
-
-                for (const auto& child : board->children)
-                {
-                    if (child->move->type == ai::Move::Type::Fight)
-                    {
-                        canFight = true;
-                        break;
-                    }
-                }
-
-                if (canFight)
-                {
-                    board->children.erase(
-                        std::remove_if(
-                            board->children.begin(),
-                            board->children.end(),
-                            [](const std::unique_ptr<ai::Board>& board) { return board->move->type != ai::Move::Type::Fight; }
-                        ),
-                        board->children.end()
-                    );
-                }
-
-                auto result = ai::minimax(board.get(), mActualPlayerColor, 4);
-
-                auto* node = result.first;
-
-                while (node->parent != board.get())
-                {
-                    node = node->parent;
-                }
-
-                auto s = node->move->start;
-                auto e = node->move->end;
-
-                if (node->move->type == ai::Move::Type::Fight)
+                if (move.type == ai::Move::Type::Fight)
                     std::cout << "Fight {";
                 else
                     std::cout << "Move {";
 
-                std::cout << s.x << "," << s.y << "} -> {" << e.x << "," << e.y << "}\n";
+                std::cout << move.start.x << "," << move.start.y << "} -> {" << move.end.x << "," << move.end.y << "}\n";
             }
         } 
         break;

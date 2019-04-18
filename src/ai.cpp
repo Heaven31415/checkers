@@ -370,6 +370,51 @@ int ai::Board::pawnCount(Color color) const
     return count;
 }
 
+ai::Move ai::getNextMove(ai::Board* board, Color color, int depth)
+{
+    ai::buildDecisionTree(board, color, depth);
+
+    bool canFight = false;
+
+    for (const auto& child : board->children)
+    {
+        if (child->move->type == ai::Move::Type::Fight)
+        {
+            canFight = true;
+            break;
+        }
+    }
+
+    if (canFight)
+    {
+        board->children.erase(
+            std::remove_if(
+                board->children.begin(),
+                board->children.end(),
+                [](const std::unique_ptr<ai::Board>& board) { return board->move->type != ai::Move::Type::Fight; }
+            ),
+            board->children.end()
+        );
+    }
+
+    auto result = ai::minimax(board, color, depth);
+
+    auto* node = result.first;
+
+    while (node->parent != board)
+    {
+        node = node->parent;
+    }
+
+    ai::Move move{};
+
+    move.type = node->move->type;
+    move.start = node->move->start;
+    move.end = node->move->end;
+
+    return move;
+}
+
 std::pair<ai::Board*, int> ai::minimax(ai::Board* board, Color color, int depth)
 {
     if (depth == 0 || (!board->isFightPossible(color) && !board->isMovePossible(color)) || board->pawnCount(color) == 0)
