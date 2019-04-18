@@ -6,6 +6,7 @@ StateStack::StateStack()
 , mStates{}
 , mStack{}
 , mBackground{ Resources::get().texture("Background") }
+, mFrame{ Resources::get().texture("Frame") }
 , mGlobalTimer{}
 , mCursor{ Resources::get().texture("Cursor") }
 , mTransition{ false }
@@ -76,6 +77,7 @@ void StateStack::render()
     mWindow.clear();
 
     mWindow.draw(mBackground, Resources::get().shader("Shadow"));
+    mWindow.draw(mFrame);
 
     sf::Sprite sprite{ mTexture.getTexture() };
 

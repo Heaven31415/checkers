@@ -39,7 +39,6 @@ public:
 
 private:
     Type mType;
-    sf::Sprite mFrame;
     sf::Text mHeader;
     std::vector<Button> mChooseOption;
     std::vector<Button> mChooseMode;

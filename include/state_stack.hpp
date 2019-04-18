@@ -33,6 +33,7 @@ private:
     std::map<State::Type, State::Ptr> mStates;
     std::stack<State*> mStack;
     sf::Sprite mBackground;
+    sf::Sprite mFrame;
     sf::Time mGlobalTimer;
     sf::Sprite mCursor;
 

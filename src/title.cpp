@@ -3,7 +3,6 @@
 
 Title::Title()
 : mType{Type::ChooseOption}
-, mFrame{Resources::get().texture("Frame")}
 , mHeader{"Checkers", Resources::get().font("Candara"), 70}
 , mChooseOption{}
 , mChooseMode{}
@@ -156,8 +155,6 @@ void Title::update(sf::Time dt)
 
 void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(mFrame);
-
     if (mTransition)
     {
         float progress = mTransitionTimer.asSeconds();
