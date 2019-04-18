@@ -2,77 +2,372 @@
 
 void ai::Pawn::move(const sf::Vector2i& destination, bool duringFight)
 {
-    return;
+    if (!isValidPosition(destination)) return;
+
+    if (destination == position) return;
+
+    if (board->getPawn(destination) != nullptr) return;
+
+    position = destination;
+
+    if (!isKing && (color == Color::Light && destination.y == BoardHeight - 1 || color == Color::Dark && destination.y == 0))
+    {
+        if (duringFight && canFight()) return;
+        isKing = true;
+    }
 }
 
 bool ai::Pawn::canMove(const sf::Vector2i& destination) const
 {
+    if (!isValidPosition(destination)) return false;
+
+    if (destination == position) return false;
+
+    if (isKing)
+    {
+        // check whether we are moving across some diagonal
+        if (abs(destination.x - position.x) != abs(destination.y - position.y)) return false;
+
+        int dx = (destination.x > position.x) ? 1 : -1;
+        int dy = (destination.y > position.y) ? 1 : -1;
+
+        bool foundSomebody = false;
+
+        int actualX = position.x + dx;
+        int actualY = position.y + dy;
+
+        while (actualX != destination.x && actualY != destination.y)
+        {
+            if (board->getPawn(actualX, actualY))
+            {
+                foundSomebody = true;
+                break;
+            }
+
+            actualX += dx;
+            actualY += dy;
+        }
+
+        return !foundSomebody && !board->getPawn(destination);
+    }
+    else
+    {
+        int offset = (color == Color::Light ? 1 : -1);
+        if ((destination.x == position.x - 1 || destination.x == position.x + 1) && (destination.y == position.y + offset))
+            return board->getPawn(destination) == nullptr;
+    }
+
     return false;
 }
 
 bool ai::Pawn::canMove() const
 {
+    if (isKing)
+    {
+        for (int i = -1; i <= 1; i += 2)
+        {
+            for (int j = -1; j <= 1; j += 2)
+            {
+                int x = position.x + i;
+                int y = position.y + j;
+
+                while (isValidPosition(x, y))
+                {
+                    if (canMove({ x, y })) return true;
+                    x += i;
+                    y += j;
+                }
+            }
+        }
+    }
+    else
+    {
+        int offset = (color == Color::Light ? 1 : -1);
+        return canMove({ position.x - 1, position.y + offset }) || canMove({ position.x + 1, position.y + offset });
+    }
+
     return false;
 }
 
 std::vector<sf::Vector2i> ai::Pawn::getMovePositions() const
 {
-    return std::vector<sf::Vector2i>{};
+    std::vector<sf::Vector2i> movePositions{};
+
+    if (isKing)
+    {
+        for (int i = -1; i <= 1; i += 2)
+        {
+            for (int j = -1; j <= 1; j += 2)
+            {
+                int x = position.x + i;
+                int y = position.y + j;
+
+                while (isValidPosition(x, y))
+                {
+                    if (canMove({ x, y })) movePositions.push_back({ x, y });
+                    x += i;
+                    y += j;
+                }
+            }
+        }
+    }
+    else
+    {
+        int offset = (color == Color::Light ? 1 : -1);
+
+        if (canMove({ position.x - 1, position.y + offset }))
+            movePositions.push_back({ position.x - 1, position.y + offset });
+
+        if (canMove({ position.x + 1, position.y + offset }))
+            movePositions.push_back({ position.x + 1, position.y + offset });
+    }
+
+    return movePositions;
 }
 
 void ai::Pawn::fight(const sf::Vector2i& destination)
 {
-    return;
+    if (!isValidPosition(destination)) return;
+
+    if (destination == position) return;
+
+    if (board->getPawn(destination) != nullptr) return;
+
+    if (isKing)
+    {
+        int dx = (destination.x > position.x) ? 1 : -1;
+        int dy = (destination.y > position.y) ? 1 : -1;
+
+        int actualX = position.x + dx;
+        int actualY = position.y + dy;
+
+        while (actualX != destination.x && actualY != destination.y)
+        {
+            auto* pawn = board->getPawn({ actualX, actualY });
+            if (pawn && pawn->color != color)
+            {
+                board->killPawn(pawn->position);
+                move(destination, true);
+                break;
+            }
+
+            actualX += dx;
+            actualY += dy;
+        }
+    }
+    else
+    {
+        Pawn* pawn = nullptr;
+
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (destination.x == position.x + 2 * i && destination.y == position.y + 2 * j)
+                {
+                    pawn = board->getPawn(position.x + i, position.y + j);
+                    break;
+                }
+            }
+        }
+
+        if (pawn && pawn->color != color)
+        {
+            board->killPawn(pawn->position);
+            move(destination);
+        }
+    }
 }
 
 bool ai::Pawn::canFight(const sf::Vector2i& destination) const
 {
-    return false;
+    if (!isValidPosition(destination)) return false;
+
+    if (destination == position) return false;
+
+    if (board->getPawn(destination) != nullptr) return false;
+
+    if (isKing)
+    {
+        // check whether we are moving across some diagonal
+        if (abs(destination.x - position.x) != abs(destination.y - position.y)) return false;
+
+        int dx = (destination.x > position.x) ? 1 : -1;
+        int dy = (destination.y > position.y) ? 1 : -1;
+
+        int foundEnemies = 0;
+        int foundAllies = 0;
+
+        int actualX = position.x + dx;
+        int actualY = position.y + dy;
+
+        while (actualX != destination.x && actualY != destination.y)
+        {
+            auto* pawn = board->getPawn(actualX, actualY);
+            if (pawn)
+            {
+                if (pawn->color == color)
+                    foundAllies++;
+                else
+                    foundEnemies++;
+            }
+
+            actualX += dx;
+            actualY += dy;
+        }
+
+        return foundAllies == 0 && foundEnemies == 1 && !board->getPawn(destination);
+    }
+
+    Pawn* pawn = nullptr;
+
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (destination.x == position.x + 2 * i && destination.y == position.y + 2 * j)
+            {
+                pawn = board->getPawn(position.x + i, position.y + j);
+                break;
+            }
+        }
+    }
+
+    return pawn && pawn->color != color;
 }
 
 bool ai::Pawn::canFight() const
 {
-    return false;
+    if (isKing)
+    {
+        for (int i = -1; i <= 1; i += 2)
+        {
+            for (int j = -1; j <= 1; j += 2)
+            {
+                int x = position.x + i;
+                int y = position.y + j;
+
+                while (isValidPosition(x, y))
+                {
+                    if (canFight({ x, y })) return true;
+                    x += i;
+                    y += j;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    return canFight({ position.x + 2, position.y + 2 })
+        || canFight({ position.x - 2, position.y + 2 })
+        || canFight({ position.x + 2, position.y - 2 })
+        || canFight({ position.x - 2, position.y - 2 });
 }
 
 std::vector<sf::Vector2i> ai::Pawn::getFightPositions() const
 {
-    return std::vector<sf::Vector2i>{};
+    std::vector<sf::Vector2i> fightPositions{};
+
+    if (isKing)
+    {
+        for (int i = -1; i <= 1; i += 2)
+        {
+            for (int j = -1; j <= 1; j += 2)
+            {
+                int x = position.x + i;
+                int y = position.y + j;
+
+                while (isValidPosition(x, y))
+                {
+                    if (canFight({ x, y })) fightPositions.push_back({ x, y });
+                    x += i;
+                    y += j;
+                }
+            }
+        }
+    }
+    else
+    {
+        for (int i = -2; i <= 2; i += 4)
+        {
+            for (int j = -2; j <= 2; j += 4)
+            {
+                if (canFight({ position.x + i, position.y + j }))
+                    fightPositions.push_back({ position.x + i, position.y + j });
+            }
+        }
+    }
+
+    return fightPositions;
 }
 
 ai::Pawn* ai::Board::getPawn(int x, int y)
 {
+    if (x < 0 || x >= BoardWidth) return nullptr;
+
+    if (y < 0 || y >= BoardHeight) return nullptr;
+
+    for (auto& pawn : pawns)
+        if (pawn.position == sf::Vector2i{ x, y }) return &pawn;
+
     return nullptr;
 }
 
 ai::Pawn* ai::Board::getPawn(const sf::Vector2i& position)
 {
-    return nullptr;
+    return getPawn(position.x, position.y);
 }
 
 std::vector<ai::Pawn*> ai::Board::getPawns(Color color)
 {
-    return std::vector<ai::Pawn*>{};
+    std::vector<Pawn*> output;
+
+    for (auto& pawn : pawns)
+        if (pawn.color == color) output.push_back(&pawn);
+
+    return output;
 }
 
 void ai::Board::killPawn(const sf::Vector2i& position)
 {
-    return;
+    pawns.erase(
+        std::remove_if(
+            pawns.begin(),
+            pawns.end(),
+            [&position](const ai::Pawn& pawn) { return pawn.position == position; }
+        ),
+        pawns.end()
+    );
 }
 
 bool ai::Board::isFightPossible(Color color) const
 {
+    for (const auto& pawn : pawns)
+        if (pawn.color == color && pawn.canFight())
+            return true;
+
     return false;
 }
 
 bool ai::Board::isMovePossible(Color color) const
 {
+    for (const auto& pawn : pawns)
+        if (pawn.color == color && pawn.canMove())
+            return true;
+
     return false;
 }
 
 int ai::Board::pawnCount(Color color) const
 {
-    return 0;
+    int count = 0;
+
+    for (const auto& pawn : pawns)
+        if (pawn.color == color)
+            count++;
+
+    return count;
 }
 
 void ai::buildDecisionTree(ai::Board* board, Color color, int depth)
