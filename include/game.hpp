@@ -1,9 +1,12 @@
 #pragma once
 
+#include "ai.hpp"
 #include "board.hpp"
 #include "pawn.hpp"
 #include "sound_player.hpp"
 #include "state.hpp"
+
+#include <iostream>
 
 class Game : public State
 {
