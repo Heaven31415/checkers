@@ -1,4 +1,4 @@
-#include "ai.hpp"
+﻿#include "ai.hpp"
 
 void ai::Pawn::move(const sf::Vector2i& destination, bool duringFight)
 {
@@ -370,6 +370,39 @@ int ai::Board::pawnCount(Color color) const
     return count;
 }
 
+std::pair<ai::Board*, int> ai::minimax(ai::Board* board, Color color, int depth)
+{
+    if (depth == 0 || (!board->isFightPossible(color) && !board->isMovePossible(color)) || board->pawnCount(color) == 0)
+        return { board, computeHeuristic(board) };
+
+    if (color == Color::Light)
+    {
+        std::pair<ai::Board*, int> currentPair = { nullptr, std::numeric_limits<int>::min() };
+
+        for (const auto& child : board->children)
+        {
+            auto pair = ai::minimax(child.get(), color == Color::Light ? Color::Dark : Color::Light, depth - 1);
+
+            if (pair.second > currentPair.second) currentPair = pair;
+        }
+
+        return currentPair;
+    }
+    else
+    {
+        std::pair<ai::Board*, int> currentPair = { nullptr, std::numeric_limits<int>::max() };
+
+        for (const auto& child : board->children)
+        {
+            auto pair = ai::minimax(child.get(), color == Color::Light ? Color::Dark : Color::Light, depth - 1);
+
+            if (pair.second < currentPair.second) currentPair = pair;
+        }
+
+        return currentPair;
+    }
+}
+
 void ai::buildDecisionTree(ai::Board* board, Color color, int depth)
 {
     if (depth == 0) return;
@@ -391,7 +424,7 @@ void ai::buildDecisionTree(ai::Board* board, Color color, int depth)
             child->move->end = fightPosition;
 
             for (auto p : board->pawns)
-        {
+            {
                 p.board = child.get();
                 child->pawns.push_back(p);
             }
@@ -407,14 +440,14 @@ void ai::buildDecisionTree(ai::Board* board, Color color, int depth)
             {
                 if (!p->canFight()) break;
                 else
-            {
+                {
                     position = p->getFightPositions()[0];
                     p->fight(position);
                 }
             }
 
             board->children.push_back(std::move(child));
-            }
+        }
 
         if (!fightPositions.empty()) continue;
 
