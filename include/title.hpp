@@ -1,7 +1,6 @@
 #pragma once
 
-#include <functional>
-#include "common.hpp"
+#include "button.hpp"
 #include "state.hpp"
 
 class Title : public State
@@ -12,20 +11,6 @@ public:
         ChooseOption,
         ChooseMode,
         ChooseDifficulty
-    };
-
-    struct Button : public sf::Drawable
-    {
-        Button(float height, const std::string& string, std::function<void()> callback);
-        void processEvent(const sf::Event& event);
-        void update(sf::Time dt);
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-        sf::Sprite sprite;
-        sf::Text text;
-        sf::Time timer;
-        bool hover;
-        std::function<void()> callback;
     };
 
     Title();

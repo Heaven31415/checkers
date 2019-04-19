@@ -15,45 +15,45 @@ Title::Title()
     mHeader.setOutlineThickness(2.f);
 
     // ChooseOption
-    mChooseOption.push_back(Button{ 224.f, "New Game", [this](){
+    mChooseOption.push_back(Button{ "New Game", 224.f, [this](){
         transition(Type::ChooseMode);
     }});
 
-    mChooseOption.push_back(Button{ 224.f + 128.f, "Options", [this](){
+    mChooseOption.push_back(Button{ "Options", 224.f + 128.f, [this](){
         StateStack::get().push(State::Type::Options);
     }});
 
-    mChooseOption.push_back(Button{ 224.f + 256.f, "Exit", [this](){
+    mChooseOption.push_back(Button{ "Exit", 224.f + 256.f, [this](){
         StateStack::get().closeWindow();
     }});
 
     // ChooseMode
-    mChooseMode.push_back(Button{ 224.f, "Training", [this](){
+    mChooseMode.push_back(Button{ "Training", 224.f, [this](){
         StateStack::get().push(State::Type::Game, (void*)Message::Training);
     }});
 
-    mChooseMode.push_back(Button{ 224.f + 128.f, "Player vs AI", [this](){
+    mChooseMode.push_back(Button{ "Player vs AI", 224.f + 128.f, [this](){
        transition(Type::ChooseDifficulty);
     }});
 
-    mChooseMode.push_back(Button{ 224.f + 256.f, "Back", [this](){
+    mChooseMode.push_back(Button{ "Back", 224.f + 256.f, [this](){
         transition(Type::ChooseOption);
     }});
 
     // ChooseDifficulty
-    mChooseDifficulty.push_back(Button{ 224.f, "Easy", [this]() {
+    mChooseDifficulty.push_back(Button{ "Easy", 224.f, [this]() {
         StateStack::get().push(State::Type::Game, (void*)Message::EasyAI);
      } });
 
-    mChooseDifficulty.push_back(Button{ 224.f + 128.f, "Normal", [this]() {
+    mChooseDifficulty.push_back(Button{ "Normal", 224.f + 128.f, [this]() {
         StateStack::get().push(State::Type::Game, (void*)Message::NormalAI);
      } });
 
-    mChooseDifficulty.push_back(Button{ 224.f + 256.f, "Hard", [this]() {
+    mChooseDifficulty.push_back(Button{ "Hard", 224.f + 256.f, [this]() {
         StateStack::get().push(State::Type::Game, (void*)Message::HardAI);
     } });
 
-    mChooseDifficulty.push_back(Button{ 224.f + 384.f, "Back", [this]() {
+    mChooseDifficulty.push_back(Button{ "Back", 224.f + 384.f, [this]() {
         transition(Type::ChooseMode);
     } });
 
@@ -226,75 +226,4 @@ void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
     }
 
     target.draw(mHeader, states);
-}
-
-Title::Button::Button(float height, const std::string& string, std::function<void()> callback)
-: sprite{ Resources::get().texture("Button") }
-, text{ string, Resources::get().font("Candara"), 30 }
-, hover{ false }
-, callback{ callback }
-{
-    centerOrigin(sprite);
-    sprite.setPosition(WindowWidth / 2.f, height);
-
-    centerOrigin(text);
-    text.setPosition(WindowWidth / 2.f, height);
-    text.setOutlineThickness(1.f);
-}
-
-void Title::Button::processEvent(const sf::Event& event)
-{
-    switch (event.type)
-    {
-        case sf::Event::MouseMoved:
-        {
-            auto x = float(event.mouseMove.x);
-            auto y = float(event.mouseMove.y);
-
-            if (abs(sprite.getPosition().x - x) <= 128.f && abs(sprite.getPosition().y - y) <= 32.f) 
-                hover = true;
-            else
-            {
-                hover = false;
-                timer = sf::Time::Zero;
-            }
-                
-        }
-        break;
-
-        case sf::Event::MouseButtonReleased:
-        {
-            if (event.mouseButton.button == sf::Mouse::Left)
-            {
-                auto x = float(event.mouseButton.x);
-                auto y = float(event.mouseButton.y);
-
-                if (abs(sprite.getPosition().x - x) <= 128.f && abs(sprite.getPosition().y - y) <= 32.f)
-                {
-                    callback();
-                    hover = false;
-                    timer = sf::Time::Zero;
-                }
-            }
-        }
-        break;
-    }
-}
-
-void Title::Button::update(sf::Time dt)
-{
-    if (hover) timer += dt;
-}
-
-void Title::Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-    if (hover)
-    {
-        sf::Shader* shader = Resources::get().shader("Selection");
-        shader->setUniform("time", timer.asSeconds());
-        states.shader = shader;
-    }
-
-    target.draw(sprite, states);
-    target.draw(text, states);
 }
