@@ -7,7 +7,7 @@ Title::Title()
 , mChooseOption{}
 , mChooseMode{}
 , mChooseDifficulty{}
-, mTransition{ true }
+, mTransition{}
 , mTransitionTimer{}
 {
     mHeader.setPosition(WindowWidth / 2.f, 96.f);
@@ -20,6 +20,7 @@ Title::Title()
     } });
 
     mChooseOption.push_back(Button{ 224.f + 128.f, "Options", [this]() {
+       transition(Type::ChooseOption);
        StateStack::get().push(State::Type::Options);
     } });
 
@@ -29,7 +30,7 @@ Title::Title()
 
     // ChooseMode
     mChooseMode.push_back(Button{ 224.f, "Training", [this]() {
-      // TODO: Implement me
+      StateStack::get().push(State::Type::Game, {{Message::Type::Bool, true}});
    } });
 
     mChooseMode.push_back(Button{ 224.f + 128.f, "Player vs AI", [this]() {
@@ -42,15 +43,18 @@ Title::Title()
 
     // ChooseDifficulty
     mChooseDifficulty.push_back(Button{ 224.f, "Easy", [this]() {
-        // TODO: Implement me
+        transition(Type::ChooseOption);
+        StateStack::get().push(State::Type::Game, {{Message::Type::Bool, false}, {Message::Type::Int, 2}});
      } });
 
     mChooseDifficulty.push_back(Button{ 224.f + 128.f, "Normal", [this]() {
-        // TODO: Implement me
+        transition(Type::ChooseOption);
+        StateStack::get().push(State::Type::Game, {{Message::Type::Bool, false}, {Message::Type::Int, 4}});
      } });
 
     mChooseDifficulty.push_back(Button{ 224.f + 256.f, "Hard", [this]() {
-        // TODO: Implement me
+        transition(Type::ChooseOption);
+        StateStack::get().push(State::Type::Game, {{Message::Type::Bool, false}, {Message::Type::Int, 6}});
     } });
 
     mChooseDifficulty.push_back(Button{ 224.f + 384.f, "Back", [this]() {
@@ -89,8 +93,9 @@ void Title::transition(Type type)
     mTransitionTimer = sf::Time::Zero;
 }
 
-void Title::activation()
+void Title::activation(const std::vector<Message>& messages)
 {
+    transition(Type::ChooseOption);
 }
 
 void Title::deactivation()
@@ -167,6 +172,27 @@ void Title::update(sf::Time dt)
         mTransitionTimer += TimePerFrame;
         if (mTransitionTimer >= sf::seconds(1.0f)) mTransition = false;
     }
+
+    switch (mType)
+    {
+        case Type::ChooseOption:
+        {
+            for (auto& button : mChooseOption) button.update(dt);
+        }
+        break;
+
+        case Type::ChooseMode:
+        {
+            for (auto& button : mChooseMode) button.update(dt);
+        }
+        break;
+
+        case Type::ChooseDifficulty:
+        {
+            for (auto& button : mChooseDifficulty) button.update(dt);
+        }
+        break;
+    }
 }
 
 void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -235,8 +261,14 @@ void Title::Button::processEvent(const sf::Event& event)
             auto x = float(event.mouseMove.x);
             auto y = float(event.mouseMove.y);
 
-            if (abs(sprite.getPosition().x - x) <= 128.f && abs(sprite.getPosition().y - y) <= 32.f) hover = true;
-            else hover = false;
+            if (abs(sprite.getPosition().x - x) <= 128.f && abs(sprite.getPosition().y - y) <= 32.f) 
+                hover = true;
+            else
+            {
+                hover = false;
+                timer = sf::Time::Zero;
+            }
+                
         }
         break;
 
@@ -251,6 +283,7 @@ void Title::Button::processEvent(const sf::Event& event)
                 {
                     callback();
                     hover = false;
+                    timer = sf::Time::Zero;
                 }
             }
         }
@@ -258,12 +291,17 @@ void Title::Button::processEvent(const sf::Event& event)
     }
 }
 
+void Title::Button::update(sf::Time dt)
+{
+    if (hover) timer += dt;
+}
+
 void Title::Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     if (hover)
     {
         sf::Shader* shader = Resources::get().shader("Selection");
-        shader->setUniform("time", StateStack::get().globalTimer().asSeconds());
+        shader->setUniform("time", timer.asSeconds());
         states.shader = shader;
     }
 

@@ -99,10 +99,18 @@ StateStack& StateStack::get()
     return instance;
 }
 
+void StateStack::push(State::Type type, const std::vector<Message>& messages)
+{
+    mStack.push(mStates[type].get());
+    mStack.top()->activation(messages);
+
+    transition();
+}
+
 void StateStack::push(State::Type type)
 {
     mStack.push(mStates[type].get());
-    mStack.top()->activation();
+    mStack.top()->activation({});
 
     transition();
 }

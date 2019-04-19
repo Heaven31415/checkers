@@ -18,10 +18,12 @@ public:
     {
         Button(float height, const std::string& string, std::function<void()> callback);
         void processEvent(const sf::Event& event);
+        void update(sf::Time dt);
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
         sf::Sprite sprite;
         sf::Text text;
+        sf::Time timer;
         bool hover;
         std::function<void()> callback;
     };
@@ -29,7 +31,7 @@ public:
     Title();
     void transition(Type type);
 
-    virtual void activation() override;
+    virtual void activation(const std::vector<Message>& messages) override;
     virtual void deactivation() override;
     virtual void processEvent(const sf::Event& event) override;
     virtual void update(sf::Time dt) override;

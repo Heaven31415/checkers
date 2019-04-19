@@ -15,6 +15,7 @@ public:
 
     static StateStack& get();
 
+    void push(State::Type type, const std::vector<Message>& messages);
     void push(State::Type type);
     void pop();
     void run();

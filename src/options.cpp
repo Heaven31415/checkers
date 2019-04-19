@@ -6,7 +6,7 @@ Options::Options()
 {
 }
 
-void Options::activation()
+void Options::activation(const std::vector<Message>& messages)
 {
 }
 

@@ -175,7 +175,7 @@ void Game::tryToFinish()
     }
 }
 
-void Game::activation()
+void Game::activation(const std::vector<Message>& messages)
 {
 }
 

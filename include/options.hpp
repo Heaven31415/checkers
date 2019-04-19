@@ -8,7 +8,7 @@ class Options : public State
 public:
     Options();
 
-    virtual void activation() override;
+    virtual void activation(const std::vector<Message>& messages) override;
     virtual void deactivation() override;
     virtual void processEvent(const sf::Event& event) override;
     virtual void update(sf::Time dt) override;
