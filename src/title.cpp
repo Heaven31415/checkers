@@ -7,7 +7,7 @@ Title::Title()
 , mChooseOption{}
 , mChooseMode{}
 , mChooseDifficulty{}
-, mTransition{}
+, mTransition{ true }
 , mTransitionTimer{}
 {
     mHeader.setPosition(WindowWidth / 2.f, 96.f);
@@ -111,13 +111,29 @@ void Title::processEvent(const sf::Event& event)
 
         case sf::Event::KeyPressed:
         {
-            if (event.key.code == sf::Keyboard::Enter)
-                StateStack::get().push(State::Type::Game);
-        }
-        break;
+            if (event.key.code == sf::Keyboard::Escape)
+            {
+                switch (mType)
+                {
+                    case Type::ChooseOption:
+                    {
+                        StateStack::get().closeWindow();
+                    }
+                    break;
 
-        case sf::Event::MouseMoved:
-        {
+                    case Type::ChooseMode:
+                    {
+                        transition(Type::ChooseOption);
+                    }
+                    break;
+
+                    case Type::ChooseDifficulty:
+                    {
+                        transition(Type::ChooseMode);
+                    }
+                    break;
+                }
+            }
         }
         break;
     }
@@ -164,8 +180,6 @@ void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
         states.shader = transition;
     }
 
-    target.draw(mHeader, states);
-
     switch (mType)
     {
         case Type::ChooseOption:
@@ -186,6 +200,16 @@ void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
         }
         break;
     }
+
+    if (!mTransition)
+    {
+        auto* wave = Resources::get().shader("Wave");
+        wave->setUniform("wave_phase", StateStack::get().globalTimer().asSeconds());
+        wave->setUniform("wave_amplitude", sf::Vector2f{ 1.0f, 1.0f });
+        states.shader = wave;
+    }
+
+    target.draw(mHeader, states);
 }
 
 Title::Button::Button(float height, const std::string& string, std::function<void()> callback)

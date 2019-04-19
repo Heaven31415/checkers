@@ -4,8 +4,6 @@
 #include "common.hpp"
 #include "state.hpp"
 
-#include <iostream>
-
 class Title : public State
 {
 public:
