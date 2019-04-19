@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cassert>
 #include <experimental/filesystem>
 #include <random>
+
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -24,10 +26,18 @@ const std::string TexturesDirectory = "resources/Textures";
 
 const std::string MusicDirectory = "resources/Music";
 
-enum class Color
+enum class Color : int
 {
     Light,
     Dark
+};
+
+enum class Message : int
+{
+    Training,
+    EasyAI,
+    NormalAI,
+    HardAI,
 };
 
 bool isValidPosition(int x, int y);

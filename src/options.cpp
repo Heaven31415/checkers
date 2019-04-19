@@ -2,16 +2,27 @@
 #include "state_stack.hpp"
 
 Options::Options()
-: mBackground{Resources::get().texture("Options")}
 {
 }
 
-void Options::activation(const std::vector<Message>& messages)
+void Options::onPush(void* data)
 {
+
 }
 
-void Options::deactivation()
+void Options::onPop(void* data)
 {
+
+}
+
+void Options::onFocusGain()
+{
+
+}
+
+void Options::onFocusLoss()
+{
+
 }
 
 void Options::processEvent(const sf::Event& event)
@@ -21,15 +32,12 @@ void Options::processEvent(const sf::Event& event)
         case sf::Event::Closed:
         {
             StateStack::get().closeWindow();
-        }
-        break;
+        } break;
 
         case sf::Event::KeyPressed:
         {
-            if (event.key.code == sf::Keyboard::Escape)
-                StateStack::get().pop();
-        }
-        break;
+            if (event.key.code == sf::Keyboard::Escape) StateStack::get().pop();
+        } break;
     }
 }
 
@@ -39,5 +47,4 @@ void Options::update(sf::Time dt)
 
 void Options::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    target.draw(mBackground, states);
 }

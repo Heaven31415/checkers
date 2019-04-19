@@ -12,12 +12,11 @@ class StateStack
 public:
     StateStack(const StateStack&) = delete;
     StateStack& operator=(const StateStack&) = delete;
-
     static StateStack& get();
 
-    void push(State::Type type, const std::vector<Message>& messages);
-    void push(State::Type type);
-    void pop();
+    void push(State::Type type, void* data = nullptr);
+    void pop(void* data = nullptr);
+
     void run();
     void closeWindow();
     sf::Time globalTimer();

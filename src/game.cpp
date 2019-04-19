@@ -5,10 +5,10 @@ Game::Game()
 : mBoard{}
 , mSelected{ nullptr }
 , mLock{ false }
-, mTraining{ true }
+, mTraining{}
 , mPlayerColor{ Color::Light }
 , mActualPlayerColor{ Color::Light }
-, mSearchDepth{ 4 }
+, mSearchDepth{}
 , mEnemyTimer{}
 , mTurnText{ "White Player Turn", Resources::get().font("Candara"), 30 }
 , mFinished{ false }
@@ -175,20 +175,68 @@ void Game::tryToFinish()
     }
 }
 
-void Game::activation(const std::vector<Message>& messages)
-{
-}
-
-void Game::deactivation()
+void Game::reset()
 {
     mBoard.reset();
     mSelected = nullptr;
     mLock = false;
+    mTraining = false;
+    mPlayerColor = Color::Light;
     mActualPlayerColor = Color::Light;
-    mFinished = false;
-
+    mSearchDepth = 0;
+    mEnemyTimer = sf::Time::Zero;
+    
     mTurnText.setString("White Player Turn");
     centerOrigin(mTurnText);
+
+    mFinished = false;
+}
+
+void Game::onPush(void* data)
+{
+    auto message = Message(int(data));
+
+    switch (message)
+    {
+        case Message::Training:
+        {
+            mTraining = true;
+        } break;
+
+        case Message::EasyAI:
+        {
+            mTraining = false;
+            mSearchDepth = 2;
+        } break;
+
+        case Message::NormalAI:
+        {
+            mTraining = false;
+            mSearchDepth = 4;
+        } break;
+
+        case Message::HardAI:
+        {
+            mTraining = false;
+            mSearchDepth = 6;
+
+        } break;
+    }
+}
+
+void Game::onPop(void* data)
+{
+    reset();
+}
+
+void Game::onFocusGain()
+{
+
+}
+
+void Game::onFocusLoss()
+{
+
 }
 
 void Game::processEvent(const sf::Event& event)
@@ -198,8 +246,7 @@ void Game::processEvent(const sf::Event& event)
         case sf::Event::Closed:
         {
             StateStack::get().closeWindow();
-        }
-        break;
+        } break;
 
         case sf::Event::KeyPressed:
         {
@@ -219,8 +266,9 @@ void Game::processEvent(const sf::Event& event)
 
                 std::cout << move.start.x << "," << move.start.y << "} -> {" << move.end.x << "," << move.end.y << "}\n";
             }
-        } 
-        break;
+            else if (event.key.code == sf::Keyboard::Q)
+                StateStack::get().pop();
+        } break;
 
         case sf::Event::MouseButtonPressed:
         {
@@ -231,8 +279,7 @@ void Game::processEvent(const sf::Event& event)
                 if(mTraining || (!mTraining && mActualPlayerColor == mPlayerColor))
                     handlePlayerAction({ event.mouseButton.x / TileSize - OffsetX, event.mouseButton.y / TileSize - OffsetY });
             }
-        } 
-        break;
+        } break;
     }
 }
 

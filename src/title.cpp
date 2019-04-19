@@ -10,95 +10,99 @@ Title::Title()
 , mTransition{}
 , mTransitionTimer{}
 {
+    centerOrigin(mHeader);
     mHeader.setPosition(WindowWidth / 2.f, 96.f);
     mHeader.setOutlineThickness(2.f);
-    centerOrigin(mHeader);
 
     // ChooseOption
-    mChooseOption.push_back(Button{ 224.f, "New Game", [this]() {
+    mChooseOption.push_back(Button{ 224.f, "New Game", [this](){
         transition(Type::ChooseMode);
-    } });
+    }});
 
-    mChooseOption.push_back(Button{ 224.f + 128.f, "Options", [this]() {
-       transition(Type::ChooseOption);
-       StateStack::get().push(State::Type::Options);
-    } });
+    mChooseOption.push_back(Button{ 224.f + 128.f, "Options", [this](){
+        StateStack::get().push(State::Type::Options);
+    }});
 
-    mChooseOption.push_back(Button{ 224.f + 256.f, "Exit", [this]() {
-       StateStack::get().closeWindow();
-    } });
+    mChooseOption.push_back(Button{ 224.f + 256.f, "Exit", [this](){
+        StateStack::get().closeWindow();
+    }});
 
     // ChooseMode
-    mChooseMode.push_back(Button{ 224.f, "Training", [this]() {
-      StateStack::get().push(State::Type::Game, {{Message::Type::Bool, true}});
-   } });
+    mChooseMode.push_back(Button{ 224.f, "Training", [this](){
+        StateStack::get().push(State::Type::Game, (void*)Message::Training);
+    }});
 
-    mChooseMode.push_back(Button{ 224.f + 128.f, "Player vs AI", [this]() {
+    mChooseMode.push_back(Button{ 224.f + 128.f, "Player vs AI", [this](){
        transition(Type::ChooseDifficulty);
-    } });
+    }});
 
-    mChooseMode.push_back(Button{ 224.f + 256.f, "Back", [this]() {
+    mChooseMode.push_back(Button{ 224.f + 256.f, "Back", [this](){
         transition(Type::ChooseOption);
-    } });
+    }});
 
     // ChooseDifficulty
     mChooseDifficulty.push_back(Button{ 224.f, "Easy", [this]() {
-        transition(Type::ChooseOption);
-        StateStack::get().push(State::Type::Game, {{Message::Type::Bool, false}, {Message::Type::Int, 2}});
+        StateStack::get().push(State::Type::Game, (void*)Message::EasyAI);
      } });
 
     mChooseDifficulty.push_back(Button{ 224.f + 128.f, "Normal", [this]() {
-        transition(Type::ChooseOption);
-        StateStack::get().push(State::Type::Game, {{Message::Type::Bool, false}, {Message::Type::Int, 4}});
+        StateStack::get().push(State::Type::Game, (void*)Message::NormalAI);
      } });
 
     mChooseDifficulty.push_back(Button{ 224.f + 256.f, "Hard", [this]() {
-        transition(Type::ChooseOption);
-        StateStack::get().push(State::Type::Game, {{Message::Type::Bool, false}, {Message::Type::Int, 6}});
+        StateStack::get().push(State::Type::Game, (void*)Message::HardAI);
     } });
 
     mChooseDifficulty.push_back(Button{ 224.f + 384.f, "Back", [this]() {
         transition(Type::ChooseMode);
     } });
+
+    transition(Type::ChooseOption);
 }
 
 void Title::transition(Type type)
 {
     mType = type;
+    mTransition = true;
+    mTransitionTimer = sf::Time::Zero;
 
     switch (mType)
     {
         case Type::ChooseOption:
         {
             mHeader.setString("Checkers");
-        }
-        break;
+        } break;
 
         case Type::ChooseMode:
         {
             mHeader.setString("Game Mode");
-        }
-        break;
+        } break;
 
         case Type::ChooseDifficulty:
         {
             mHeader.setString("Difficulty");
-        }
-        break;
+        } break;
     }
 
     centerOrigin(mHeader);
-
-    mTransition = true;
-    mTransitionTimer = sf::Time::Zero;
 }
 
-void Title::activation(const std::vector<Message>& messages)
+void Title::onPush(void* data)
+{
+
+}
+
+void Title::onPop(void* data)
+{
+
+}
+
+void Title::onFocusGain()
 {
     transition(Type::ChooseOption);
 }
 
-void Title::deactivation()
+void Title::onFocusLoss()
 {
 }
 
@@ -111,8 +115,7 @@ void Title::processEvent(const sf::Event& event)
         case sf::Event::Closed:
         {
             StateStack::get().closeWindow();
-        }
-        break;
+        } break;
 
         case sf::Event::KeyPressed:
         {
@@ -123,24 +126,20 @@ void Title::processEvent(const sf::Event& event)
                     case Type::ChooseOption:
                     {
                         StateStack::get().closeWindow();
-                    }
-                    break;
+                    } break;
 
                     case Type::ChooseMode:
                     {
                         transition(Type::ChooseOption);
-                    }
-                    break;
+                    } break;
 
                     case Type::ChooseDifficulty:
                     {
                         transition(Type::ChooseMode);
-                    }
-                    break;
+                    } break;
                 }
             }
-        }
-        break;
+        } break;
     }
 
     switch (mType)
@@ -148,20 +147,17 @@ void Title::processEvent(const sf::Event& event)
         case Type::ChooseOption:
         {
             for (auto& button : mChooseOption) button.processEvent(event);
-        }
-        break;
+        } break;
 
         case Type::ChooseMode:
         {
             for (auto& button : mChooseMode) button.processEvent(event);
-        }
-        break;
+        } break;
 
         case Type::ChooseDifficulty:
         {
             for (auto& button : mChooseDifficulty) button.processEvent(event);
-        }
-        break;
+        } break;
     }
 }
 
@@ -178,20 +174,17 @@ void Title::update(sf::Time dt)
         case Type::ChooseOption:
         {
             for (auto& button : mChooseOption) button.update(dt);
-        }
-        break;
+        } break;
 
         case Type::ChooseMode:
         {
             for (auto& button : mChooseMode) button.update(dt);
-        }
-        break;
+        } break;
 
         case Type::ChooseDifficulty:
         {
             for (auto& button : mChooseDifficulty) button.update(dt);
-        }
-        break;
+        } break;
     }
 }
 
@@ -211,20 +204,17 @@ void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
         case Type::ChooseOption:
         {
             for (const auto& button : mChooseOption) target.draw(button, states);
-        }
-        break;
+        } break;
 
         case Type::ChooseMode:
         {
             for (const auto& button : mChooseMode) target.draw(button, states);
-        }
-        break;
+        } break;
 
         case Type::ChooseDifficulty:
         {
             for (const auto& button : mChooseDifficulty) target.draw(button, states);
-        }
-        break;
+        } break;
     }
 
     if (!mTransition)

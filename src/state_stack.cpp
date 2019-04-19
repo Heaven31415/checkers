@@ -36,10 +36,7 @@ StateStack::StateStack()
 void StateStack::processEvents()
 {
     sf::Event event;
-    while (mWindow.pollEvent(event))
-    {
-        if(!mTransition) mStack.top()->processEvent(event);
-    }
+    while (mWindow.pollEvent(event)) if (!mTransition) mStack.top()->processEvent(event);
 }
 
 void StateStack::update(sf::Time dt)
@@ -99,29 +96,24 @@ StateStack& StateStack::get()
     return instance;
 }
 
-void StateStack::push(State::Type type, const std::vector<Message>& messages)
+void StateStack::push(State::Type type, void* data)
 {
+    if (!mStack.empty()) mStack.top()->onFocusLoss();
+
     mStack.push(mStates[type].get());
-    mStack.top()->activation(messages);
+    mStack.top()->onPush(data);
 
     transition();
 }
 
-void StateStack::push(State::Type type)
+void StateStack::pop(void* data)
 {
-    mStack.push(mStates[type].get());
-    mStack.top()->activation({});
+    assert(mStack.empty() == false);
 
-    transition();
-}
-
-void StateStack::pop()
-{
-    if (mStack.empty())
-        throw std::runtime_error("Unable to pop an empty stack");
-
-    mStack.top()->deactivation();
+    mStack.top()->onPop(data);
     mStack.pop();
+
+    if (!mStack.empty()) mStack.top()->onFocusGain();
 
     transition();
 }
