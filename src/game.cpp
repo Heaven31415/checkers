@@ -236,7 +236,11 @@ void Game::onFocusGain()
 
 void Game::onFocusLoss()
 {
-
+    if (mSelected)
+    {
+        mSelected->select(false);
+        mSelected = nullptr;
+    }
 }
 
 void Game::processEvent(const sf::Event& event)
