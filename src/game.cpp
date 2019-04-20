@@ -175,6 +175,16 @@ void Game::tryToFinish()
         mFinished = true;
         mTurnText.setString(mActualPlayerColor == Color::Light ? "Black Player Won!" : "White Player Won!");
         centerOrigin(mTurnText);
+
+        if (!mTraining)
+        {
+            SoundPlayer::get().playMusic(false);
+
+            if(mActualPlayerColor != mPlayerColor)
+                SoundPlayer::get().play("Victory", 100, 1.0f);
+            else
+                SoundPlayer::get().play("GameOver", 100, 1.0f);
+        }
     }
 }
 
@@ -193,6 +203,8 @@ void Game::reset()
     centerOrigin(mTurnText);
 
     mFinished = false;
+
+    SoundPlayer::get().playMusic(true);
 }
 
 void Game::onPush(void* data)
