@@ -4,6 +4,7 @@
 #include "common.hpp"
 #include "resources.hpp"
 #include "shaders.hpp"
+#include "sound_player.hpp"
 
 class Button : public sf::Drawable
 {
@@ -18,7 +19,8 @@ private:
 private:
     sf::Sprite mSprite;
     sf::Text mText;
-    sf::Time mTimer;
+    sf::Time mSelectionTimer;
+    sf::Time mSoundTimer;
     bool mHover;
     std::function<void()> mCallback;
 };
