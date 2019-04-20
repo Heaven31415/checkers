@@ -57,12 +57,7 @@ void Button::update(sf::Time dt)
 
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    if (mHover)
-    {
-        sf::Shader* shader = Resources::get().shader("Selection");
-        shader->setUniform("time", mTimer.asSeconds());
-        states.shader = shader;
-    }
+    if (mHover) states.shader = Shaders::selection(mTimer.asSeconds());
 
     target.draw(mSprite, states);
     target.draw(mText, states);

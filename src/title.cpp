@@ -190,14 +190,7 @@ void Title::update(sf::Time dt)
 
 void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    if (mTransition)
-    {
-        float progress = mTransitionTimer.asSeconds();
-
-        auto* transition = Resources::get().shader("Transition");
-        transition->setUniform("progress", mTransitionTimer / sf::seconds(1.0f));
-        states.shader = transition;
-    }
+    if (mTransition) states.shader = Shaders::transition(mTransitionTimer / sf::seconds(1.0f));
 
     switch (mType)
     {
@@ -217,13 +210,7 @@ void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
         } break;
     }
 
-    if (!mTransition)
-    {
-        auto* wave = Resources::get().shader("Wave");
-        wave->setUniform("wave_phase", StateStack::get().globalTimer().asSeconds());
-        wave->setUniform("wave_amplitude", sf::Vector2f{ 1.0f, 1.0f });
-        states.shader = wave;
-    }
+    if (!mTransition) states.shader = Shaders::wave(StateStack::get().globalTimer().asSeconds(), { 1.f, 1.f });
 
     target.draw(mHeader, states);
 }

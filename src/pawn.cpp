@@ -359,11 +359,6 @@ bool Pawn::isSelected() const
 
 void Pawn::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    if (mIsSelected)
-    {
-        sf::Shader* shader = Resources::get().shader("Selection");
-        shader->setUniform("time", StateStack::get().globalTimer().asSeconds());
-        states.shader = shader;
-    }
+    if (mIsSelected) states.shader = Shaders::selection(StateStack::get().globalTimer().asSeconds());
     target.draw(mSprite, states);
 }

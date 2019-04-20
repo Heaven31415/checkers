@@ -1,6 +1,7 @@
 #pragma once
 
 #include "button.hpp"
+#include "shaders.hpp"
 #include "state.hpp"
 
 class Title : public State
@@ -24,7 +25,6 @@ public:
     virtual void processEvent(const sf::Event& event) override;
     virtual void update(sf::Time dt) override;
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
 private:
     Type mType;
     sf::Text mHeader;

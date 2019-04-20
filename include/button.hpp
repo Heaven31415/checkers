@@ -3,6 +3,7 @@
 #include <functional>
 #include "common.hpp"
 #include "resources.hpp"
+#include "shaders.hpp"
 
 class Button : public sf::Drawable
 {
