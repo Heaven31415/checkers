@@ -25,11 +25,14 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
     {
         mSelected = mBoard.getPawn(destination);
         if (mSelected && mSelected->getColor() == mActualPlayerColor && (!fightPossible || (fightPossible && mSelected->canFight())))
+        {
             mSelected->select(true);
+            SoundPlayer::get().play("Success", 100, 1.0f);
+        }
         else
         {
             mSelected = nullptr;
-            SoundPlayer::get().play("Impossible", 10, 1.2f);
+            SoundPlayer::get().play("Failure", 100, 1.0f);
         }
     }
     else
@@ -39,7 +42,7 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
         if (canFight && mSelected->canFight(destination))
         {
             mSelected->fight(destination);
-            SoundPlayer::get().play("Fight", 20, 1.2f);
+            SoundPlayer::get().play("Fight", 100, 1.0f);
 
             if (!mSelected->canFight())
             {
@@ -60,17 +63,17 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
             mSelected->select(false);
             mSelected = nullptr;
             nextTurn();
-            SoundPlayer::get().play("Move", 20, 1.2f);
+            SoundPlayer::get().play("Move", 100, 1.0f);
         }
         else if(!mLock)
         {
             mSelected->select(false);
             mSelected = nullptr;
-            SoundPlayer::get().play("Impossible", 10, 1.2f);
+            SoundPlayer::get().play("Failure", 100.f, 1.0f);
         }
         else
         {
-            SoundPlayer::get().play("Impossible", 10, 1.2f);
+            SoundPlayer::get().play("Failure", 100, 1.0f);
         }
     }
 
@@ -85,7 +88,7 @@ Pawn* Game::handleEnemyAction()
         if (!fightPositions.empty())
         {
             mSelected->fight(fightPositions[0]);
-            SoundPlayer::get().play("Fight", 20, 1.2f);
+            SoundPlayer::get().play("Fight", 100, 1.0f);
             return mSelected;
         }
     }
@@ -112,7 +115,7 @@ Pawn* Game::handleEnemyAction()
         if (fightPositions.empty()) continue;
 
         king->fight(fightPositions[0]);
-        SoundPlayer::get().play("Fight", 20, 1.2f);
+        SoundPlayer::get().play("Fight", 100, 1.0f);
         return king;
     }
 
@@ -122,7 +125,7 @@ Pawn* Game::handleEnemyAction()
         if (fightPositions.empty()) continue;
 
         pawn->fight(fightPositions[0]);
-        SoundPlayer::get().play("Fight", 20, 1.2f);
+        SoundPlayer::get().play("Fight", 100, 1.0f);
         return pawn;
     }
 
@@ -132,7 +135,7 @@ Pawn* Game::handleEnemyAction()
         if (movePositions.empty()) continue;
 
         pawn->move(movePositions[0]);
-        SoundPlayer::get().play("Move", 20, 1.2f);
+        SoundPlayer::get().play("Move", 100, 1.0f);
         return nullptr;
     }
 
@@ -142,7 +145,7 @@ Pawn* Game::handleEnemyAction()
         if (movePositions.empty()) continue;
 
         king->move(movePositions[0]);
-        SoundPlayer::get().play("Move", 20, 1.2f);
+        SoundPlayer::get().play("Move", 100, 1.0f);
         return nullptr;
     }
 
