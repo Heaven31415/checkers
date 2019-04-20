@@ -1,6 +1,33 @@
-1. Zaimplementować proste menu z możliwością przejścia do gry
-2. Dodać przycisk umożliwiający wyłączenie dźwięków i muzyki
-3. Znaleźć wszystkie błędy i niezgodności z zasadami gry w warcaby i je naprawić.
+Title:
+1. Dodać dźwięki (jeden w czasie najechania na przycisk, drugi w czasie wybrania opcji).
+2. Poprawić wave shader (w aktualnej chwili nagłówek dosyć dziwacznie faluje).
+3. Dodać przycisk o nazwie "Authors" / "Credits" w głównym menu, albo belkę na samym dole z 
+napisem, że gra została stworzona przeze mnie.
 
-4. Refaktoryzacja, refaktoryzacja i refaktoryzacja
-5. Testy, testy i testy
+Options:
+1. Zaimplementować prosty slider.
+2. Zbudować interfejs składający się z:
+a) Nagłówka z napisem "Options".
+b) Slidera umożliwiającego wybranie piosenki.
+c) Slidera umożliwiającego zmianę głośności muzyki.
+d) Slidera umożliwiającego zmianę głośności dźwięków.
+e) Przycisku umożliwiającego powrót do wcześniejszego menu.
+
+Game:
+1. Znaleźć nowe dźwięki:
+a) Poruszania pionkiem.
+b) Bicia pionkiem.
+c) Wykonania niemożliwej akcji.
+d) Wygrania gry.
+e) Przegrania gry.
+2. Poprawić algorytmy sztucznej inteligencji i zweryfikować ich poprawność.
+3. Zaimplementować przycinanie alpha-beta.
+4. Zaimplementować sztuczną inteligencję wykorzystującą nowe algorytmy.
+5. Zaimplementować tworzenie nowego wątku w którym będzie działać SI (aby gra mogła działać płynnie).
+6. Zaimplementować okienko końcowe wyświetlane po zakończeniu rozgrywki.
+7. Zaimplementować licznik sprawdzający czy w grze zachodzi jakiś postęp.
+
+Do tego:
+
+Testy, testy i jeszcze raz testy.
+Refaktoryzacja, refaktoryzacja i jeszcze raz refaktoryzacja.
