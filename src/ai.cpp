@@ -378,7 +378,7 @@ ai::Move ai::getNextMove(ai::Board* board, Color color, int depth)
 
     for (const auto& child : board->children)
     {
-        if (child->move->type == ai::Move::Type::Fight)
+        if (child->move.type == ai::Move::Type::Fight)
         {
             canFight = true;
             break;
@@ -391,7 +391,7 @@ ai::Move ai::getNextMove(ai::Board* board, Color color, int depth)
             std::remove_if(
                 board->children.begin(),
                 board->children.end(),
-                [](const std::unique_ptr<ai::Board>& board) { return board->move->type != ai::Move::Type::Fight; }
+                [](const std::unique_ptr<ai::Board>& board) { return board->move.type != ai::Move::Type::Fight; }
             ),
             board->children.end()
         );
@@ -401,18 +401,10 @@ ai::Move ai::getNextMove(ai::Board* board, Color color, int depth)
 
     auto* node = result.first;
 
-    while (node->parent != board)
-    {
+    while (node->parent && node->parent != board)
         node = node->parent;
-    }
 
-    ai::Move move{};
-
-    move.type = node->move->type;
-    move.start = node->move->start;
-    move.end = node->move->end;
-
-    return move;
+    return node->move;
 }
 
 std::pair<ai::Board*, int> ai::minimax(ai::Board* board, Color color, int depth)
@@ -461,12 +453,13 @@ void ai::buildDecisionTree(ai::Board* board, Color color, int depth)
         for (const auto& fightPosition : fightPositions)
         {
             auto child = std::make_unique<ai::Board>();
+            child->pawns.reserve(board->pawns.size());
+
             child->parent = board;
 
-            child->move = std::make_unique<ai::Move>();
-            child->move->type = Move::Type::Fight;
-            child->move->start = board->pawns[i].position;
-            child->move->end = fightPosition;
+            child->move.type = Move::Type::Fight;
+            child->move.start = board->pawns[i].position;
+            child->move.end = fightPosition;
 
             for (auto p : board->pawns)
             {
@@ -501,12 +494,13 @@ void ai::buildDecisionTree(ai::Board* board, Color color, int depth)
         for (const auto& movePosition : movePositions)
         {
             auto child = std::make_unique<ai::Board>();
+            child->pawns.reserve(board->pawns.size());
+
             child->parent = board;
 
-            child->move = std::make_unique<ai::Move>();
-            child->move->type = Move::Type::Move;
-            child->move->start = board->pawns[i].position;
-            child->move->end = movePosition;
+            child->move.type = Move::Type::Move;
+            child->move.start = board->pawns[i].position;
+            child->move.end = movePosition;
             
             for (const auto& p : board->pawns) child->pawns.push_back(p);
             for (auto& p : child->pawns) p.board = child.get();

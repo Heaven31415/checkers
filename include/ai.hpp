@@ -41,7 +41,7 @@ namespace ai
     struct Board
     {
         ai::Board* parent;
-        std::unique_ptr<Move> move;
+        ai::Move move;
         std::vector<ai::Pawn> pawns;
         std::vector<std::unique_ptr<ai::Board>> children;
 
