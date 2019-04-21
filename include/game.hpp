@@ -1,12 +1,10 @@
 #pragma once
 
-#include "ai.hpp"
 #include "board.hpp"
 #include "pawn.hpp"
 #include "sound_player.hpp"
 #include "state.hpp"
-
-#include <iostream>
+#include "worker.hpp"
 
 class Game : public State
 {
@@ -38,4 +36,5 @@ private:
     sf::Time mEnemyTimer;
     sf::Text mTurnText;
     bool mFinished;
+    Worker mWorker;
 };

@@ -12,6 +12,7 @@ Game::Game()
 , mEnemyTimer{}
 , mTurnText{ "White Player Turn", Resources::get().font("Candara"), 30 }
 , mFinished{ false }
+, mWorker{}
 {
     centerOrigin(mTurnText);
     mTurnText.setPosition(WindowWidth / 2.f, 96.f);
@@ -275,15 +276,25 @@ void Game::processEvent(const sf::Event& event)
                 StateStack::get().push(State::Type::Options);
             else if (event.key.code == sf::Keyboard::M)
             {
-                auto board = mBoard.getAI();
-                auto move = ai::getNextMove(board.get(), mActualPlayerColor, mSearchDepth);
+                auto status = mWorker.getStatus();
 
-                if (move.type == ai::Move::Type::Fight)
-                    std::cout << "Fight {";
-                else
-                    std::cout << "Move {";
+                switch (mWorker.getStatus())
+                {
+                    case Worker::Status::Waiting:
+                    {
+                        mWorker.requestNextMove(&mBoard, mActualPlayerColor, mSearchDepth);
+                    } break;
 
-                std::cout << move.start.x << "," << move.start.y << "} -> {" << move.end.x << "," << move.end.y << "}\n";
+                    case Worker::Status::Working:
+                    {
+                        std::cout << "Worker is still busy" << '\n';
+                    } break;
+
+                    case Worker::Status::Finished:
+                    {
+                        std::cout << "Worker has already finished" << '\n';
+                    } break;
+                }
             }
             else if (event.key.code == sf::Keyboard::Q)
                 StateStack::get().pop();
@@ -324,6 +335,19 @@ void Game::update(sf::Time dt)
 
                 tryToFinish();
             }
+        }
+    }
+
+    if (!mFinished)
+    {
+        if (mWorker.getStatus() == Worker::Status::Finished)
+        {
+            auto move = mWorker.getNextMove();
+
+            if (move.type == ai::Move::Type::Fight) std::cout << "Fight {";
+            else std::cout << "Move {";
+
+            std::cout << move.start.x << "," << move.start.y << "} -> {" << move.end.x << "," << move.end.y << "}\n";
         }
     }
 }
