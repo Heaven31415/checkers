@@ -11,6 +11,7 @@ namespace ai
     {
         enum class Type
         {
+            None,
             Move,
             Fight
         };

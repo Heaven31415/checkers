@@ -344,8 +344,23 @@ void Game::update(sf::Time dt)
         {
             auto move = mWorker.getNextMove();
 
-            if (move.type == ai::Move::Type::Fight) std::cout << "Fight {";
-            else std::cout << "Move {";
+            switch (move.type)
+            {
+                case ai::Move::Type::None:
+                {
+                    std::cout << "None {";
+                } break;
+
+                case ai::Move::Type::Move:
+                {
+                    std::cout << "Move {";
+                } break;
+
+                case ai::Move::Type::Fight:
+                {
+                    std::cout << "Fight {";
+                } break;
+            }
 
             std::cout << move.start.x << "," << move.start.y << "} -> {" << move.end.x << "," << move.end.y << "}\n";
         }

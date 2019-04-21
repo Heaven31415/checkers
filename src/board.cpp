@@ -116,6 +116,9 @@ std::unique_ptr<ai::Board> Board::getAI() const
 {
     auto board = std::make_unique<ai::Board>();
 
+    board->parent = nullptr;
+    board->move = ai::Move{ ai::Move::Type::None, sf::Vector2i{}, sf::Vector2i{} };
+
     for (const auto& pawn : mPawns)
     {
         auto p = pawn->getAI();
