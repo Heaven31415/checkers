@@ -1,5 +1,6 @@
 #pragma once
 
+#include "button.hpp"
 #include "common.hpp"
 #include "state.hpp"
 
@@ -16,4 +17,14 @@ public:
     virtual void processEvent(const sf::Event& event) override;
     virtual void update(sf::Time dt) override;
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+private:
+    sf::Text mHeader;
+    Button mNextSong;
+    // Slider mMusicVolume;
+    // Slider mSoundsVolume;
+    Button mBack;
+
+    bool mTransition;
+    sf::Time mTransitionTimer;
 };
