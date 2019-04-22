@@ -2,8 +2,8 @@
 #include "title.hpp"
 
 Title::Title()
-: mType{Type::ChooseOption}
-, mHeader{"Checkers", Resources::get().font("Candara"), 70}
+: mType{ Type::ChooseOption }
+, mHeader{ "Checkers", Resources::get().font("Candara"), 70 }
 , mChooseOption{}
 , mChooseMode{}
 , mChooseDifficulty{}
