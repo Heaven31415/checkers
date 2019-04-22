@@ -5,8 +5,6 @@
 #include "ai.hpp"
 #include "board.hpp"
 
-#include <iostream>
-
 class Worker
 {
 public:
