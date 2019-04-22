@@ -1,22 +1,19 @@
 Title:
 1. Skalibrować głośność dźwięków.
-2. Poprawić wave shader (w aktualnej chwili nagłówek dosyć dziwacznie faluje).
-3. Dodać na samym dole informacje na temat aktualnej wersji programu oraz nazwę jego autora.
 
 Options:
-4. Zaimplementować prosty slider.
-5. Zbudować interfejs składający się z:
-- Nagłówka z napisem "Options".
-- Przycisku z napisem "Next song".
+2. Zaimplementować prosty slider.
+3. Zbudować interfejs składający się z:
 - Slidera umożliwiającego zmianę głośności muzyki.
 - Slidera umożliwiającego zmianę głośności dźwięków.
-- Przycisku umożliwiającego powrót do wcześniejszego menu.
 
 Game:
-6. Skalibrować głośność dźwięków.
-7. Zaimplementować lepszy efekt końcowy po zakończonej rozgrywce.
-8. Zaimplementować licznik sprawdzający czy w grze zachodzi jakiś postęp.
+4. Skalibrować głośność dźwięków.
+5. Zaimplementować lepszy efekt końcowy po zakończonej rozgrywce.
+6. Zaimplementować licznik sprawdzający czy w grze zachodzi jakiś postęp.
+7. Zaimplementować dźwięki przy ruchach sztucznej inteligencji.
 
+8. Naprawić problem z przyciskami które nie słuchają się efektu przejścia.
 9. Dokończyć README.
 10. Testy, testy i jeszcze raz testy.
 11. Refaktoryzacja, refaktoryzacja i jeszcze raz refaktoryzacja.
