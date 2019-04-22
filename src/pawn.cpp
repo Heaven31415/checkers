@@ -204,7 +204,7 @@ void Pawn::fight(const sf::Vector2i& destination)
         if (pawn && pawn->getColor() != mColor)
         {
             mBoard->killPawn(pawn->getPosition());
-            move(destination);
+            move(destination, true);
         }
     }
 }
