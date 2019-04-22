@@ -81,76 +81,57 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
     tryToFinish();
 }
 
-Pawn* Game::handleEnemyAction()
+void Game::handleEnemyAction()
 {
     if (mSelected)
     {
-        auto fightPositions = mSelected->getFightPositions();
-        if (!fightPositions.empty())
+        if (mSelected->canFight())
         {
-            mSelected->fight(fightPositions[0]);
-            SoundPlayer::get().play("Fight", 100, 1.0f);
-            return mSelected;
+            if (mEnemyTimer >= sf::seconds(1.f))
+                mSelected->fight(mSelected->getFightPositions()[0]);
+        }
+        else
+        {
+            mSelected = nullptr;
+            nextTurn();
+            tryToFinish();
+
+            mEnemyTimer = sf::Time::Zero;
         }
     }
-
-    auto pawns = mBoard.getPawns(mActualPlayerColor);
-
-    std::vector<Pawn*> kings{};
-
-    for (const auto& pawn : pawns)
-        if (pawn->isKing()) kings.push_back(pawn);
-
-    pawns.erase(
-        std::remove_if(
-            pawns.begin(),
-            pawns.end(),
-            [](Pawn* pawn) { return pawn->isKing(); }
-        ),
-        pawns.end()
-    );
-
-    for (const auto& king : kings)
+    else
     {
-        auto fightPositions = king->getFightPositions();
-        if (fightPositions.empty()) continue;
+        auto status = mWorker.getStatus();
 
-        king->fight(fightPositions[0]);
-        SoundPlayer::get().play("Fight", 100, 1.0f);
-        return king;
+        if (status == Worker::Status::Waiting)
+            mWorker.requestNextMove(&mBoard, mActualPlayerColor, mSearchDepth);
+        else if (status == Worker::Status::Finished && mEnemyTimer >= sf::seconds(1.f))
+        {
+            auto move = mWorker.getNextMove();
+
+            assert(move.type != ai::Move::Type::None);
+
+            mSelected = mBoard.getPawn(move.start);
+
+            assert(mSelected != nullptr);
+
+            if (move.type == ai::Move::Type::Move)
+            {
+                mSelected->move(move.end);
+
+                mSelected = nullptr;
+                nextTurn();
+                tryToFinish();
+
+                mEnemyTimer = sf::Time::Zero;
+            }
+            else
+            {
+                mSelected->fight(move.end);
+                mEnemyTimer = sf::Time::Zero;
+            }
+        }
     }
-
-    for (const auto& pawn : pawns)
-    {
-        auto fightPositions = pawn->getFightPositions();
-        if (fightPositions.empty()) continue;
-
-        pawn->fight(fightPositions[0]);
-        SoundPlayer::get().play("Fight", 100, 1.0f);
-        return pawn;
-    }
-
-    for (const auto& pawn : pawns)
-    {
-        auto movePositions = pawn->getMovePositions();
-        if (movePositions.empty()) continue;
-
-        pawn->move(movePositions[0]);
-        SoundPlayer::get().play("Move", 100, 1.0f);
-        return nullptr;
-    }
-
-    for (const auto& king : kings)
-    {
-        auto movePositions = king->getMovePositions();
-        if (movePositions.empty()) continue;
-
-        king->move(movePositions[0]);
-        SoundPlayer::get().play("Move", 100, 1.0f);
-        return nullptr;
-    }
-
-    return nullptr;
 }
 
 void Game::nextTurn()
@@ -181,10 +162,8 @@ void Game::tryToFinish()
         {
             SoundPlayer::get().playMusic(false);
 
-            if(mActualPlayerColor != mPlayerColor)
-                SoundPlayer::get().play("Victory", 100, 1.0f);
-            else
-                SoundPlayer::get().play("GameOver", 100, 1.0f);
+            if(mActualPlayerColor != mPlayerColor) SoundPlayer::get().play("Victory", 100, 1.0f);
+            else SoundPlayer::get().play("GameOver", 100, 1.0f);
         }
     }
 }
@@ -222,19 +201,19 @@ void Game::onPush(void* data)
         case Message::EasyAI:
         {
             mTraining = false;
-            mSearchDepth = 2;
+            mSearchDepth = 1;
         } break;
 
         case Message::NormalAI:
         {
             mTraining = false;
-            mSearchDepth = 4;
+            mSearchDepth = 2;
         } break;
 
         case Message::HardAI:
         {
             mTraining = false;
-            mSearchDepth = 6;
+            mSearchDepth = 3;
 
         } break;
     }
@@ -274,28 +253,6 @@ void Game::processEvent(const sf::Event& event)
                 StateStack::get().pop();
             else if (event.key.code == sf::Keyboard::Escape)
                 StateStack::get().push(State::Type::Options);
-            else if (event.key.code == sf::Keyboard::M)
-            {
-                auto status = mWorker.getStatus();
-
-                switch (mWorker.getStatus())
-                {
-                    case Worker::Status::Waiting:
-                    {
-                        mWorker.requestNextMove(&mBoard, mActualPlayerColor, mSearchDepth);
-                    } break;
-
-                    case Worker::Status::Working:
-                    {
-                        std::cout << "Worker is still busy" << '\n';
-                    } break;
-
-                    case Worker::Status::Finished:
-                    {
-                        std::cout << "Worker has already finished" << '\n';
-                    } break;
-                }
-            }
             else if (event.key.code == sf::Keyboard::Q)
                 StateStack::get().pop();
         } break;
@@ -318,52 +275,7 @@ void Game::update(sf::Time dt)
     if (!mFinished && !mTraining && mActualPlayerColor != mPlayerColor)
     {
         mEnemyTimer += dt;
-
-        if (mEnemyTimer >= sf::seconds(1.f))
-        {
-            mSelected = handleEnemyAction();
-
-            if (mSelected && mSelected->canFight())
-            {
-                mEnemyTimer = sf::seconds(0.5f);
-            }
-            else
-            {
-                mSelected = nullptr;
-                mEnemyTimer = sf::Time::Zero;
-                nextTurn();
-
-                tryToFinish();
-            }
-        }
-    }
-
-    if (!mFinished)
-    {
-        if (mWorker.getStatus() == Worker::Status::Finished)
-        {
-            auto move = mWorker.getNextMove();
-
-            switch (move.type)
-            {
-                case ai::Move::Type::None:
-                {
-                    std::cout << "None {";
-                } break;
-
-                case ai::Move::Type::Move:
-                {
-                    std::cout << "Move {";
-                } break;
-
-                case ai::Move::Type::Fight:
-                {
-                    std::cout << "Fight {";
-                } break;
-            }
-
-            std::cout << move.start.x << "," << move.start.y << "} -> {" << move.end.x << "," << move.end.y << "}\n";
-        }
+        handleEnemyAction();
     }
 }
 

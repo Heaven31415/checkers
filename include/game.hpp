@@ -12,7 +12,7 @@ public:
     Game();
 
     void handlePlayerAction(const sf::Vector2i& destination);
-    Pawn* handleEnemyAction();
+    void handleEnemyAction();
     void nextTurn();
     void tryToFinish();
     void reset();
