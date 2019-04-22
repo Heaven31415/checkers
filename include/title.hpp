@@ -31,6 +31,7 @@ private:
     std::vector<Button> mChooseOption;
     std::vector<Button> mChooseMode;
     std::vector<Button> mChooseDifficulty;
+    sf::Text mVersion;
     bool mTransition;
     sf::Time mTransitionTimer;
 };

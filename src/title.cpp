@@ -7,12 +7,16 @@ Title::Title()
 , mChooseOption{}
 , mChooseMode{}
 , mChooseDifficulty{}
+, mVersion{ "v1.0", Resources::get().font("Candara"), 30 }
 , mTransition{}
 , mTransitionTimer{}
 {
     centerOrigin(mHeader);
     mHeader.setPosition(WindowWidth / 2.f, 96.f);
     mHeader.setOutlineThickness(2.f);
+
+    centerOrigin(mVersion);
+    mVersion.setPosition(WindowWidth / 2.f, 224.f + 512.f);
 
     // ChooseOption
     mChooseOption.push_back(Button{ "New Game", 224.f, [this](){
@@ -197,6 +201,7 @@ void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
         case Type::ChooseOption:
         {
             for (const auto& button : mChooseOption) target.draw(button, states);
+            target.draw(mVersion, states);
         } break;
 
         case Type::ChooseMode:
