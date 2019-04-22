@@ -1,5 +1,8 @@
 # Checkers
 
+![Title](/misc/Title.png)
+![Game](/misc/Game.png)
+
 Write a sentence or two about this project.
 
 ## Credits
