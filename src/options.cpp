@@ -13,7 +13,7 @@ Options::Options()
     SoundPlayer::get().setMusicVolume(value);
 } }
 , mSoundsText{ "Sounds Volume", Resources::get().font("Candara"), 30 }
-, mSoundsVolume{ 20.f, 224.f + 256.f, [](float value) {
+, mSoundsVolume{ 40.f, 224.f + 256.f, [](float value) {
     SoundPlayer::get().setSoundsVolume(value);
 } }
 , mBack{ "Back", 224.f + 384.f, []() {
