@@ -213,7 +213,7 @@ void Game::onPush(void* data)
         case Message::HardAI:
         {
             mTraining = false;
-            mSearchDepth = 3;
+            mSearchDepth = 4;
 
         } break;
     }
