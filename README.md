@@ -1,6 +1,6 @@
 # Checkers
 
-Nature-themed checkers implemented in cpp using [SFML](https://github.com/SFML/SFML) library with artificial intelligence that is using [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm in order to mimic thinking.
+Nature-themed checkers implemented in cpp using [SFML](https://github.com/SFML/SFML) library with artificial intelligence that is using [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm to mimic thinking.
 
 ## Title
 ![Title](/misc/Title.png)
@@ -10,7 +10,7 @@ Nature-themed checkers implemented in cpp using [SFML](https://github.com/SFML/S
 
 ## Requirements
 
-In order to build this on Windows, you will need:
+To build this on Windows, you will need:
 - [Premake5](https://premake.github.io/) or newer.
 - [SFML 2.5.1](https://github.com/SFML/SFML) or newer.
 - [Visual Studio 2017](https://visualstudio.microsoft.com/) or newer.
