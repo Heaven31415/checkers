@@ -5,10 +5,10 @@ SoundPlayer::SoundPlayer()
 , mMusic{}
 , mSongIndices{}
 , mSongs{}
-, mMusicVolume{ 20.f }
+, mMusicVolume{ 100.f }
 , mPlaySounds{ true }
 , mSounds{}
-, mSoundsVolume{ 20.f }
+, mSoundsVolume{ 100.f }
 {
     for (const auto& entry : getDirectoryEntries(MusicDirectory, { ".ogg" }))
         mSongs.push_back({ entry.first, entry.second });

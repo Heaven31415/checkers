@@ -2,6 +2,7 @@
 
 #include "button.hpp"
 #include "common.hpp"
+#include "slider.hpp"
 #include "state.hpp"
 
 class Options : public State
@@ -21,8 +22,10 @@ public:
 private:
     sf::Text mHeader;
     Button mNextSong;
-    // Slider mMusicVolume;
-    // Slider mSoundsVolume;
+    sf::Text mMusicText;
+    Slider mMusicVolume;
+    sf::Text mSoundsText;
+    Slider mSoundsVolume;
     Button mBack;
 
     bool mTransition;

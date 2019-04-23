@@ -8,8 +8,14 @@ Options::Options()
     SoundPlayer::get().updateMusic();
     SoundPlayer::get().playMusic(true);
 } }
-// , mMusicVolume{}
-// , mSoundsVolume{}
+, mMusicText{ "Music Volume", Resources::get().font("Candara"), 30 }
+, mMusicVolume{ 20.f, 224.f + 128.f, [](float value) {
+    SoundPlayer::get().setMusicVolume(value);
+} }
+, mSoundsText{ "Sounds Volume", Resources::get().font("Candara"), 30 }
+, mSoundsVolume{ 20.f, 224.f + 256.f, [](float value) {
+    SoundPlayer::get().setSoundsVolume(value);
+} }
 , mBack{ "Back", 224.f + 384.f, []() {
    StateStack::get().pop();
 } }
@@ -19,6 +25,14 @@ Options::Options()
     centerOrigin(mHeader);
     mHeader.setPosition(WindowWidth / 2.f, 96.f);
     mHeader.setOutlineThickness(2.f);
+
+    centerOrigin(mMusicText);
+    mMusicText.setPosition(WindowWidth / 2.f, 224.f + 96.f);
+    mMusicText.setOutlineThickness(1.f);
+
+    centerOrigin(mSoundsText);
+    mSoundsText.setPosition(WindowWidth / 2.f, 224.f + 224.f);
+    mSoundsText.setOutlineThickness(1.f);
 }
 
 void Options::onPush(void* data)
@@ -59,6 +73,8 @@ void Options::processEvent(const sf::Event& event)
     }
 
     mNextSong.processEvent(event);
+    mMusicVolume.processEvent(event);
+    mSoundsVolume.processEvent(event);
     mBack.processEvent(event);
 }
 
@@ -71,6 +87,8 @@ void Options::update(sf::Time dt)
     }
 
     mNextSong.update(dt);
+    mMusicVolume.update(dt);
+    mSoundsVolume.update(dt);
     mBack.update(dt);
 }
 
@@ -79,6 +97,10 @@ void Options::draw(sf::RenderTarget& target, sf::RenderStates states) const
     if (mTransition) states.shader = Shaders::transition(mTransitionTimer / sf::seconds(1.0f));
 
     target.draw(mNextSong, states);
+    target.draw(mMusicText, states);
+    target.draw(mMusicVolume, states);
+    target.draw(mSoundsText, states);
+    target.draw(mSoundsVolume, states);
     target.draw(mBack, states);
 
     if (!mTransition) states.shader = Shaders::wave(StateStack::get().globalTimer().asSeconds(), { 1.f, 1.f });
