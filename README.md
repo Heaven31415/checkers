@@ -1,9 +1,32 @@
 # Checkers
 
+Nature-themed checkers implemented in cpp using [SFML](https://github.com/SFML/SFML) library with artificial intelligence that is using [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm in order to mimic thinking.
+
+## Title
 ![Title](/misc/Title.png)
+
+## Game
 ![Game](/misc/Game.png)
 
-Write a sentence or two about this project.
+## Requirements
+
+In order to build this on Windows, you will need:
+- [Premake5](https://premake.github.io/) or newer.
+- [SFML 2.5.1](https://github.com/SFML/SFML) or newer.
+- [Visual Studio 2017](https://visualstudio.microsoft.com/) or newer.
+
+Building on other platforms is currently not supported, however it will most likely change in the future.
+
+## Building
+
+1. Download Premake5 from this [website](https://premake.github.io/download.html#v5) and place it somewhere where you will be able to use it from the command line.
+
+2. Install SFML library on your system. [Official tutorials](https://www.sfml-dev.org/tutorials/2.5/) are a big help if you haven't done that before. After installing SFML you should have a folder somewhere on your disk which contains an include, lib and bin subdirectories. Save path to this directory, you will need it later.
+
+3. Go to the directory where you have downloaded Checkers. Find and open a file named `premake5.lua` using any text editor. Modify the first line of this file so the variable `SFML_INSTALL_DIR` points to the directory where you have installed SFML library. If for example, your SFML is located at `"C:/SFML"` then the first line of this file should look like this: `SFML_INSTALL_DIR = "C:/SFML"`. Remember to use forward slashes!
+
+4. Open your command line in the directory with Checkers and run the following command: `premake5 vs2017`. This will generate a solution file which you will have to use to compile the project.
+5. Open file `checkers.sln` using Visual Studio and compile Checkers project just like any other cpp program.
 
 ## Credits
 
@@ -34,23 +57,3 @@ that allow game developers to find and use fantastic high-quality free resources
   * [Decision](https://opengameart.org/content/decision) by [Alexandr Zhelanov](https://opengameart.org/users/alexandr-zhelanov) licensed: CC-BY 3.0.
   * [Journey to the East Rocks](https://opengameart.org/content/journey-to-the-east-rocks) by [Alexandr Zhelanov](https://opengameart.org/users/alexandr-zhelanov) licensed: CC-BY 3.0.
   * [Nature Theme Sketch](https://opengameart.org/content/nature-theme-sketch) by [remaxim](https://opengameart.org/users/remaxim) licensed: CC-BY-SA 3.0.
-
-## Download
-
-Write information on how and where to download this game.
-
-## Requirements
-
-In order to build this yourself on Windows you will need:
-- SFML 2.5.1 or newer
-- Visual Studio 2017 or newer
-
-Building on other platforms is currently not supported, however it will most likely change in the future.
-
-## Build
-
-Write a detailed instruction on how to build this project using Visual Studio.
-
-## Contribute
-
-Write information on how to contribute to the project.
