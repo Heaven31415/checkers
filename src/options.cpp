@@ -9,7 +9,7 @@ Options::Options()
     SoundPlayer::get().playMusic(true);
 } }
 , mMusicText{ "Music Volume", Resources::get().font("Candara"), 30 }
-, mMusicVolume{ 20.f, 224.f + 128.f, [](float value) {
+, mMusicVolume{ 10.f, 224.f + 128.f, [](float value) {
     SoundPlayer::get().setMusicVolume(value);
 } }
 , mSoundsText{ "Sounds Volume", Resources::get().font("Candara"), 30 }
