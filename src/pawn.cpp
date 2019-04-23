@@ -5,12 +5,12 @@
 Pawn::Pawn(Board* board, const sf::Vector2i& position, Color color)
 : mBoard{ board }
 , mSprite{ Resources::get().texture(color == Color::Light ? "LightPawn" : "DarkPawn") }
-, mPosition{}
+, mPosition{ position }
 , mColor{ color }
 , mIsKing{ false }
 , mIsSelected{ false }
 {
-    move(position);
+    mSprite.setPosition(float(TileSize) * (position.x + OffsetX), float(TileSize) * (position.y + OffsetY));
 }
 
 void Pawn::select(bool value)
@@ -45,6 +45,8 @@ void Pawn::move(const sf::Vector2i& destination, bool duringFight)
         mIsKing = true;
         mSprite.setTexture(Resources::get().texture(mColor == Color::Light ? "LightKing" : "DarkKing"));
     }
+
+    SoundPlayer::get().play("Move", 100, 1.0f);
 }
 
 bool Pawn::canMove(const sf::Vector2i& destination) const
@@ -207,6 +209,8 @@ void Pawn::fight(const sf::Vector2i& destination)
             move(destination, true);
         }
     }
+
+    SoundPlayer::get().play("Fight", 100, 1.0f);
 }
 
 bool Pawn::canFight(const sf::Vector2i& destination) const

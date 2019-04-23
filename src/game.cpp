@@ -43,7 +43,6 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
         if (canFight && mSelected->canFight(destination))
         {
             mSelected->fight(destination);
-            SoundPlayer::get().play("Fight", 100, 1.0f);
 
             if (!mSelected->canFight())
             {
@@ -64,7 +63,6 @@ void Game::handlePlayerAction(const sf::Vector2i& destination)
             mSelected->select(false);
             mSelected = nullptr;
             nextTurn();
-            SoundPlayer::get().play("Move", 100, 1.0f);
         }
         else if(!mLock)
         {
