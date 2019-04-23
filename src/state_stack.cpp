@@ -46,7 +46,7 @@ void StateStack::update(sf::Time dt)
     mCursor.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(mWindow)));
     mStack.top()->update(dt);
 
-    // SoundPlayer::get().updateMusic();
+    SoundPlayer::get().updateMusic();
 }
 
 void StateStack::render()
