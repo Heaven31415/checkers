@@ -1,19 +1,6 @@
-Title:
-1. Skalibrować głośność dźwięków.
-
-Options:
-2. Zaimplementować prosty slider.
-3. Zbudować interfejs składający się z:
-- Slidera umożliwiającego zmianę głośności muzyki.
-- Slidera umożliwiającego zmianę głośności dźwięków.
-
-Game:
-4. Skalibrować głośność dźwięków.
-5. Zaimplementować lepszy efekt końcowy po zakończonej rozgrywce.
-6. Zaimplementować licznik sprawdzający czy w grze zachodzi jakiś postęp.
-7. Zaimplementować dźwięki przy ruchach sztucznej inteligencji.
-
-8. Naprawić problem z przyciskami które nie słuchają się efektu przejścia.
-9. Dokończyć README.
-10. Testy, testy i jeszcze raz testy.
-11. Refaktoryzacja, refaktoryzacja i jeszcze raz refaktoryzacja.
+1. Zaimplementować lepszy efekt końcowy po zakończonej rozgrywce.
+2. Zaimplementować licznik sprawdzający czy w grze zachodzi jakiś postęp.
+3. Naprawić problem z przyciskami które nie słuchają się efektu przejścia.
+4. Dokończyć README.
+5. Testy, testy i jeszcze raz testy.
+6. Refaktoryzacja, refaktoryzacja i jeszcze raz refaktoryzacja.
