@@ -1,4 +1,8 @@
-SFML_INSTALL_DIR = "C:/SFML/install"
+newoption {
+  trigger = "SFML_INSTALL_DIR",
+  value = "path",
+  description = "Path to SFML install directory"
+}
 
 workspace "checkers"
   configurations {"Debug", "Release"}
@@ -11,8 +15,8 @@ project "checkers"
   files {"**.hpp", "**.cpp"}
 
   includedirs "include"
-  includedirs (SFML_INSTALL_DIR .. "/" .. "include")
-  libdirs (SFML_INSTALL_DIR .. "/" .. "lib")
+  includedirs (_OPTIONS["SFML_INSTALL_DIR"] .. "/" .. "include")
+  libdirs (_OPTIONS["SFML_INSTALL_DIR"] .. "/" .. "lib")
 
   filter "configurations:Debug"
     defines "DEBUG"

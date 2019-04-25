@@ -19,14 +19,13 @@ Building on other platforms is currently not supported, however it will most lik
 
 ## Building
 
-1. Download Premake5 from this [website](https://premake.github.io/download.html#v5) and place it somewhere where you will be able to use it from the command line.
+1. Download Premake 5.0 from this [website](https://premake.github.io/download.html#v5) and place it somewhere where you will be able to use it from the command line.
 
 2. Install SFML library on your system. [Official tutorials](https://www.sfml-dev.org/tutorials/2.5/) are a big help if you haven't done that before. After installing SFML you should have a folder somewhere on your disk which contains an include, lib and bin subdirectories. Save path to this directory, you will need it later.
 
-3. Go to the directory where you have downloaded Checkers. Find and open a file named `premake5.lua` using any text editor. Modify the first line of this file so the variable `SFML_INSTALL_DIR` points to the directory where you have installed SFML library. If for example, your SFML is located at `"C:/SFML"` then the first line of this file should look like this: `SFML_INSTALL_DIR = "C:/SFML"`. Remember to use forward slashes!
+3. Open your command line and navigate to the place where you have downloaded Checkers. If for example your SFML was installed at `C:/SFML` then you should run the following command: `premake5 vs2017 --SFML_INSTALL_DIR=C:/SFML`. Remember to adjust path accordingly and use forward slashes.
 
-4. Open your command line in the directory with Checkers and run the following command: `premake5 vs2017`. This will generate a solution file which you will have to use to compile the project.
-5. Open file `checkers.sln` using Visual Studio and compile Checkers project just like any other cpp program.
+4. Open file `checkers.sln` using Visual Studio and compile Checkers project just like any other program.
 
 ## Credits
 
