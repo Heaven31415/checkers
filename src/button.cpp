@@ -1,5 +1,21 @@
 #include "button.hpp"
 
+Button::Button(const std::string& text, float height)
+: mSprite{ Resources::get().texture("Button") }
+, mText{ text, Resources::get().font("Candara"), 30 }
+, mSelectionTimer{}
+, mSoundTimer{}
+, mHover{ false }
+, mCallback{}
+{
+    centerOrigin(mSprite);
+    mSprite.setPosition(WindowWidth / 2.f, height);
+
+    centerOrigin(mText);
+    mText.setPosition(WindowWidth / 2.f, height);
+    mText.setOutlineThickness(1.f);
+}
+
 Button::Button(const std::string& text, float height, std::function<void()> callback)
 : mSprite{ Resources::get().texture("Button") }
 , mText{ text, Resources::get().font("Candara"), 30 }
@@ -25,7 +41,7 @@ void Button::processEvent(const sf::Event& event)
             auto x = float(event.mouseMove.x);
             auto y = float(event.mouseMove.y);
 
-            if (abs(mSprite.getPosition().x - x) <= 128.f && abs(mSprite.getPosition().y - y) <= 32.f)
+            if (abs(mSprite.getPosition().x - x) <= ButtonWidth / 2.f && abs(mSprite.getPosition().y - y) <= ButtonHeight / 2.f)
             {
                 mHover = true;
                 if (mSoundTimer == sf::Time::Zero) 
@@ -48,7 +64,7 @@ void Button::processEvent(const sf::Event& event)
                 auto x = float(event.mouseButton.x);
                 auto y = float(event.mouseButton.y);
 
-                if (abs(mSprite.getPosition().x - x) <= 128.f && abs(mSprite.getPosition().y - y) <= 32.f)
+                if (abs(mSprite.getPosition().x - x) <= ButtonWidth / 2.f && abs(mSprite.getPosition().y - y) <= ButtonHeight / 2.f)
                 {
                     mCallback();
                     mHover = false;
@@ -66,6 +82,11 @@ void Button::update(sf::Time dt)
 
     mSoundTimer -= dt;
     if (mSoundTimer < sf::Time::Zero) mSoundTimer = sf::Time::Zero;
+}
+
+void Button::setCallback(std::function<void()> callback)
+{
+    mCallback = callback;
 }
 
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const

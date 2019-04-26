@@ -9,9 +9,12 @@
 class Button : public sf::Drawable
 {
 public:
+    Button(const std::string& text, float height);
     Button(const std::string& text, float height, std::function<void()> callback);
     void processEvent(const sf::Event& event);
     void update(sf::Time dt);
+
+    void setCallback(std::function<void()> callback);
 
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

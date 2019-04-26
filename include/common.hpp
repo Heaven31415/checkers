@@ -17,6 +17,9 @@ const int TileSize = 64;
 const int OffsetX = 1;
 const int OffsetY = 3;
 
+const float ButtonWidth = 256.f;
+const float ButtonHeight = 64.f;
+
 const sf::Time TimePerFrame = sf::seconds(1.f / 30.f);
 
 const std::string FontsDirectory = "resources/Fonts";
