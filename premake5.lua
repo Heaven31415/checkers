@@ -6,6 +6,7 @@ newoption {
 
 SFML_INSTALL_DIR = _OPTIONS["SFML_INSTALL_DIR"]
 WINDOWS = os.host() == "windows"
+LINUX = os.host() == "linux"
 
 if _ACTION and string.startswith(_ACTION, "vs20") and not SFML_INSTALL_DIR then
   error("Please specify path to SFML install directory via SFML_INSTALL_DIR")
@@ -27,6 +28,8 @@ project "checkers"
   if WINDOWS then
     includedirs (path.join(SFML_INSTALL_DIR, "include"))
     libdirs (path.join(SFML_INSTALL_DIR, "lib"))
+  elseif LINUX then
+    links "stdc++fs"
   end
 
   filter "configurations:Release"
@@ -40,5 +43,7 @@ project "checkers"
     
     if WINDOWS then
       links {"sfml-audio-d", "sfml-graphics-d", "sfml-system-d", "sfml-window-d"}
+    elseif LINUX then
+      links {"sfml-audio", "sfml-graphics", "sfml-system", "sfml-window"}
     end
 
