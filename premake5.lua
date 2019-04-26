@@ -16,15 +16,30 @@ project "checkers"
   files {"**.hpp", "**.cpp"}
 
   includedirs "include"
-  includedirs (_OPTIONS["SFML_INSTALL_DIR"] .. "/" .. "include")
-  libdirs (_OPTIONS["SFML_INSTALL_DIR"] .. "/" .. "lib")
 
-  filter "configurations:Debug"
-    defines "DEBUG"
-    symbols "On"
-    links {"sfml-audio-d", "sfml-graphics-d", "sfml-system-d", "sfml-window-d"}
+  filter "system:windows"
+    includedirs (_OPTIONS["SFML_INSTALL_DIR"] .. "/" .. "include")
+    libdirs (_OPTIONS["SFML_INSTALL_DIR"] .. "/" .. "lib")
 
-  filter "configurations:Release"
-    defines "NDEBUG"
-    optimize "On"
+    filter "configurations:Release"
+      defines "NDEBUG"
+      optimize "On"
+      links {"sfml-audio", "sfml-graphics", "sfml-system", "sfml-window"}
+
+    filter "configurations:Debug"
+      defines "DEBUG"
+      symbols "On"
+      links {"sfml-audio-d", "sfml-graphics-d", "sfml-system-d", "sfml-window-d"}
+
+  filter "system:linux"
     links {"sfml-audio", "sfml-graphics", "sfml-system", "sfml-window"}
+
+    filter "configurations:Release"
+      defines "NDEBUG"
+      optimize "On"
+
+    filter "configurations:Debug"
+      defines "DEBUG"
+      symbols "On"
+
+
