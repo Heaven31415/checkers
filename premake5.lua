@@ -4,6 +4,13 @@ newoption {
   description = "Path to SFML install directory"
 }
 
+SFML_INSTALL_DIR = _OPTIONS["SFML_INSTALL_DIR"]
+WINDOWS = os.host() == "windows"
+
+if _ACTION and string.startswith(_ACTION, "vs20") and not SFML_INSTALL_DIR then
+  error("Please specify path to SFML install directory via SFML_INSTALL_DIR")
+end
+
 workspace "checkers"
   configurations {"Debug", "Release"}
 
@@ -17,29 +24,21 @@ project "checkers"
 
   includedirs "include"
 
-  filter "system:windows"
-    includedirs (_OPTIONS["SFML_INSTALL_DIR"] .. "/" .. "include")
-    libdirs (_OPTIONS["SFML_INSTALL_DIR"] .. "/" .. "lib")
+  if WINDOWS then
+    includedirs (path.join(SFML_INSTALL_DIR, "include"))
+    libdirs (path.join(SFML_INSTALL_DIR, "lib"))
+  end
 
-    filter "configurations:Release"
-      defines "NDEBUG"
-      optimize "On"
-      links {"sfml-audio", "sfml-graphics", "sfml-system", "sfml-window"}
-
-    filter "configurations:Debug"
-      defines "DEBUG"
-      symbols "On"
-      links {"sfml-audio-d", "sfml-graphics-d", "sfml-system-d", "sfml-window-d"}
-
-  filter "system:linux"
+  filter "configurations:Release"
+    defines "NDEBUG"
+    optimize "On"
     links {"sfml-audio", "sfml-graphics", "sfml-system", "sfml-window"}
 
-    filter "configurations:Release"
-      defines "NDEBUG"
-      optimize "On"
-
-    filter "configurations:Debug"
-      defines "DEBUG"
-      symbols "On"
-
+  filter "configurations:Debug"
+    defines "DEBUG"
+    symbols "On"
+    
+    if WINDOWS then
+      links {"sfml-audio-d", "sfml-graphics-d", "sfml-system-d", "sfml-window-d"}
+    end
 
