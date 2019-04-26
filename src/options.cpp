@@ -3,11 +3,7 @@
 
 Options::Options()
 : mHeader{ "Options", Resources::get().font("Candara"), 70 }
-, mNextSong{ "Next Song", 224.f, []() {
-    SoundPlayer::get().playMusic(false);
-    SoundPlayer::get().updateMusic();
-    SoundPlayer::get().playMusic(true);
-} }
+, mNextSong{ "Next Song", 224.f }
 , mMusicText{ "Music Volume", Resources::get().font("Candara"), 30 }
 , mMusicVolume{ 10.f, 224.f + 128.f, [](float value) {
     SoundPlayer::get().setMusicVolume(value);
@@ -16,9 +12,7 @@ Options::Options()
 , mSoundsVolume{ 40.f, 224.f + 256.f, [](float value) {
     SoundPlayer::get().setSoundsVolume(value);
 } }
-, mBack{ "Back", 224.f + 384.f, []() {
-   StateStack::get().pop();
-} }
+, mBack{ "Back", 224.f + 384.f }
 , mTransition{}
 , mTransitionTimer{}
 {
@@ -33,6 +27,18 @@ Options::Options()
     centerOrigin(mSoundsText);
     mSoundsText.setPosition(WindowWidth / 2.f, 224.f + 224.f);
     mSoundsText.setOutlineThickness(1.f);
+
+    mNextSong.setCallback([]() 
+    {
+        SoundPlayer::get().playMusic(false);
+        SoundPlayer::get().updateMusic();
+        SoundPlayer::get().playMusic(true);
+    });
+
+    mBack.setCallback([]() 
+    {
+        StateStack::get().pop();
+    });
 }
 
 void Options::onPush(State::Message message)

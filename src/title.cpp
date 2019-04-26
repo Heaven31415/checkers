@@ -19,47 +19,57 @@ Title::Title()
     mVersion.setPosition(WindowWidth / 2.f, 224.f + 512.f);
 
     // ChooseOption
-    mChooseOption.push_back(Button{ "New Game", 224.f, [this](){
+    mChooseOption.push_back(Button{ "New Game", 224.f, [this]()
+    {
         transition(Type::ChooseMode);
     }});
 
-    mChooseOption.push_back(Button{ "Options", 224.f + 128.f, [this](){
+    mChooseOption.push_back(Button{ "Options", 224.f + 128.f, [this]()
+    {
         StateStack::get().push(State::Type::Options);
     }});
 
-    mChooseOption.push_back(Button{ "Exit", 224.f + 256.f, [this](){
+    mChooseOption.push_back(Button{ "Exit", 224.f + 256.f, [this]()
+    {
         StateStack::get().closeWindow();
     }});
 
     // ChooseMode
-    mChooseMode.push_back(Button{ "Training", 224.f, [this](){
+    mChooseMode.push_back(Button{ "Training", 224.f, [this]()
+    {
         StateStack::get().push(State::Type::Game, 0);
     }});
 
-    mChooseMode.push_back(Button{ "Player vs AI", 224.f + 128.f, [this](){
+    mChooseMode.push_back(Button{ "Player vs AI", 224.f + 128.f, [this]()
+    {
        transition(Type::ChooseDifficulty);
     }});
 
-    mChooseMode.push_back(Button{ "Back", 224.f + 256.f, [this](){
+    mChooseMode.push_back(Button{ "Back", 224.f + 256.f, [this]()
+    {
         transition(Type::ChooseOption);
     }});
 
     // ChooseDifficulty
-    mChooseDifficulty.push_back(Button{ "Easy", 224.f, [this]() {
+    mChooseDifficulty.push_back(Button{ "Easy", 224.f, [this]()
+    {
         StateStack::get().push(State::Type::Game, 1);
-     } });
+    }});
 
-    mChooseDifficulty.push_back(Button{ "Normal", 224.f + 128.f, [this]() {
+    mChooseDifficulty.push_back(Button{ "Normal", 224.f + 128.f, [this]()
+    {
         StateStack::get().push(State::Type::Game, 2);
-     } });
+    }});
 
-    mChooseDifficulty.push_back(Button{ "Hard", 224.f + 256.f, [this]() {
+    mChooseDifficulty.push_back(Button{ "Hard", 224.f + 256.f, [this]()
+    {
         StateStack::get().push(State::Type::Game, 3);
-    } });
+    }});
 
-    mChooseDifficulty.push_back(Button{ "Back", 224.f + 384.f, [this]() {
+    mChooseDifficulty.push_back(Button{ "Back", 224.f + 384.f, [this]()
+    {
         transition(Type::ChooseMode);
-    } });
+    }});
 
     transition(Type::ChooseOption);
 }
