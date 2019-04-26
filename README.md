@@ -1,31 +1,45 @@
 # Checkers
 
-Nature-themed checkers implemented in cpp using [SFML](https://github.com/SFML/SFML) library with artificial intelligence that is using [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm to mimic thinking.
+Classic checkers implemented in C++ using [SFML](https://github.com/SFML/SFML) library with artificial intelligence which is using [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm to mimic thinking.
 
 ## Title
-![Title](/misc/Title.png)
+![Title](/misc/Title.jpg)
 
 ## Game
-![Game](/misc/Game.png)
+![Game](/misc/Game.jpg)
+
+## Options
+![Options](/misc/Options.jpg)
 
 ## Requirements
 
-To build this on Windows, you will need:
-- [Premake5](https://premake.github.io/) or newer.
-- [SFML 2.5.1](https://github.com/SFML/SFML) or newer.
-- [Visual Studio 2017](https://visualstudio.microsoft.com/) or newer.
+Currently, you can build this game on Windows and Linux.
 
-Building on other platforms is currently not supported, however it will most likely change in the future.
+In order to build this, you will need:
+- [Premake 5](https://premake.github.io/) or newer.
+- [SFML 2.4.2](https://github.com/SFML/SFML) or newer.
 
-## Building
+and depending on your platform:
+- **Windows:** [Visual Studio 2017](https://visualstudio.microsoft.com/) or newer.
+- **Linux:** gcc 7.3.0 or newer.
+
+## Building on Windows
 
 1. Download Premake 5.0 from this [website](https://premake.github.io/download.html#v5) and place it somewhere where you will be able to use it from the command line.
 
-2. Install SFML library on your system. [Official tutorials](https://www.sfml-dev.org/tutorials/2.5/) are a big help if you haven't done that before. After installing SFML you should have a folder somewhere on your disk which contains an include, lib and bin subdirectories. Save path to this directory, you will need it later.
+2. [Install SFML library](https://www.sfml-dev.org/tutorials/2.5/compile-with-cmake.php) on your system or [download prebuilt package](https://www.sfml-dev.org/download/sfml/2.5.1/) that exactly matches your compiler. Either way you should have a directory on your system which contains an **include**, **lib** and **bin** subdirectories. Save path to this directory, you will need it later.
 
-3. Open your command line and navigate to the place where you have downloaded Checkers. If for example your SFML was installed at `C:/SFML` then you should run the following command: `premake5 vs2017 --SFML_INSTALL_DIR=C:/SFML`. Remember to adjust path accordingly and use forward slashes.
+3. Open command line and navigate to the place where you have downloaded Checkers. If for example your SFML was installed at `C:/SFML` and you are using `Visual Studio 2017` then you should run the following command: `premake5 vs2017 --SFML_INSTALL_DIR=C:/SFML`. Remember to adjust path accordingly and use forward slashes.
 
-4. Open file `checkers.sln` using Visual Studio and compile Checkers project just like any other program.
+4. Open file `checkers.sln` using Visual Studio and compile Checkers project clicking on `Build -> Build Solution`.
+
+## Building on Linux (Ubuntu)
+
+1. Download Premake 5.0 from this [website](https://premake.github.io/download.html#v5) and place it somewhere where you will be able to use it from the command line.
+
+2. Install SFML library on your system by typing this into command line: `sudo apt install libsfml-dev`.
+
+3. Open command line and navigate to the place where you have downloaded Checkers. Run the following command: `premake5 gmake && make`. This will generate a makefile for your system and use it to compile project. 
 
 ## Credits
 
