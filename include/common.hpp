@@ -32,14 +32,6 @@ enum class Color : int
     Dark
 };
 
-enum class Message : int
-{
-    Training,
-    EasyAI,
-    NormalAI,
-    HardAI,
-};
-
 bool isValidPosition(int x, int y);
 bool isValidPosition(const sf::Vector2i& position);
 void centerOrigin(sf::Text& text);

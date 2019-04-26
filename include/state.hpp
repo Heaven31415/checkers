@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <variant>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -9,6 +10,7 @@ class State : public sf::Drawable
 {
 public:
     using Ptr = std::unique_ptr<State>;
+    using Message = std::variant<int>;
 
     enum class Type
     {
@@ -19,8 +21,8 @@ public:
 
     virtual ~State() {};
 
-    virtual void onPush(void* data) = 0;
-    virtual void onPop(void* data) = 0;
+    virtual void onPush(State::Message message) = 0;
+    virtual void onPop(State::Message message) = 0;
     virtual void onFocusGain() = 0;
     virtual void onFocusLoss() = 0;
 

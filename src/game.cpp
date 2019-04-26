@@ -185,30 +185,28 @@ void Game::reset()
     SoundPlayer::get().playMusic(true);
 }
 
-void Game::onPush(void* data)
+void Game::onPush(State::Message message)
 {
-    auto message = Message(int(data));
-
-    switch (message)
+    switch (std::get<int>(message))
     {
-        case Message::Training:
+        case 0:
         {
             mTraining = true;
         } break;
 
-        case Message::EasyAI:
+        case 1:
         {
             mTraining = false;
             mSearchDepth = 1;
         } break;
 
-        case Message::NormalAI:
+        case 2:
         {
             mTraining = false;
             mSearchDepth = 2;
         } break;
 
-        case Message::HardAI:
+        case 3:
         {
             mTraining = false;
             mSearchDepth = 4;
@@ -217,7 +215,7 @@ void Game::onPush(void* data)
     }
 }
 
-void Game::onPop(void* data)
+void Game::onPop(State::Message message)
 {
     reset();
 }

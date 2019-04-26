@@ -90,21 +90,21 @@ StateStack& StateStack::get()
     return instance;
 }
 
-void StateStack::push(State::Type type, void* data)
+void StateStack::push(State::Type type, State::Message message)
 {
     if (!mStack.empty()) mStack.top()->onFocusLoss();
 
     mStack.push(mStates[type].get());
-    mStack.top()->onPush(data);
+    mStack.top()->onPush(message);
 
     transition();
 }
 
-void StateStack::pop(void* data)
+void StateStack::pop(State::Message message)
 {
     assert(mStack.empty() == false);
 
-    mStack.top()->onPop(data);
+    mStack.top()->onPop(message);
     mStack.pop();
 
     if (!mStack.empty()) mStack.top()->onFocusGain();

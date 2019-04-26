@@ -14,8 +14,8 @@ public:
     StateStack& operator=(const StateStack&) = delete;
     static StateStack& get();
 
-    void push(State::Type type, void* data = nullptr);
-    void pop(void* data = nullptr);
+    void push(State::Type type, State::Message message = {});
+    void pop(State::Message message = {});
 
     void run();
     void closeWindow();

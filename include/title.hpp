@@ -17,8 +17,8 @@ public:
     Title();
     void transition(Type type);
 
-    virtual void onPush(void* data) override;
-    virtual void onPop(void* data) override;
+    virtual void onPush(State::Message message) override;
+    virtual void onPop(State::Message message) override;
     virtual void onFocusGain() override;
     virtual void onFocusLoss() override;
 

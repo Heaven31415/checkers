@@ -33,7 +33,7 @@ Title::Title()
 
     // ChooseMode
     mChooseMode.push_back(Button{ "Training", 224.f, [this](){
-        StateStack::get().push(State::Type::Game, (void*)Message::Training);
+        StateStack::get().push(State::Type::Game, 0);
     }});
 
     mChooseMode.push_back(Button{ "Player vs AI", 224.f + 128.f, [this](){
@@ -46,15 +46,15 @@ Title::Title()
 
     // ChooseDifficulty
     mChooseDifficulty.push_back(Button{ "Easy", 224.f, [this]() {
-        StateStack::get().push(State::Type::Game, (void*)Message::EasyAI);
+        StateStack::get().push(State::Type::Game, 1);
      } });
 
     mChooseDifficulty.push_back(Button{ "Normal", 224.f + 128.f, [this]() {
-        StateStack::get().push(State::Type::Game, (void*)Message::NormalAI);
+        StateStack::get().push(State::Type::Game, 2);
      } });
 
     mChooseDifficulty.push_back(Button{ "Hard", 224.f + 256.f, [this]() {
-        StateStack::get().push(State::Type::Game, (void*)Message::HardAI);
+        StateStack::get().push(State::Type::Game, 3);
     } });
 
     mChooseDifficulty.push_back(Button{ "Back", 224.f + 384.f, [this]() {
@@ -91,12 +91,12 @@ void Title::transition(Type type)
     centerOrigin(mHeader);
 }
 
-void Title::onPush(void* data)
+void Title::onPush(State::Message message)
 {
 
 }
 
-void Title::onPop(void* data)
+void Title::onPop(State::Message message)
 {
 
 }

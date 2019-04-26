@@ -35,13 +35,13 @@ Options::Options()
     mSoundsText.setOutlineThickness(1.f);
 }
 
-void Options::onPush(void* data)
+void Options::onPush(State::Message message)
 {
     mTransition = true;
     mTransitionTimer = sf::Time::Zero;
 }
 
-void Options::onPop(void* data)
+void Options::onPop(State::Message message)
 {
 
 }
