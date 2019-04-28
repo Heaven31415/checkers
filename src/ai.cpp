@@ -308,10 +308,10 @@ ai::Pawn* ai::Board::getPawn(int x, int y)
 
     if (y < 0 || y >= BoardHeight) return nullptr;
 
-    for (auto& pawn : pawns)
-        if (pawn.position == sf::Vector2i{ x, y }) return &pawn;
+    auto it = std::find_if(std::begin(pawns), std::end(pawns), [=](Pawn& pawn) { return pawn.position == sf::Vector2i{ x, y }; });
 
-    return nullptr;
+    if (it != std::end(pawns)) return &(*it);
+    else return nullptr;
 }
 
 ai::Pawn* ai::Board::getPawn(const sf::Vector2i& position)
@@ -343,47 +343,26 @@ void ai::Board::killPawn(const sf::Vector2i& position)
 
 bool ai::Board::isFightPossible(Color color) const
 {
-    for (const auto& pawn : pawns)
-        if (pawn.color == color && pawn.canFight())
-            return true;
-
-    return false;
+    return std::any_of(std::begin(pawns), std::end(pawns), [=](const Pawn& pawn) { return pawn.color == color && pawn.canFight(); });
 }
 
 bool ai::Board::isMovePossible(Color color) const
 {
-    for (const auto& pawn : pawns)
-        if (pawn.color == color && pawn.canMove())
-            return true;
-
-    return false;
+    return std::any_of(std::begin(pawns), std::end(pawns), [=](const Pawn& pawn) { return pawn.color == color && pawn.canMove(); });
 }
 
 int ai::Board::pawnCount(Color color) const
 {
-    int count = 0;
-
-    for (const auto& pawn : pawns)
-        if (pawn.color == color)
-            count++;
-
-    return count;
+    return std::count_if(std::begin(pawns), std::end(pawns), [=](const Pawn & pawn) { return pawn.color == color; });
 }
 
 ai::Move ai::getNextMove(ai::Board* board, Color color, int depth)
 {
     ai::buildDecisionTree(board, color, depth);
 
-    bool canFight = false;
-
-    for (const auto& child : board->children)
-    {
-        if (child->move.type == ai::Move::Type::Fight)
-        {
-            canFight = true;
-            break;
-        }
-    }
+    bool canFight = std::any_of(std::begin(board->children), std::end(board->children), [](const std::unique_ptr<ai::Board>& child){
+        return child->move.type == ai::Move::Type::Fight;
+    });
 
     if (canFight)
     {
