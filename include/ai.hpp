@@ -57,7 +57,8 @@ namespace ai
     };
 
     ai::Move getNextMove(ai::Board* board, Color color, int depth);
-    std::pair<ai::Board*, int> minimax(ai::Board* board, Color color, int depth);
+    std::pair<ai::Board*, int> minimax(ai::Board* board, Color color, int depth, int alpha, int beta);
     void buildDecisionTree(ai::Board* board, Color color, int depth);
+    void ensureFightPriority(ai::Board* board);
     int computeHeuristic(ai::Board* board);
 }

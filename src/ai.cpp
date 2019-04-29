@@ -1,4 +1,4 @@
-#include "ai.hpp"
+﻿#include "ai.hpp"
 
 void ai::Pawn::move(const sf::Vector2i& destination, bool duringFight)
 {
@@ -358,26 +358,7 @@ int ai::Board::pawnCount(Color color) const
 
 ai::Move ai::getNextMove(ai::Board* board, Color color, int depth)
 {
-    ai::buildDecisionTree(board, color, depth);
-
-    bool canFight = std::any_of(std::begin(board->children), std::end(board->children), [](const std::unique_ptr<ai::Board>& child){
-        return child->move.type == ai::Move::Type::Fight;
-    });
-
-    if (canFight)
-    {
-        board->children.erase(
-            std::remove_if(
-                board->children.begin(),
-                board->children.end(),
-                [](const std::unique_ptr<ai::Board>& board) { return board->move.type != ai::Move::Type::Fight; }
-            ),
-            board->children.end()
-        );
-    }
-
-    auto result = ai::minimax(board, color, depth);
-
+    auto result = ai::minimax(board, color, depth, std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
     auto* node = result.first;
 
     while (node->parent && node->parent != board)
@@ -386,7 +367,7 @@ ai::Move ai::getNextMove(ai::Board* board, Color color, int depth)
     return node->move;
 }
 
-std::pair<ai::Board*, int> ai::minimax(ai::Board* board, Color color, int depth)
+std::pair<ai::Board*, int> ai::minimax(ai::Board* board, Color color, int depth, int alpha, int beta)
 {
     if (depth == 0 || (!board->isFightPossible(color) && !board->isMovePossible(color)) || board->pawnCount(color) == 0)
         return { board, computeHeuristic(board) };
@@ -395,11 +376,16 @@ std::pair<ai::Board*, int> ai::minimax(ai::Board* board, Color color, int depth)
     {
         std::pair<ai::Board*, int> currentPair = { nullptr, std::numeric_limits<int>::min() };
 
+        ai::buildDecisionTree(board, color, 1);
+        ai::ensureFightPriority(board);
+
         for (const auto& child : board->children)
         {
-            auto pair = ai::minimax(child.get(), color == Color::Light ? Color::Dark : Color::Light, depth - 1);
+            auto pair = ai::minimax(child.get(), color == Color::Light ? Color::Dark : Color::Light, depth - 1, alpha, beta);
 
             if (pair.second > currentPair.second) currentPair = pair;
+            if (pair.second > alpha) alpha = pair.second;
+            if (beta <= alpha) break;
         }
 
         return currentPair;
@@ -408,11 +394,16 @@ std::pair<ai::Board*, int> ai::minimax(ai::Board* board, Color color, int depth)
     {
         std::pair<ai::Board*, int> currentPair = { nullptr, std::numeric_limits<int>::max() };
 
+        ai::buildDecisionTree(board, color, 1);
+        ai::ensureFightPriority(board);
+
         for (const auto& child : board->children)
         {
-            auto pair = ai::minimax(child.get(), color == Color::Light ? Color::Dark : Color::Light, depth - 1);
+            auto pair = ai::minimax(child.get(), color == Color::Light ? Color::Dark : Color::Light, depth - 1, alpha, beta);
 
             if (pair.second < currentPair.second) currentPair = pair;
+            if (pair.second < beta) beta = pair.second;
+            if (beta <= alpha) break;
         }
 
         return currentPair;
@@ -493,6 +484,25 @@ void ai::buildDecisionTree(ai::Board* board, Color color, int depth)
         ai::buildDecisionTree(child.get(), color == Color::Light ? Color::Dark : Color::Light, depth - 1);
 }
 
+void ai::ensureFightPriority(ai::Board* board)
+{
+    bool canFight = std::any_of(std::begin(board->children), std::end(board->children), [](const std::unique_ptr<ai::Board>& child){
+        return child->move.type == ai::Move::Type::Fight;
+    });
+
+    if (canFight)
+    {
+        board->children.erase(
+            std::remove_if(
+                board->children.begin(),
+                board->children.end(),
+                [](const std::unique_ptr<ai::Board>& board) { return board->move.type != ai::Move::Type::Fight; }
+            ),
+            board->children.end()
+        );
+    }
+}
+
 int ai::computeHeuristic(ai::Board* board)
 {
     int heuristic = 0;
@@ -500,15 +510,15 @@ int ai::computeHeuristic(ai::Board* board)
     for (const auto& pawn : board->pawns)
     {
         if (pawn.color == Color::Light)
-    {
+        {
             if (pawn.isKing) heuristic += 2;
-        else heuristic += 1;
-    }
+            else heuristic += 1;
+        }
         else
-    {
+        {
             if (pawn.isKing) heuristic -= 2;
-        else heuristic -= 1;
-    }
+            else heuristic -= 1;
+        }
     }
 
     return heuristic;
