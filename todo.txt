@@ -1,6 +1,9 @@
-1. Zaimplementować lepszy efekt końcowy po zakończonej rozgrywce.
-2. Zaimplementować licznik sprawdzający czy w grze zachodzi jakiś postęp.
-3. Naprawić problem z przyciskami które nie słuchają się efektu przejścia.
-4. Dokończyć README.
-5. Testy, testy i jeszcze raz testy.
-6. Refaktoryzacja, refaktoryzacja i jeszcze raz refaktoryzacja.
+1. Wprowadzić slider do wybierania różnych poziomów trudności.
+2. Usunąć możliwość wybierania treningu.
+3. Zaimplementować lepszy efekt końcowy po zakończonej rozgrywce (jako osobny stan).
+4. Zaimplementować licznik sprawdzający czy w grze zachodzi jakiś postęp.
+5. Naprawić problem z przyciskami które nie słuchają się efektu przejścia.
+6. Naprawić problem z niemieszczącą się na ekranie grą.
+7. Ulepszyć README.
+8. Testy, testy i jeszcze raz testy.
+9. Refaktoryzacja, refaktoryzacja i jeszcze raz refaktoryzacja.
