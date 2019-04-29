@@ -1,21 +1,5 @@
 #include "button.hpp"
 
-Button::Button(const std::string& text, float height)
-: mSprite{ Resources::get().texture("Button") }
-, mText{ text, Resources::get().font("Candara"), 30 }
-, mSelectionTimer{}
-, mSoundTimer{}
-, mHover{ false }
-, mCallback{}
-{
-    centerOrigin(mSprite);
-    mSprite.setPosition(WindowWidth / 2.f, height);
-
-    centerOrigin(mText);
-    mText.setPosition(WindowWidth / 2.f, height);
-    mText.setOutlineThickness(1.f);
-}
-
 Button::Button(const std::string& text, float height, std::function<void()> callback)
 : mSprite{ Resources::get().texture("Button") }
 , mText{ text, Resources::get().font("Candara"), 30 }
