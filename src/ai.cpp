@@ -1,4 +1,4 @@
-﻿#include "ai.hpp"
+#include "ai.hpp"
 
 void ai::Pawn::move(const sf::Vector2i& destination, bool duringFight)
 {
@@ -495,21 +495,20 @@ void ai::buildDecisionTree(ai::Board* board, Color color, int depth)
 
 int ai::computeHeuristic(ai::Board* board)
 {
-    auto lightPawns = board->getPawns(Color::Light);
-    auto darkPawns = board->getPawns(Color::Dark);
-
     int heuristic = 0;
 
-    for (const auto& pawn : lightPawns)
+    for (const auto& pawn : board->pawns)
     {
-        if (pawn->isKing) heuristic += 2;
+        if (pawn.color == Color::Light)
+    {
+            if (pawn.isKing) heuristic += 2;
         else heuristic += 1;
     }
-
-    for (const auto& pawn : darkPawns)
+        else
     {
-        if (pawn->isKing) heuristic -= 2;
+            if (pawn.isKing) heuristic -= 2;
         else heuristic -= 1;
+    }
     }
 
     return heuristic;
