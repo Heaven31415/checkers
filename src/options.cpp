@@ -5,12 +5,12 @@ Options::Options()
 : mHeader{ "Options", Resources::get().font("Candara"), 70 }
 , mNextSong{ "Next Song", 224.f }
 , mMusicText{ "Music Volume", Resources::get().font("Candara"), 30 }
-, mMusicVolume{ 10.f, 224.f + 128.f, [](float value) {
-    SoundPlayer::get().setMusicVolume(value);
+, mMusicVolume{ 0, 100, 10, 224.f + 128.f, [](int value) {
+    SoundPlayer::get().setMusicVolume(static_cast<float>(value));
 } }
 , mSoundsText{ "Sounds Volume", Resources::get().font("Candara"), 30 }
-, mSoundsVolume{ 40.f, 224.f + 256.f, [](float value) {
-    SoundPlayer::get().setSoundsVolume(value);
+, mSoundsVolume{ 0, 100, 40, 224.f + 256.f, [](int value) {
+    SoundPlayer::get().setSoundsVolume(static_cast<float>(value));
 } }
 , mBack{ "Back", 224.f + 384.f }
 , mTransition{}

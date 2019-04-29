@@ -8,17 +8,19 @@
 class Slider : public sf::Drawable
 {
 public:
-    Slider(float value, float height, std::function<void(float)> callback);
+    Slider(int min, int max, int current, float height, std::function<void(int)> callback);
     void processEvent(const sf::Event& event);
     void update(sf::Time dt);
 
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-    void moveArrow(float x);
+    void moveArrow(float dx);
 
 private:
+    const int mMin;
+    const float mIntervalLength;
     sf::Sprite mBar;
     sf::Sprite mArrow;
     bool mMoving;
-    std::function<void(float)> mCallback;
+    std::function<void(int)> mCallback;
 };
