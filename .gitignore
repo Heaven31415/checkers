@@ -2,6 +2,8 @@
 .vscode/
 /bin
 /obj
+/x64
+/x86
 *.sln
 *.vcxproj
 *.filters
