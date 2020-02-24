@@ -15,6 +15,7 @@ public:
     sf::SoundBuffer& soundBuffer(const std::string& name);
     sf::Texture& texture(const std::string& name);
     sf::Shader* shader(const std::string& name);
+
 private:
     Resources();
 
@@ -27,6 +28,7 @@ private:
     void loadShader(const std::string& key, const std::string& vertexFilename, const std::string& fragmentFilename);
 
     void loadShaders();
+
 private:
     std::map<std::string, sf::Font> mFonts;
     std::map<std::string, sf::SoundBuffer> mSoundBuffers;

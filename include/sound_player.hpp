@@ -18,6 +18,7 @@ public:
     void play(const std::string& name, float volume = 100.f, float pitch = 1.0f);
     void playSounds(bool value);
     void setSoundsVolume(float volume);
+
 private:
     SoundPlayer();
     void cleanSounds();

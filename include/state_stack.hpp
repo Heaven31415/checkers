@@ -20,6 +20,7 @@ public:
     void run();
     void closeWindow();
     sf::Time globalTimer();
+
 private:
     StateStack();
 

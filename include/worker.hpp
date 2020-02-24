@@ -25,6 +25,7 @@ public:
     ai::Move getNextMove();
 
     void main();
+
 private:
     std::atomic<bool> mRunning;
     std::atomic<Worker::Status> mStatus;
