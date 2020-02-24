@@ -259,7 +259,7 @@ void Game::processEvent(const sf::Event& event)
                 StateStack::get().pop();
             else if (!mFinished && event.mouseButton.button == sf::Mouse::Left)
             {
-                if(mTraining || (!mTraining && mActualPlayerColor == mPlayerColor))
+                if (mTraining || (!mTraining && mActualPlayerColor == mPlayerColor))
                     handlePlayerAction({ event.mouseButton.x / TileSize - OffsetX, event.mouseButton.y / TileSize - OffsetY });
             }
         } break;

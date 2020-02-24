@@ -45,6 +45,7 @@ void SoundPlayer::updateMusic()
 
         if (!mMusic.openFromFile(mSongs[mSongIndices[songIndex]].second))
             throw std::runtime_error("Unable to load Music because openFromFile method failed");
+
         mMusic.setVolume(0.f);
         mMusic.play();
 
