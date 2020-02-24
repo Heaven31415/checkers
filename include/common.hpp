@@ -1,13 +1,13 @@
 #pragma once
 
 #include <cassert>
-#include <experimental/filesystem>
+#include <filesystem>
 #include <random>
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 const int BoardWidth = 8;
 const int BoardHeight = 8;
