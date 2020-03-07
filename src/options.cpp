@@ -93,8 +93,6 @@ void Options::update(sf::Time dt)
     }
 
     mNextSong.update(dt);
-    mMusicVolume.update(dt);
-    mSoundsVolume.update(dt);
     mBack.update(dt);
 }
 

@@ -1,11 +1,11 @@
 #include "slider.hpp"
 
-Slider::Slider(int min, int max, int current, float height, std::function<void(int)> callback)
-: mMin{ min }
-, mIntervalLength{ SliderWidth / static_cast<float>(max - min) }
+Slider::Slider(int minValue, int maxValue, int currentValue, float height, std::function<void(int)> callback)
+: mMinValue{ minValue }
+, mUnitLength{ SliderWidth / static_cast<float>(maxValue - minValue) }
 , mBar{ Resources::get().texture("Bar") }
 , mArrow{ Resources::get().texture("Arrow") }
-, mMoving{}
+, mMoving{ false }
 , mCallback{ callback }
 {
     centerOrigin(mBar);
@@ -14,7 +14,7 @@ Slider::Slider(int min, int max, int current, float height, std::function<void(i
     centerOrigin(mArrow);
     mArrow.setPosition(WindowWidth / 2.f, height);
 
-    moveArrow(static_cast<float>(current - min) * mIntervalLength);
+    moveArrow(static_cast<float>(currentValue - minValue) * mUnitLength);
 }
 
 void Slider::processEvent(const sf::Event& event)
@@ -25,28 +25,31 @@ void Slider::processEvent(const sf::Event& event)
         {
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                auto x = float(event.mouseButton.x);
-                auto y = float(event.mouseButton.y);
+                auto mouseX = static_cast<float>(event.mouseButton.x);
+                auto mouseY = static_cast<float>(event.mouseButton.y);
 
-                if (abs(x - mBar.getPosition().x) <= SliderWidth / 2.f && abs(y - mBar.getPosition().y) <= SliderHeight / 2.f)
+                if (std::abs(mouseX - mBar.getPosition().x) <= SliderWidth / 2.f && 
+                    std::abs(mouseY - mBar.getPosition().y) <= SliderHeight / 2.f)
                 {
-                    moveArrow(x - (mBar.getPosition().x - SliderWidth / 2.f));
+                    moveArrow(mouseX - (mBar.getPosition().x - SliderWidth / 2.f));
                     mMoving = true;
                 }
             }
-        } break;
+        } 
+        break;
 
         case sf::Event::MouseButtonReleased:
         {
-            mMoving = false;
-        } break;
+            if (event.mouseButton.button == sf::Mouse::Left) mMoving = false;
+        } 
+        break;
 
         case sf::Event::MouseMoved:
         {
             if (mMoving)
             {
-                auto x = float(event.mouseMove.x);
-                auto y = float(event.mouseMove.y);
+                auto x = static_cast<float>(event.mouseMove.x);
+                auto y = static_cast<float>(event.mouseMove.y);
 
                 auto dx = x - (mBar.getPosition().x - SliderWidth / 2.f);
 
@@ -55,12 +58,9 @@ void Slider::processEvent(const sf::Event& event)
 
                 moveArrow(dx);
             }
-        } break;
+        } 
+        break;
     }
-}
-
-void Slider::update(sf::Time dt)
-{
 }
 
 void Slider::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -71,9 +71,9 @@ void Slider::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void Slider::moveArrow(float dx)
 {
-    int intervalCount = static_cast<int>(dx / mIntervalLength);
-    int value = mMin + intervalCount;
+    int units = static_cast<int>(dx / mUnitLength);
+    int value = mMinValue + units;
 
-    mArrow.setPosition(mBar.getPosition().x - SliderWidth / 2.f + mIntervalLength * static_cast<float>(intervalCount), mArrow.getPosition().y);
+    mArrow.setPosition(mBar.getPosition().x - SliderWidth / 2.f + dx, mArrow.getPosition().y);
     mCallback(value);
 }
