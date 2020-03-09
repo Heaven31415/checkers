@@ -85,17 +85,20 @@ void Title::transition(Type type)
         case Type::ChooseOption:
         {
             mHeader.setString("Checkers");
-        } break;
+        } 
+        break;
 
         case Type::ChooseMode:
         {
             mHeader.setString("Game Mode");
-        } break;
+        } 
+        break;
 
         case Type::ChooseDifficulty:
         {
             mHeader.setString("Difficulty");
-        } break;
+        } 
+        break;
     }
 
     centerOrigin(mHeader);
@@ -129,7 +132,8 @@ void Title::processEvent(const sf::Event& event)
         case sf::Event::Closed:
         {
             StateStack::get().closeWindow();
-        } break;
+        } 
+        break;
 
         case sf::Event::KeyPressed:
         {
@@ -140,20 +144,24 @@ void Title::processEvent(const sf::Event& event)
                     case Type::ChooseOption:
                     {
                         StateStack::get().closeWindow();
-                    } break;
+                    } 
+                    break;
 
                     case Type::ChooseMode:
                     {
                         transition(Type::ChooseOption);
-                    } break;
+                    } 
+                    break;
 
                     case Type::ChooseDifficulty:
                     {
                         transition(Type::ChooseMode);
-                    } break;
+                    } 
+                    break;
                 }
             }
-        } break;
+        } 
+        break;
     }
 
     switch (mType)
@@ -161,17 +169,20 @@ void Title::processEvent(const sf::Event& event)
         case Type::ChooseOption:
         {
             for (auto& button : mChooseOption) button.processEvent(event);
-        } break;
+        } 
+        break;
 
         case Type::ChooseMode:
         {
             for (auto& button : mChooseMode) button.processEvent(event);
-        } break;
+        } 
+        break;
 
         case Type::ChooseDifficulty:
         {
             for (auto& button : mChooseDifficulty) button.processEvent(event);
-        } break;
+        } 
+        break;
     }
 }
 
@@ -188,17 +199,20 @@ void Title::update(sf::Time dt)
         case Type::ChooseOption:
         {
             for (auto& button : mChooseOption) button.update(dt);
-        } break;
+        } 
+        break;
 
         case Type::ChooseMode:
         {
             for (auto& button : mChooseMode) button.update(dt);
-        } break;
+        } 
+        break;
 
         case Type::ChooseDifficulty:
         {
             for (auto& button : mChooseDifficulty) button.update(dt);
-        } break;
+        } 
+        break;
     }
 }
 
@@ -212,17 +226,20 @@ void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
         {
             for (const auto& button : mChooseOption) target.draw(button, states);
             target.draw(mVersion, states);
-        } break;
+        } 
+        break;
 
         case Type::ChooseMode:
         {
             for (const auto& button : mChooseMode) target.draw(button, states);
-        } break;
+        } 
+        break;
 
         case Type::ChooseDifficulty:
         {
             for (const auto& button : mChooseDifficulty) target.draw(button, states);
-        } break;
+        } 
+        break;
     }
 
     if (!mTransition) states.shader = Shaders::wave(StateStack::get().globalTimer().asSeconds(), { 1.f, 1.f });

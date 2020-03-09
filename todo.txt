@@ -7,3 +7,4 @@
 7. Ulepszyć README.
 8. Testy, testy i jeszcze raz testy.
 9. Refaktoryzacja, refaktoryzacja i jeszcze raz refaktoryzacja.
+10. Rozdzielić title na 3 osobne stany.
