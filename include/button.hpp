@@ -17,6 +17,7 @@ public:
 
 private:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    bool isInside(const sf::Vector2f& position);
 
 private:
     sf::Sprite mSprite;

@@ -3,8 +3,8 @@
 Button::Button(const std::string& text, float height, std::function<void()> callback)
 : mSprite{ Resources::get().texture("Button") }
 , mText{ text, Resources::get().font("Candara"), 30 }
-, mSelectionTimer{}
-, mSoundTimer{}
+, mSelectionTimer{ sf::Time::Zero }
+, mSoundTimer{ sf::Time::Zero }
 , mHover{ false }
 , mCallback{ callback }
 {
@@ -22,16 +22,17 @@ void Button::processEvent(const sf::Event& event)
     {
         case sf::Event::MouseMoved:
         {
-            auto x = float(event.mouseMove.x);
-            auto y = float(event.mouseMove.y);
+            auto mouseX = static_cast<float>(event.mouseMove.x);
+            auto mouseY = static_cast<float>(event.mouseMove.y);
 
-            if (abs(mSprite.getPosition().x - x) <= ButtonWidth / 2.f && abs(mSprite.getPosition().y - y) <= ButtonHeight / 2.f)
+            if (isInside({mouseX, mouseY}))
             {
                 mHover = true;
+
                 if (mSoundTimer == sf::Time::Zero) 
                 {
                     SoundPlayer::get().play("Hover", 25, 1.0f);
-                    mSoundTimer = Resources::get().soundBuffer("Hover").getDuration();
+                    mSoundTimer = TimePerFrame;
                 }
             }
             else
@@ -39,16 +40,17 @@ void Button::processEvent(const sf::Event& event)
                 mHover = false;
                 mSelectionTimer = sf::Time::Zero;
             }
-        } break;
+        } 
+        break;
 
         case sf::Event::MouseButtonReleased:
         {
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                auto x = float(event.mouseButton.x);
-                auto y = float(event.mouseButton.y);
+                auto mouseX = static_cast<float>(event.mouseButton.x);
+                auto mouseY = static_cast<float>(event.mouseButton.y);
 
-                if (abs(mSprite.getPosition().x - x) <= ButtonWidth / 2.f && abs(mSprite.getPosition().y - y) <= ButtonHeight / 2.f)
+                if (isInside({ event.mouseButton.x, event.mouseButton.y }))
                 {
                     mCallback();
                     mHover = false;
@@ -56,16 +58,20 @@ void Button::processEvent(const sf::Event& event)
                     SoundPlayer::get().play("Click", 100, 1.0f);
                 }
             }
-        } break;
+        } 
+        break;
     }
 }
 
 void Button::update(sf::Time dt)
 {
     if (mHover) mSelectionTimer += dt;
+    else
+    {
+        mSoundTimer -= dt;
+        if (mSoundTimer < sf::Time::Zero) mSoundTimer = sf::Time::Zero;
+    }
 
-    mSoundTimer -= dt;
-    if (mSoundTimer < sf::Time::Zero) mSoundTimer = sf::Time::Zero;
 }
 
 void Button::setCallback(std::function<void()> callback)
@@ -79,4 +85,10 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
     target.draw(mSprite, states);
     target.draw(mText, states);
+}
+
+bool Button::isInside(const sf::Vector2f& position)
+{
+    return std::abs(mSprite.getPosition().x - position.x) <= ButtonWidth / 2.f 
+        && std::abs(mSprite.getPosition().y - position.y) <= ButtonHeight / 2.f;
 }
