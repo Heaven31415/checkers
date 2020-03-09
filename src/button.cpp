@@ -50,7 +50,7 @@ void Button::processEvent(const sf::Event& event)
                 auto mouseX = static_cast<float>(event.mouseButton.x);
                 auto mouseY = static_cast<float>(event.mouseButton.y);
 
-                if (isInside({ event.mouseButton.x, event.mouseButton.y }))
+                if (isInside({ mouseX, mouseY }))
                 {
                     mCallback();
                     mHover = false;
