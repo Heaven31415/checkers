@@ -2,6 +2,7 @@
 
 #include <map>
 #include <stack>
+#include "choose_difficulty.hpp"
 #include "game.hpp"
 #include "options.hpp"
 #include "state.hpp"

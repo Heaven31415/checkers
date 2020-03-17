@@ -1,14 +1,12 @@
 #pragma once
 
 #include "button.hpp"
-#include "shaders.hpp"
 #include "state.hpp"
 
-class Title : public State
+class ChooseDifficulty : public State
 {
 public:
-    Title();
-    void transition();
+    ChooseDifficulty();
 
     virtual void onPush(State::Message message) override;
     virtual void onPop(State::Message message) override;
@@ -21,10 +19,10 @@ public:
 
 private:
     sf::Text mHeader;
-    Button mNewGame;
-    Button mOptions;
-    Button mExit;
-    sf::Text mVersion;
+    Button mEasy;
+    Button mNormal;
+    Button mHard;
+    Button mBack;
 
     bool mTransition;
     sf::Time mTransitionTimer;

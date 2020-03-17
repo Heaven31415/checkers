@@ -2,14 +2,13 @@
 #include "title.hpp"
 
 Title::Title()
-: mType{ Type::ChooseOption }
-, mHeader{ "Checkers", Resources::get().font("Candara"), 70 }
-, mChooseOption{}
-, mChooseMode{}
-, mChooseDifficulty{}
+: mHeader{ "Checkers", Resources::get().font("Candara"), 70 }
+, mNewGame{ "New Game", 224.f }
+, mOptions{ "Options", 224.f + 128.f }
+, mExit{ "Exit", 224.f + 2.f * 128.f }
 , mVersion{ "v1.0", Resources::get().font("Candara"), 30 }
-, mTransition{}
-, mTransitionTimer{}
+, mTransition{ false }
+, mTransitionTimer{ sf::Time::Zero }
 {
     centerOrigin(mHeader);
     mHeader.setPosition(WindowWidth / 2.f, 96.f);
@@ -18,105 +17,40 @@ Title::Title()
     centerOrigin(mVersion);
     mVersion.setPosition(WindowWidth / 2.f, 224.f + 512.f);
 
-    // ChooseOption
-    mChooseOption.push_back(Button{ "New Game", 224.f, [this]()
+    mNewGame.setCallback([this]()
     {
-        transition(Type::ChooseMode);
-    }});
+        StateStack::get().push(State::Type::ChooseDifficulty);
+    });
 
-    mChooseOption.push_back(Button{ "Options", 224.f + 128.f, [this]()
+    mOptions.setCallback([this]()
     {
         StateStack::get().push(State::Type::Options);
-    }});
+    });
 
-    mChooseOption.push_back(Button{ "Exit", 224.f + 256.f, [this]()
+    mExit.setCallback([this]()
     {
         StateStack::get().closeWindow();
-    }});
-
-    // ChooseMode
-    mChooseMode.push_back(Button{ "Training", 224.f, [this]()
-    {
-        StateStack::get().push(State::Type::Game, 0);
-    }});
-
-    mChooseMode.push_back(Button{ "Player vs AI", 224.f + 128.f, [this]()
-    {
-       transition(Type::ChooseDifficulty);
-    }});
-
-    mChooseMode.push_back(Button{ "Back", 224.f + 256.f, [this]()
-    {
-        transition(Type::ChooseOption);
-    }});
-
-    // ChooseDifficulty
-    mChooseDifficulty.push_back(Button{ "Easy", 224.f, [this]()
-    {
-        StateStack::get().push(State::Type::Game, 1);
-    }});
-
-    mChooseDifficulty.push_back(Button{ "Normal", 224.f + 128.f, [this]()
-    {
-        StateStack::get().push(State::Type::Game, 2);
-    }});
-
-    mChooseDifficulty.push_back(Button{ "Hard", 224.f + 256.f, [this]()
-    {
-        StateStack::get().push(State::Type::Game, 3);
-    }});
-
-    mChooseDifficulty.push_back(Button{ "Back", 224.f + 384.f, [this]()
-    {
-        transition(Type::ChooseMode);
-    }});
-
-    transition(Type::ChooseOption);
+    });
 }
 
-void Title::transition(Type type)
+void Title::transition()
 {
-    mType = type;
     mTransition = true;
     mTransitionTimer = sf::Time::Zero;
-
-    switch (mType)
-    {
-        case Type::ChooseOption:
-        {
-            mHeader.setString("Checkers");
-        } 
-        break;
-
-        case Type::ChooseMode:
-        {
-            mHeader.setString("Game Mode");
-        } 
-        break;
-
-        case Type::ChooseDifficulty:
-        {
-            mHeader.setString("Difficulty");
-        } 
-        break;
-    }
-
-    centerOrigin(mHeader);
 }
 
 void Title::onPush(State::Message message)
 {
-
+    transition();
 }
 
 void Title::onPop(State::Message message)
 {
-
 }
 
 void Title::onFocusGain()
 {
-    transition(Type::ChooseOption);
+    transition();
 }
 
 void Title::onFocusLoss()
@@ -137,53 +71,14 @@ void Title::processEvent(const sf::Event& event)
 
         case sf::Event::KeyPressed:
         {
-            if (event.key.code == sf::Keyboard::Escape)
-            {
-                switch (mType)
-                {
-                    case Type::ChooseOption:
-                    {
-                        StateStack::get().closeWindow();
-                    } 
-                    break;
-
-                    case Type::ChooseMode:
-                    {
-                        transition(Type::ChooseOption);
-                    } 
-                    break;
-
-                    case Type::ChooseDifficulty:
-                    {
-                        transition(Type::ChooseMode);
-                    } 
-                    break;
-                }
-            }
+            if (event.key.code == sf::Keyboard::Escape) StateStack::get().closeWindow();
         } 
         break;
     }
 
-    switch (mType)
-    {
-        case Type::ChooseOption:
-        {
-            for (auto& button : mChooseOption) button.processEvent(event);
-        } 
-        break;
-
-        case Type::ChooseMode:
-        {
-            for (auto& button : mChooseMode) button.processEvent(event);
-        } 
-        break;
-
-        case Type::ChooseDifficulty:
-        {
-            for (auto& button : mChooseDifficulty) button.processEvent(event);
-        } 
-        break;
-    }
+    mNewGame.processEvent(event);
+    mOptions.processEvent(event);
+    mExit.processEvent(event);
 }
 
 void Title::update(sf::Time dt)
@@ -194,53 +89,19 @@ void Title::update(sf::Time dt)
         if (mTransitionTimer >= sf::seconds(1.0f)) mTransition = false;
     }
 
-    switch (mType)
-    {
-        case Type::ChooseOption:
-        {
-            for (auto& button : mChooseOption) button.update(dt);
-        } 
-        break;
-
-        case Type::ChooseMode:
-        {
-            for (auto& button : mChooseMode) button.update(dt);
-        } 
-        break;
-
-        case Type::ChooseDifficulty:
-        {
-            for (auto& button : mChooseDifficulty) button.update(dt);
-        } 
-        break;
-    }
+    mNewGame.update(dt);
+    mOptions.update(dt);
+    mExit.update(dt);
 }
 
 void Title::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     if (mTransition) states.shader = Shaders::transition(mTransitionTimer / sf::seconds(1.0f));
 
-    switch (mType)
-    {
-        case Type::ChooseOption:
-        {
-            for (const auto& button : mChooseOption) target.draw(button, states);
-            target.draw(mVersion, states);
-        } 
-        break;
-
-        case Type::ChooseMode:
-        {
-            for (const auto& button : mChooseMode) target.draw(button, states);
-        } 
-        break;
-
-        case Type::ChooseDifficulty:
-        {
-            for (const auto& button : mChooseDifficulty) target.draw(button, states);
-        } 
-        break;
-    }
+    target.draw(mNewGame, states);
+    target.draw(mOptions, states);
+    target.draw(mExit, states);
+    target.draw(mVersion, states);
 
     if (!mTransition) states.shader = Shaders::wave(StateStack::get().globalTimer().asSeconds(), { 1.f, 1.f });
 

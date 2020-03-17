@@ -16,7 +16,8 @@ public:
     {
         Game,
         Options,
-        Title
+        Title,
+        ChooseDifficulty
     };
 
     virtual ~State() {};

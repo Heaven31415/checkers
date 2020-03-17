@@ -24,6 +24,7 @@ StateStack::StateStack()
     mStates[State::Type::Game] = State::Ptr(new Game{});
     mStates[State::Type::Options] = State::Ptr(new Options{});
     mStates[State::Type::Title] = State::Ptr(new Title{});
+    mStates[State::Type::ChooseDifficulty] = State::Ptr(new ChooseDifficulty{});
 
     mWindow.setMouseCursorVisible(false);
     mCursor.setOrigin(5.f, 0.f);
