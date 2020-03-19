@@ -44,7 +44,7 @@ sf::Shader* Resources::shader(const std::string& name)
     return mShaders.at(name).get();
 }
 
-void Resources::loadFont(const std::string & key, const std::string & filename)
+void Resources::loadFont(const std::string& key, const std::string& filename)
 {
     if (mFonts.find(key) != mFonts.end())
         throw std::runtime_error("Unable to load Font from '" + filename + "' because key '" + key + "' already exists");
