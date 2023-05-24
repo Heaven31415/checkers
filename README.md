@@ -1,6 +1,7 @@
 # Checkers
 
-Classic checkers implemented in C++ using [SFML](https://github.com/SFML/SFML) library with artificial intelligence which is using [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm to mimic thinking.
+Classic checkers implemented in C++ using [SFML](https://github.com/SFML/SFML) library with simple
+yet effective AI that uses [minimax](https://en.wikipedia.org/wiki/Minimax) algorithm to work
 
 ## Title
 
@@ -30,7 +31,7 @@ and depending on your platform:
 
 ## Building on Windows
 
-1. Download Premake 5.0 from this [website](https://premake.github.io/download.html#v5) and place it somewhere where you will be able to use it from the command line.
+1. Download Premake 5.0 from this [website](https://premake.github.io/download/) and place it somewhere where you will be able to use it from the command line.
 
 2. [Install SFML library](https://www.sfml-dev.org/tutorials/2.5/compile-with-cmake.php) on your system or [download prebuilt package](https://www.sfml-dev.org/download/sfml/2.5.1/) that exactly matches your compiler. Either way you should have a directory on your system which contains an **include**, **lib** and **bin** subdirectories. Save path to this directory, you will need it later.
 
@@ -40,7 +41,7 @@ and depending on your platform:
 
 ## Building on Linux (Ubuntu)
 
-1. Download Premake 5.0 from this [website](https://premake.github.io/download.html#v5) and place it somewhere where you will be able to use it from the command line.
+1. Download Premake 5.0 from this [website](https://premake.github.io/download/) and place it somewhere where you will be able to use it from the command line.
 
 2. Install SFML library on your system by typing this into command line: `sudo apt install libsfml-dev`.
 
